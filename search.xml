@@ -3,9 +3,9 @@
   <entry>
     <title>JPA学习笔记</title>
     <url>/archives/4ac63db6.html</url>
-    <content><![CDATA[<span id="more"></span>
+    <content><![CDATA[<h2 id="1、定义"><a href="#1、定义" class="headerlink" title="1、定义"></a>1、定义</h2><p>JPA是Java Persistence API的简称，中文名Java持久层API，是JDK 5.0注解或XML描述对象－关系表的映射关系，并将运行期的实体<a href="https://baike.baidu.com/item/%E5%AF%B9%E8%B1%A1%E6%8C%81%E4%B9%85%E5%8C%96/7316192">对象持久化</a>到数据库中。 </p>
+<span id="more"></span>
 
-<h1 id="JPA学习笔记"><a href="#JPA学习笔记" class="headerlink" title="JPA学习笔记"></a>JPA学习笔记</h1><h2 id="1、定义"><a href="#1、定义" class="headerlink" title="1、定义"></a>1、定义</h2><p>JPA是Java Persistence API的简称，中文名Java持久层API，是JDK 5.0注解或XML描述对象－关系表的映射关系，并将运行期的实体<a href="https://baike.baidu.com/item/%E5%AF%B9%E8%B1%A1%E6%8C%81%E4%B9%85%E5%8C%96/7316192">对象持久化</a>到数据库中。 </p>
 <p>Sun引入新的JPA ORM规范出于两个原因：其一，简化现有Java EE和Java SE应用开发工作；其二，Sun希望整合ORM技术，实现天下归一。</p>
 <p>JPA包括以下3方面的技术：</p>
 <p><strong>ORM映射元数据</strong></p>
@@ -210,6 +210,51 @@
         <tag>Java</tag>
         <tag>JPA</tag>
         <tag>JQPL</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Lua 编译</title>
+    <url>/archives/41ff62c0.html</url>
+    <content><![CDATA[<h1 id="一、环境以及安装包"><a href="#一、环境以及安装包" class="headerlink" title="一、环境以及安装包"></a>一、环境以及安装包</h1><h2 id="1-1-环境以及安装包"><a href="#1-1-环境以及安装包" class="headerlink" title="1.1 环境以及安装包"></a>1.1 环境以及安装包</h2><ul>
+<li>gcc 编译环境（本人选择TDM-GCC9.2.0，<a href="https://jmeubank.github.io/tdm-gcc/">下载链接</a>）</li>
+<li>Lua 源代码（本人选择 <a href="http://www.lua.org/ftp/">lua-5.3.6</a>）</li>
+</ul>
+<span id="more"></span>
+
+<h2 id="1-2-安装前的准备工作"><a href="#1-2-安装前的准备工作" class="headerlink" title="1.2 安装前的准备工作"></a>1.2 安装前的准备工作</h2><ul>
+<li>将 TDM-GCC 的 bin 目录添加到环境变量</li>
+<li>进入 TDM-GCC 的 bin 目录，将 <code>把 mingw32-make.exe</code> 复制一份并修改为改为 <code>make.exe</code>，如下图：<br><img src="../images/20210219211832365.png" alt="在这里插入图片描述"></li>
+<li>验证 GCC 环境，输出如下<br><img src="../images/20210219212048248.png" alt="在这里插入图片描述"></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">&gt;gcc -v</span><br><span class="line">Using built-in specs.</span><br><span class="line">COLLECT_GCC=gcc</span><br><span class="line">COLLECT_LTO_WRAPPER=C:/TDM-GCC-64/bin/../libexec/gcc/x86_64-w64-mingw32/9.2.0/lto-wrapper.exe</span><br><span class="line">Target: x86_64-w64-mingw32</span><br><span class="line">Configured with: ../../../src/gcc-git-9.2.0/configure --build=x86_64-w64-mingw32 --enable-targets=all --enable-languages=ada,c,c++,fortran,lto,objc,obj-c++ --enable-libgomp --enable-lto --enable-graphite --enable-cxx-flags=-DWINPTHREAD_STATIC --disable-build-with-cxx --disable-build-poststage1-with-cxx --enable-libstdcxx-debug --enable-threads=posix --enable-version-specific-runtime-libs --enable-fully-dynamic-string --enable-libstdcxx-threads --enable-libstdcxx-time --with-gnu-ld --disable-werror --disable-nls --disable-win32-registry --enable-large-address-aware --disable-rpath --disable-symvers --prefix=/mingw64tdm --with-local-prefix=/mingw64tdm --with-pkgversion=tdm64-1 --with-bugurl=http://tdm-gcc.tdragon.net/bugs</span><br><span class="line">Thread model: posix</span><br><span class="line">gcc version 9.2.0 (tdm64-1)</span><br><span class="line"></span><br><span class="line">&gt;g++ -v</span><br><span class="line">Using built-in specs.</span><br><span class="line">COLLECT_GCC=g++</span><br><span class="line">COLLECT_LTO_WRAPPER=C:/TDM-GCC-64/bin/../libexec/gcc/x86_64-w64-mingw32/9.2.0/lto-wrapper.exe</span><br><span class="line">Target: x86_64-w64-mingw32</span><br><span class="line">Configured with: ../../../src/gcc-git-9.2.0/configure --build=x86_64-w64-mingw32 --enable-targets=all --enable-languages=ada,c,c++,fortran,lto,objc,obj-c++ --enable-libgomp --enable-lto --enable-graphite --enable-cxx-flags=-DWINPTHREAD_STATIC --disable-build-with-cxx --disable-build-poststage1-with-cxx --enable-libstdcxx-debug --enable-threads=posix --enable-version-specific-runtime-libs --enable-fully-dynamic-string --enable-libstdcxx-threads --enable-libstdcxx-time --with-gnu-ld --disable-werror --disable-nls --disable-win32-registry --enable-large-address-aware --disable-rpath --disable-symvers --prefix=/mingw64tdm --with-local-prefix=/mingw64tdm --with-pkgversion=tdm64-1 --with-bugurl=http://tdm-gcc.tdragon.net/bugs</span><br><span class="line">Thread model: posix</span><br><span class="line">gcc version 9.2.0 (tdm64-1)</span><br><span class="line"></span><br><span class="line">&gt;make -v</span><br><span class="line">GNU Make 3.82.90</span><br><span class="line">Built <span class="keyword">for</span> i686-pc-mingw32</span><br><span class="line">Copyright (C) 1988-2012 Free Software Foundation, Inc.</span><br><span class="line">License GPLv3+: GNU GPL version 3 or later &lt;http://gnu.org/licenses/gpl.html&gt;</span><br><span class="line">This is free software: you are free to change and redistribute it.</span><br><span class="line">There is NO WARRANTY, to the extent permitted by law.</span><br></pre></td></tr></table></figure>
+
+<h1 id="二、编译"><a href="#二、编译" class="headerlink" title="二、编译"></a>二、编译</h1><ul>
+<li><p>将下载的源代码解压</p>
+</li>
+<li><p>进入源代码根目录，也就是 <code>lua-5.3.6</code> 目录下</p>
+</li>
+<li><p>按住 <code>shift</code> 键的同时点击鼠标右键，选择 <code>在此处打开 PowerShell 窗口</code></p>
+</li>
+<li><p>输入 <code>make mingw</code><br><img src="../images/2021021921314179.png" alt="在这里插入图片描述"><br><img src="../images/20210219213212429.png" alt="在这里插入图片描述"></p>
+</li>
+<li><p>编译完成，生成的目标文件共有三个 <code>lua.exe</code>，<code>luac.exe</code>，<code>lua53.dll</code>，在 <code>src</code> 目录下<br><img src="../images/20210219213307215.png" alt="在这里插入图片描述"></p>
+</li>
+<li><p>可以直接将 <code>src</code> 添加到环境变量，或者将上述三个文件保存在某个目录，然后将这个目录添加到环境变量</p>
+</li>
+<li><p>验证，在命令行窗口输入 <code>lua</code>，或者输入 <code>lua -v</code><br><img src="../images/20210219213357495.png" alt="在这里插入图片描述"><br><img src="../images/20210219213454730.png" alt="在这里插入图片描述"></p>
+</li>
+</ul>
+<h1 id="三、结语"><a href="#三、结语" class="headerlink" title="三、结语"></a>三、结语</h1><p>我们通过有关的环境变量配置即可自己手动编译一个自己的 Lua 环境，但是这里也有一个注意点，本人在 <code>TDM-GCC</code> 以及 <code>Mingw</code> 的 GCC 编译环境下编译出来的不需要再依赖其他的库，但是在 <code>cygwin64</code> 平台下编译的 Lua 解释器还需要依赖 <code>cygwin64</code> 的有关库（也就是说编译好的文件不能共享给其他人使用）</p>
+<h1 id="四、参考文献"><a href="#四、参考文献" class="headerlink" title="四、参考文献"></a>四、参考文献</h1><ul>
+<li>[1] Lua 官方文档</li>
+<li>[2] <a href="https://github.com/joedf/LuaBuilds">https://github.com/joedf/LuaBuilds</a> </li>
+</ul>
+]]></content>
+      <categories>
+        <category>Lua</category>
+      </categories>
+      <tags>
+        <tag>Lua编译</tag>
       </tags>
   </entry>
 </search>

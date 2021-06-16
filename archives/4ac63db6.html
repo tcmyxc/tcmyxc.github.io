@@ -20,12 +20,12 @@
     var CONFIG = {"hostname":"tcmyxc.github.io","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="JPA学习笔记1、定义JPA是Java Persistence API的简称，中文名Java持久层API，是JDK 5.0注解或XML描述对象－关系表的映射关系，并将运行期的实体对象持久化到数据库中。  Sun引入新的JPA ORM规范出于两个原因：其一，简化现有Java EE和Java SE应用开发工作；其二，Sun希望整合ORM技术，实现天下归一。 JPA包括以下3方面的技术： ORM映射">
+  <meta name="description" content="1、定义JPA是Java Persistence API的简称，中文名Java持久层API，是JDK 5.0注解或XML描述对象－关系表的映射关系，并将运行期的实体对象持久化到数据库中。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="JPA学习笔记">
 <meta property="og:url" content="https://tcmyxc.github.io/archives/4ac63db6.html">
 <meta property="og:site_name" content="徐文祥的个人博客">
-<meta property="og:description" content="JPA学习笔记1、定义JPA是Java Persistence API的简称，中文名Java持久层API，是JDK 5.0注解或XML描述对象－关系表的映射关系，并将运行期的实体对象持久化到数据库中。  Sun引入新的JPA ORM规范出于两个原因：其一，简化现有Java EE和Java SE应用开发工作；其二，Sun希望整合ORM技术，实现天下归一。 JPA包括以下3方面的技术： ORM映射">
+<meta property="og:description" content="1、定义JPA是Java Persistence API的简称，中文名Java持久层API，是JDK 5.0注解或XML描述对象－关系表的映射关系，并将运行期的实体对象持久化到数据库中。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://tcmyxc.github.io/images/image-20210612173746712.png">
 <meta property="og:image" content="https://tcmyxc.github.io/images/image-20210612173801846.png">
@@ -34,7 +34,7 @@
 <meta property="og:image" content="https://tcmyxc.github.io/images/image-20210612184416168.png">
 <meta property="og:image" content="https://tcmyxc.github.io/images/image-20210616165321122.png">
 <meta property="article:published_time" content="2021-06-16T06:09:07.000Z">
-<meta property="article:modified_time" content="2021-06-16T11:22:20.824Z">
+<meta property="article:modified_time" content="2021-06-16T15:33:36.712Z">
 <meta property="article:author" content="Wenxiang Xu">
 <meta property="article:tag" content="Java">
 <meta property="article:tag" content="JPA">
@@ -130,7 +130,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">1</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">2</span></a>
 
   </li>
         <li class="menu-item menu-item-about">
@@ -140,12 +140,12 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">3</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">4</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">1</span></a>
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">2</span></a>
 
   </li>
       <li class="menu-item menu-item-search">
@@ -223,7 +223,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2021-06-16 14:09:07 / 修改时间：19:22:20" itemprop="dateCreated datePublished" datetime="2021-06-16T14:09:07+08:00">2021-06-16</time>
+              <time title="创建时间：2021-06-16 14:09:07 / 修改时间：23:33:36" itemprop="dateCreated datePublished" datetime="2021-06-16T14:09:07+08:00">2021-06-16</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -246,9 +246,9 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <span id="more"></span>
+        <h2 id="1、定义"><a href="#1、定义" class="headerlink" title="1、定义"></a>1、定义</h2><p>JPA是Java Persistence API的简称，中文名Java持久层API，是JDK 5.0注解或XML描述对象－关系表的映射关系，并将运行期的实体<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E5%AF%B9%E8%B1%A1%E6%8C%81%E4%B9%85%E5%8C%96/7316192">对象持久化</a>到数据库中。 </p>
+<span id="more"></span>
 
-<h1 id="JPA学习笔记"><a href="#JPA学习笔记" class="headerlink" title="JPA学习笔记"></a>JPA学习笔记</h1><h2 id="1、定义"><a href="#1、定义" class="headerlink" title="1、定义"></a>1、定义</h2><p>JPA是Java Persistence API的简称，中文名Java持久层API，是JDK 5.0注解或XML描述对象－关系表的映射关系，并将运行期的实体<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E5%AF%B9%E8%B1%A1%E6%8C%81%E4%B9%85%E5%8C%96/7316192">对象持久化</a>到数据库中。 </p>
 <p>Sun引入新的JPA ORM规范出于两个原因：其一，简化现有Java EE和Java SE应用开发工作；其二，Sun希望整合ORM技术，实现天下归一。</p>
 <p>JPA包括以下3方面的技术：</p>
 <p><strong>ORM映射元数据</strong></p>
@@ -480,6 +480,13 @@
 
 
         
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/archives/41ff62c0.html" rel="next" title="Lua 编译">
+      Lua 编译 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
       </footer>
     
   </article>
@@ -538,7 +545,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#JPA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0"><span class="nav-text">JPA学习笔记</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81%E5%AE%9A%E4%B9%89"><span class="nav-text">1、定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81HelloWorld"><span class="nav-text">2、HelloWorld</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3%E3%80%81%E6%B3%A8%E8%A7%A3"><span class="nav-text">3、注解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Entity"><span class="nav-text">@Entity</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Table"><span class="nav-text">@Table</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Id"><span class="nav-text">@Id</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GeneratedValue"><span class="nav-text">@GeneratedValue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Basic"><span class="nav-text">@Basic</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Column"><span class="nav-text">@Column</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Transient"><span class="nav-text">@Transient</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Temporal"><span class="nav-text">@Temporal</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4%E3%80%81JPA-API"><span class="nav-text">4、JPA API</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Persistence"><span class="nav-text">Persistence</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EntityManagerFactory"><span class="nav-text">EntityManagerFactory</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EntityManager"><span class="nav-text">EntityManager</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EntityTransaction"><span class="nav-text">EntityTransaction</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5%E3%80%81%E6%98%A0%E5%B0%84%E5%85%B3%E7%B3%BB"><span class="nav-text">5、映射关系</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E5%90%91%E5%A4%9A%E5%AF%B9%E4%B8%80"><span class="nav-text">单向多对一</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E5%90%91%E4%B8%80%E5%AF%B9%E5%A4%9A"><span class="nav-text">单向一对多</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8C%E5%90%91%E5%A4%9A%E5%AF%B9%E4%B8%80"><span class="nav-text">双向多对一</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8C%E5%90%91%E4%B8%80%E5%AF%B9%E4%B8%80"><span class="nav-text">双向一对一</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8C%E5%90%91%E5%A4%9A%E5%AF%B9%E5%A4%9A"><span class="nav-text">双向多对多</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6%E3%80%81JQPL"><span class="nav-text">6、JQPL</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81%E5%AE%9A%E4%B9%89"><span class="nav-text">1、定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81HelloWorld"><span class="nav-text">2、HelloWorld</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3%E3%80%81%E6%B3%A8%E8%A7%A3"><span class="nav-text">3、注解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Entity"><span class="nav-text">@Entity</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Table"><span class="nav-text">@Table</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Id"><span class="nav-text">@Id</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GeneratedValue"><span class="nav-text">@GeneratedValue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Basic"><span class="nav-text">@Basic</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Column"><span class="nav-text">@Column</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Transient"><span class="nav-text">@Transient</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Temporal"><span class="nav-text">@Temporal</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4%E3%80%81JPA-API"><span class="nav-text">4、JPA API</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Persistence"><span class="nav-text">Persistence</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EntityManagerFactory"><span class="nav-text">EntityManagerFactory</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EntityManager"><span class="nav-text">EntityManager</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EntityTransaction"><span class="nav-text">EntityTransaction</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5%E3%80%81%E6%98%A0%E5%B0%84%E5%85%B3%E7%B3%BB"><span class="nav-text">5、映射关系</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E5%90%91%E5%A4%9A%E5%AF%B9%E4%B8%80"><span class="nav-text">单向多对一</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E5%90%91%E4%B8%80%E5%AF%B9%E5%A4%9A"><span class="nav-text">单向一对多</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8C%E5%90%91%E5%A4%9A%E5%AF%B9%E4%B8%80"><span class="nav-text">双向多对一</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8C%E5%90%91%E4%B8%80%E5%AF%B9%E4%B8%80"><span class="nav-text">双向一对一</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8C%E5%90%91%E5%A4%9A%E5%AF%B9%E5%A4%9A"><span class="nav-text">双向多对多</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6%E3%80%81JQPL"><span class="nav-text">6、JQPL</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -554,20 +561,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">1</span>
+          <span class="site-state-item-count">2</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">2</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
