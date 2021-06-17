@@ -33,8 +33,10 @@
 <meta property="og:image" content="https://tcmyxc.github.io/images/image-20210612175607590.png">
 <meta property="og:image" content="https://tcmyxc.github.io/images/image-20210612184416168.png">
 <meta property="og:image" content="https://tcmyxc.github.io/images/image-20210616165321122.png">
+<meta property="og:image" content="https://tcmyxc.github.io/images/image-20210617115000945.png">
+<meta property="og:image" content="https://tcmyxc.github.io/images/image-20210617120812216.png">
 <meta property="article:published_time" content="2021-06-16T06:09:07.000Z">
-<meta property="article:modified_time" content="2021-06-16T15:33:36.712Z">
+<meta property="article:modified_time" content="2021-06-17T04:09:03.642Z">
 <meta property="article:author" content="Wenxiang Xu">
 <meta property="article:tag" content="Java">
 <meta property="article:tag" content="JPA">
@@ -130,7 +132,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">2</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">3</span></a>
 
   </li>
         <li class="menu-item menu-item-about">
@@ -140,7 +142,7 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">4</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">5</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
@@ -221,10 +223,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2021-06-16 14:09:07 / 修改时间：23:33:36" itemprop="dateCreated datePublished" datetime="2021-06-16T14:09:07+08:00">2021-06-16</time>
+              <time title="创建时间：2021-06-16 14:09:07" itemprop="dateCreated datePublished" datetime="2021-06-16T14:09:07+08:00">2021-06-16</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-06-17 12:09:03" itemprop="dateModified" datetime="2021-06-17T12:09:03+08:00">2021-06-17</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -445,7 +453,71 @@
 
 
 <p>可以看出来，这里默认用的是懒加载。其实从分类里面查标签也是懒加载。</p>
-<h2 id="6、JQPL"><a href="#6、JQPL" class="headerlink" title="6、JQPL"></a>6、JQPL</h2>
+<h2 id="6、JQPL"><a href="#6、JQPL" class="headerlink" title="6、JQPL"></a>6、JQPL</h2><p>Java Persistence Query Language 的简称。JPQL 是一种和 SQL 非常类似的中间性和对象化查询语言，它最终会被编译成针对不同底层数据库的 SQL 查询，从而屏蔽不同数据库的差异。</p>
+<p>JPQL语言的语句可以是 select 语句、update 语句或delete语句，它们都通过 Query 接口封装执行</p>
+<h3 id="Query-接口"><a href="#Query-接口" class="headerlink" title="Query 接口"></a>Query 接口</h3><p>Query接口封装了执行数据库查询的相关方法。调用 EntityManager 的 createQuery、create NamedQuery 及 createNativeQuery 方法可以获得查询对象，进而可调用 Query 接口的相关方法来执行查询操作。</p>
+<h3 id="select-语句"><a href="#select-语句" class="headerlink" title="select 语句"></a>select 语句</h3><p>用于执行查询。其语法可表示为：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">select_clause </span><br><span class="line">form_clause </span><br><span class="line">[where_clause] </span><br><span class="line">[groupby_clause] </span><br><span class="line">[having_clause]</span><br><span class="line">[orderby_clause]</span><br></pre></td></tr></table></figure>
+
+<p>select、from 都是 JPQL 的关键字，通常全大写或全小写，建议不要大小写混用。</p>
+<p><strong>查询所有</strong>实体的 JPQL 查询字串很简单，例如：</p>
+<p>​    select o from Order o 或  select o from Order as o</p>
+<p>关键字 as 可以省去。</p>
+<p>标识符变量的命名规范与 Java 标识符相同，且区分大小写。</p>
+<p>调用 EntityManager 的 createQuery() 方法可创建查询对象，接着调用 Query 接口的 getResultList() 方法就可获得查询结果集。例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Query query = entityManager.createQuery( <span class="string">&quot;select o from Order o&quot;</span>); </span><br><span class="line">List orders = query.getResultList();</span><br><span class="line">Iterator iterator = orders.iterator();</span><br><span class="line"><span class="keyword">while</span>( iterator.hasNext() ) &#123;</span><br><span class="line">	<span class="comment">// 处理Order</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>JPQL也支持<strong>包含参数的查询</strong>，例如：</p>
+<p>​    select o from Orders o where o.id = :myId</p>
+<p>​    select o from Orders o where o.id = :myId and o.customer = :customerName</p>
+<p>注意：参数名前必须冠以冒号(:)，执行查询前须使用Query.setParameter(name, value)方法给参数赋值。</p>
+<p>可以<strong>不使用参数名而使用参数的序号</strong>，例如：</p>
+<p>select o from Order o where o.id = ?1 and o.customer = ?2</p>
+<p>其中 ?1 代表第一个参数，?2 代表第一个参数。在执行查询之前需要使用重载方法Query.setParameter(pos, value) 提供参数值。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Query query = entityManager.createQuery( <span class="string">&quot;select o from Orders o where o.id = ?1 and o.customer = ?2&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 占位符的索引是从 1 开始的</span></span><br><span class="line">query.setParameter( <span class="number">1</span>, <span class="number">2</span> );</span><br><span class="line">query.setParameter( <span class="number">2</span>, <span class="string">&quot;John&quot;</span> );</span><br><span class="line">List orders = query.getResultList();</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>JPQL也支持子查询，在 where 或 having 子句中可以包含另一个查询。</p>
+<p><strong>查询部分属性</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 查询部分属性</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testPartlyProperties</span><span class="params">()</span></span>&#123;</span><br><span class="line">    String jpql = <span class="string">&quot;select c.email, c.lastName from Customer c where c.id &gt; ?1&quot;</span>;</span><br><span class="line">    Query query = entityManager.createQuery(jpql);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 占位符的索引是从 1 开始的</span></span><br><span class="line">    query.setParameter(<span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line">    List resultList = query.getResultList();</span><br><span class="line">    System.out.println(resultList);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight tex"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[[Ljava.lang.Object;@c6b2dd9, [Ljava.lang.Object;@73437222]</span><br></pre></td></tr></table></figure>
+
+<p>可以看到是个 Object 数组</p>
+<p>如果想返回对应类的对象，需要有对应参数的构造器，同时修改查询语句</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Customer 类</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">Customer</span><span class="params">(String lastName, String email)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.lastName = lastName;</span><br><span class="line">    <span class="keyword">this</span>.email = email;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 测试语句</span></span><br><span class="line">String jpql = <span class="string">&quot;select new Customer(c.email, c.lastName) from Customer c where c.id &gt; ?1&quot;</span>;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight tex"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Customer&#123;id=null, lastName=&#x27;ww@163.com&#x27;, email=&#x27;小华&#x27;, createdTime=null, birth=null&#125;, Customer&#123;id=null, lastName=&#x27;ww@163.com&#x27;, email=&#x27;小华&#x27;, createdTime=null, birth=null&#125;]</span><br></pre></td></tr></table></figure>
+
+<p>这里 JQPL 帮我们做了底层的转换，所以数组里面放的是 Customer 对象</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">System.out.println(resultList.get(<span class="number">0</span>).getClass().getName());</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight tex"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">com.tcmyxc.helloworld.Customer</span><br></pre></td></tr></table></figure>
+
+<p><strong>查询语句也可以放在实体类头上</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@NamedQuery(name = &quot;testNamedQuery&quot;, query = &quot;SELECT c FROM Customer c where c.id = ?1&quot;)</span></span><br><span class="line"><span class="meta">@Table(name = &quot;JPA_CUSTOMERS&quot;)</span></span><br><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Customer</span> </span>&#123;</span><br><span class="line">    。。。</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 测试方法</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testNamedQuery</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="comment">// 指定 name，同时设置参数</span></span><br><span class="line">    Query query = entityManager.createNamedQuery(<span class="string">&quot;testNamedQuerySQL&quot;</span>).setParameter(<span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line">    Customer customer = (Customer) query.getSingleResult();</span><br><span class="line">    System.out.println(customer);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight tex"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Customer&#123;id=1, lastName=&#x27;小华&#x27;, email=&#x27;ww@163.com&#x27;, createdTime=2021-06-13 17:07:17.677, birth=2021-06-13&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>Native SQL</strong></p>
+<p>指原生的 SQL 语句，不再是 JQPL 的语法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testNativedQuery</span><span class="params">()</span></span>&#123;</span><br><span class="line">    String sql = <span class="string">&quot;select birth from JPA_CUSTOMERS c where c.id = 1&quot;</span>;</span><br><span class="line">    Query query = entityManager.createNativeQuery(sql);</span><br><span class="line">    System.out.println(query.getSingleResult());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight tex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Hibernate: </span><br><span class="line">    select</span><br><span class="line">        birth </span><br><span class="line">    from</span><br><span class="line">        JPA<span class="built_in">_</span>CUSTOMERS c </span><br><span class="line">    where</span><br><span class="line">        c.id = 1</span><br><span class="line">2021-06-13</span><br></pre></td></tr></table></figure>
+
+
+
+<p>JQPL 也支持 order by、group by、having、关联查询、子查询等</p>
+<h3 id="update-和-delete"><a href="#update-和-delete" class="headerlink" title="update 和 delete"></a>update 和 delete</h3><p>更新操作</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testUpdate</span><span class="params">()</span></span>&#123;</span><br><span class="line">    String sql = <span class="string">&quot;update Customer c set c.lastName = ?1 where c.id = ?2&quot;</span>;</span><br><span class="line">    Query query = entityManager.createQuery(sql);</span><br><span class="line">    query.setParameter(<span class="number">1</span>, <span class="string">&quot;YYY&quot;</span>).setParameter(<span class="number">2</span>, <span class="number">1</span>);</span><br><span class="line">    query.executeUpdate();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="../images/image-20210617115000945.png" alt="image-20210617115000945"></p>
+<p>删除操作</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testDel</span><span class="params">()</span></span>&#123;</span><br><span class="line">    String sql = <span class="string">&quot;delete from Order o where o.id = ?1&quot;</span>;</span><br><span class="line">    Query query = entityManager.createQuery(sql);</span><br><span class="line">    query.setParameter(<span class="number">1</span>, <span class="number">3</span>);</span><br><span class="line">    query.executeUpdate();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="../images/image-20210617120812216.png" alt="image-20210617120812216"></p>
+
     </div>
 
     
@@ -545,7 +617,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81%E5%AE%9A%E4%B9%89"><span class="nav-text">1、定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81HelloWorld"><span class="nav-text">2、HelloWorld</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3%E3%80%81%E6%B3%A8%E8%A7%A3"><span class="nav-text">3、注解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Entity"><span class="nav-text">@Entity</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Table"><span class="nav-text">@Table</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Id"><span class="nav-text">@Id</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GeneratedValue"><span class="nav-text">@GeneratedValue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Basic"><span class="nav-text">@Basic</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Column"><span class="nav-text">@Column</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Transient"><span class="nav-text">@Transient</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Temporal"><span class="nav-text">@Temporal</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4%E3%80%81JPA-API"><span class="nav-text">4、JPA API</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Persistence"><span class="nav-text">Persistence</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EntityManagerFactory"><span class="nav-text">EntityManagerFactory</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EntityManager"><span class="nav-text">EntityManager</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EntityTransaction"><span class="nav-text">EntityTransaction</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5%E3%80%81%E6%98%A0%E5%B0%84%E5%85%B3%E7%B3%BB"><span class="nav-text">5、映射关系</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E5%90%91%E5%A4%9A%E5%AF%B9%E4%B8%80"><span class="nav-text">单向多对一</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E5%90%91%E4%B8%80%E5%AF%B9%E5%A4%9A"><span class="nav-text">单向一对多</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8C%E5%90%91%E5%A4%9A%E5%AF%B9%E4%B8%80"><span class="nav-text">双向多对一</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8C%E5%90%91%E4%B8%80%E5%AF%B9%E4%B8%80"><span class="nav-text">双向一对一</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8C%E5%90%91%E5%A4%9A%E5%AF%B9%E5%A4%9A"><span class="nav-text">双向多对多</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6%E3%80%81JQPL"><span class="nav-text">6、JQPL</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81%E5%AE%9A%E4%B9%89"><span class="nav-text">1、定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81HelloWorld"><span class="nav-text">2、HelloWorld</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3%E3%80%81%E6%B3%A8%E8%A7%A3"><span class="nav-text">3、注解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Entity"><span class="nav-text">@Entity</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Table"><span class="nav-text">@Table</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Id"><span class="nav-text">@Id</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GeneratedValue"><span class="nav-text">@GeneratedValue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Basic"><span class="nav-text">@Basic</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Column"><span class="nav-text">@Column</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Transient"><span class="nav-text">@Transient</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Temporal"><span class="nav-text">@Temporal</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4%E3%80%81JPA-API"><span class="nav-text">4、JPA API</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Persistence"><span class="nav-text">Persistence</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EntityManagerFactory"><span class="nav-text">EntityManagerFactory</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EntityManager"><span class="nav-text">EntityManager</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EntityTransaction"><span class="nav-text">EntityTransaction</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5%E3%80%81%E6%98%A0%E5%B0%84%E5%85%B3%E7%B3%BB"><span class="nav-text">5、映射关系</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E5%90%91%E5%A4%9A%E5%AF%B9%E4%B8%80"><span class="nav-text">单向多对一</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E5%90%91%E4%B8%80%E5%AF%B9%E5%A4%9A"><span class="nav-text">单向一对多</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8C%E5%90%91%E5%A4%9A%E5%AF%B9%E4%B8%80"><span class="nav-text">双向多对一</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8C%E5%90%91%E4%B8%80%E5%AF%B9%E4%B8%80"><span class="nav-text">双向一对一</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8C%E5%90%91%E5%A4%9A%E5%AF%B9%E5%A4%9A"><span class="nav-text">双向多对多</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6%E3%80%81JQPL"><span class="nav-text">6、JQPL</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Query-%E6%8E%A5%E5%8F%A3"><span class="nav-text">Query 接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#select-%E8%AF%AD%E5%8F%A5"><span class="nav-text">select 语句</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#update-%E5%92%8C-delete"><span class="nav-text">update 和 delete</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -561,7 +633,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-count">3</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -574,7 +646,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
