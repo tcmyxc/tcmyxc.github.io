@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"tcmyxc.github.io","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Dropwizard是什么？一个用于开发操作友好、高性能、RESTful Web 服务的 Java 框架  Dropwizard 将Java 生态系统中稳定、成熟的库整合到一个 简单、轻量级的包中，让您可以专注于完成工作。 Dropwizard对复杂的配置、 应用程序指标、日志记录、操作工具等提供开箱即用的支持，使您和您的团队能够在尽可能短的时间内提供生产质量的Web 服务。  官网：https:">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dropwizard学习笔记">
+<meta property="og:url" content="https://tcmyxc.github.io/archives/8125fdfd.html">
+<meta property="og:site_name" content="徐文祥的个人博客">
+<meta property="og:description" content="Dropwizard是什么？一个用于开发操作友好、高性能、RESTful Web 服务的 Java 框架  Dropwizard 将Java 生态系统中稳定、成熟的库整合到一个 简单、轻量级的包中，让您可以专注于完成工作。 Dropwizard对复杂的配置、 应用程序指标、日志记录、操作工具等提供开箱即用的支持，使您和您的团队能够在尽可能短的时间内提供生产质量的Web 服务。  官网：https:">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://tcmyxc.github.io/images/image-20210619134441719.png">
+<meta property="og:image" content="https://tcmyxc.github.io/images/image-20210619134554883.png">
+<meta property="og:image" content="https://tcmyxc.github.io/images/image-20210619134648237.png">
+<meta property="article:published_time" content="2021-06-19T02:21:16.000Z">
+<meta property="article:modified_time" content="2021-06-19T07:14:08.307Z">
+<meta property="article:author" content="Wenxiang Xu">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Dropwizard">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://tcmyxc.github.io/images/image-20210619134441719.png">
+
+<link rel="canonical" href="https://tcmyxc.github.io/archives/8125fdfd.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>Dropwizard学习笔记 | 徐文祥的个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">徐文祥的个人博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">7</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">9</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">8</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://tcmyxc.github.io/archives/8125fdfd.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Wenxiang Xu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="徐文祥的个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Dropwizard学习笔记
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-06-19 10:21:16 / 修改时间：15:14:08" itemprop="dateCreated datePublished" datetime="2021-06-19T10:21:16+08:00">2021-06-19</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/Dropwizard/" itemprop="url" rel="index"><span itemprop="name">Dropwizard</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Dropwizard是什么？"><a href="#Dropwizard是什么？" class="headerlink" title="Dropwizard是什么？"></a>Dropwizard是什么？</h1><p>一个用于开发操作友好、高性能、RESTful Web 服务的 <strong>Java 框架</strong></p>
+<blockquote>
+<p>Dropwizard 将Java 生态系统中稳定、成熟的库整合到一个 简单、轻量级的包中，让您可以专注于完成工作。</p>
+<p>Dropwizard对复杂的配置、 应用程序指标、日志记录、操作工具等提供开箱即用的支持，使您和您的团队能够在尽可能短的时间内提供生产质量的Web 服务。</p>
+</blockquote>
+<p>官网：<a target="_blank" rel="noopener" href="https://www.dropwizard.io/en/latest/">https://www.dropwizard.io/en/latest/</a></p>
+<span id="more"></span>
+
+
+
+<h2 id="几个重要的组件"><a href="#几个重要的组件" class="headerlink" title="几个重要的组件"></a>几个重要的组件</h2><h3 id="Jetty-for-HTTP"><a href="#Jetty-for-HTTP" class="headerlink" title="Jetty for HTTP"></a>Jetty for HTTP</h3><p>使用Jetty HTTP 库将一个经过优化的 HTTP 服务器直接嵌入到项目中</p>
+<h3 id="Jersey-for-REST"><a href="#Jersey-for-REST" class="headerlink" title="Jersey for REST"></a>Jersey for REST</h3><p>将 HTTP 请求映射到简单的 Java 对象。</p>
+<p>支持流输出、矩阵 URI 参数、条件GET请求等等</p>
+<h3 id="Jackson-for-JSON"><a href="#Jackson-for-JSON" class="headerlink" title="Jackson for JSON"></a>Jackson for JSON</h3><h3 id="Metrics-for-metrics"><a href="#Metrics-for-metrics" class="headerlink" title="Metrics for metrics"></a>Metrics for metrics</h3><h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><p>日志：<a target="_blank" rel="noopener" href="https://logback.qos.ch/">Logback</a>和<a target="_blank" rel="noopener" href="https://www.slf4j.org/">slf4j</a></p>
+<p><a target="_blank" rel="noopener" href="http://hibernate.org/validator/">Hibernate Validator</a></p>
+<p>等等</p>
+<h1 id="HelloWorld"><a href="#HelloWorld" class="headerlink" title="HelloWorld"></a>HelloWorld</h1><h2 id="1、使用Maven生成项目"><a href="#1、使用Maven生成项目" class="headerlink" title="1、使用Maven生成项目"></a>1、使用Maven生成项目</h2><h2 id="2、基本的依赖"><a href="#2、基本的依赖" class="headerlink" title="2、基本的依赖"></a>2、基本的依赖</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">maven.compiler.source</span>&gt;</span>8<span class="tag">&lt;/<span class="name">maven.compiler.source</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">maven.compiler.target</span>&gt;</span>8<span class="tag">&lt;/<span class="name">maven.compiler.target</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">project.build.sourceEncoding</span>&gt;</span>UTF-8<span class="tag">&lt;/<span class="name">project.build.sourceEncoding</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dropwizard.version</span>&gt;</span>2.0.22<span class="tag">&lt;/<span class="name">dropwizard.version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">mysql-connector.version</span>&gt;</span>8.0.16<span class="tag">&lt;/<span class="name">mysql-connector.version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- https://mvnrepository.com/artifact/io.dropwizard/dropwizard-core --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.dropwizard<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>dropwizard-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;dropwizard.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- mysql --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>mysql<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mysql-connector-java<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;mysql-connector.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="3、创建配置类"><a href="#3、创建配置类" class="headerlink" title="3、创建配置类"></a>3、创建配置类</h2><p>每个 Dropwizard 应用程序都有自己的<code>Configuration</code>类，用于指定特定于环境的参数。这些参数在YAML配置文件中指定，该文件会被加载，然后被反序列化为应用程序配置类的实例</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloConfiguration</span> <span class="keyword">extends</span> <span class="title">Configuration</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@NotEmpty</span></span><br><span class="line">    <span class="keyword">private</span> String template;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@NotEmpty</span></span><br><span class="line">    <span class="keyword">private</span> String defaultName = <span class="string">&quot;Stranger&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@JsonProperty</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getTemplate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> template;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@JsonProperty</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setTemplate</span><span class="params">(String template)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.template = template;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@JsonProperty</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getDefaultName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> defaultName;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@JsonProperty</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setDefaultName</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.defaultName = name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>这个类会从 YAML 文件中反序列化，会去找两个跟级字段：<code>template</code>以及<code>defaultName</code></p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">template:</span> <span class="string">Hello,</span> <span class="string">%s!</span> <span class="comment"># %s 是占位符，这里相当于一个模板字符串</span></span><br><span class="line"><span class="attr">defaultName:</span> <span class="string">Stranger</span></span><br></pre></td></tr></table></figure>
+
+<p>这个文件要放在项目根目录下面</p>
+<h2 id="4、创建一个Application类"><a href="#4、创建一个Application类" class="headerlink" title="4、创建一个Application类"></a>4、创建一个Application类</h2><p>必须要重写 <code>run</code> 方法（这个方法是抽象方法）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloWorldApplication</span> <span class="keyword">extends</span> <span class="title">Application</span>&lt;<span class="title">HelloConfiguration</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="keyword">new</span> HelloWorldApplication().run(args);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Hello World&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initialize</span><span class="params">(Bootstrap&lt;HelloConfiguration&gt; bootstrap)</span> </span>&#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">(HelloConfiguration helloConfiguration, Environment environment)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="5、创建DAO类（pojo"><a href="#5、创建DAO类（pojo" class="headerlink" title="5、创建DAO类（pojo)"></a>5、创建DAO类（pojo)</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Saying</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">long</span> id;</span><br><span class="line">    <span class="keyword">private</span> String content;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Saying</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Saying</span><span class="params">(<span class="keyword">long</span> id, String content)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.id = id;</span><br><span class="line">        <span class="keyword">this</span>.content = content;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@JsonProperty</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">getId</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> id;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@JsonProperty</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getContent</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> content;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="6、创建Resource类"><a href="#6、创建Resource类" class="headerlink" title="6、创建Resource类"></a>6、创建Resource类</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Path(&quot;/get&quot;)</span></span><br><span class="line"><span class="meta">@Produces(MediaType.APPLICATION_JSON)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloResource</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String tempalte;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String defaultName;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> AtomicLong counter;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">HelloResource</span><span class="params">(String tempalte, String defaultName)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.tempalte = tempalte;</span><br><span class="line">        <span class="keyword">this</span>.defaultName = defaultName;</span><br><span class="line">        <span class="keyword">this</span>.counter = <span class="keyword">new</span> AtomicLong();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@GET</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Saying <span class="title">sayHello</span><span class="params">(<span class="meta">@QueryParam(&quot;name&quot;)</span>Optional&lt;String&gt; name)</span></span>&#123;</span><br><span class="line">        String value = String.format(tempalte, name.orElse(defaultName));</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Saying(counter.incrementAndGet(), value);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="7、注册Resource类使其生效"><a href="#7、注册Resource类使其生效" class="headerlink" title="7、注册Resource类使其生效"></a>7、注册Resource类使其生效</h2><p>在Application类中注册</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// HelloWorldApplication</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">(HelloConfiguration configuration, Environment env)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    <span class="comment">// new 一个对象</span></span><br><span class="line">    HelloResource helloResource = <span class="keyword">new</span> HelloResource(configuration.getTemplate(), configuration.getDefaultName());</span><br><span class="line">    <span class="comment">// 注册到应用程序的 Jersey 环境</span></span><br><span class="line">    env.jersey().register(helloResource);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="8、启动"><a href="#8、启动" class="headerlink" title="8、启动"></a>8、启动</h2><p>命令行启动：</p>
+<p>命令行启动的话需要把配置文件放在<strong>子工程</strong>的根目录</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 进入子工程根目录</span></span><br><span class="line">java -jar target/01-HelloWorld-1.0-SNAPSHOT.jar server hello.yml</span><br></pre></td></tr></table></figure>
+
+
+
+<p>IDEA启动：</p>
+<p>需要把配置文件放在<strong>父工程</strong>的根目录</p>
+<p><img src="../images/image-20210619134441719.png" alt="image-20210619134441719"></p>
+<p>也可以在命令中指定配置文件路径</p>
+<p><img src="../images/image-20210619134554883.png" alt="image-20210619134554883"></p>
+<h2 id="9、测试"><a href="#9、测试" class="headerlink" title="9、测试"></a>9、测试</h2><p><img src="../images/image-20210619134648237.png" alt="image-20210619134648237"></p>
+<h1 id="Dropwizard-Core"><a href="#Dropwizard-Core" class="headerlink" title="Dropwizard Core"></a>Dropwizard Core</h1><h2 id="提供了什么？"><a href="#提供了什么？" class="headerlink" title="提供了什么？"></a>提供了什么？</h2><ul>
+<li>Jetty，一个高性能的 HTTP 服务器。</li>
+<li>Jersey，一个功能齐全的 RESTful Web 框架。</li>
+<li>Jackson，JVM 的最佳 JSON 库。</li>
+<li>Metrics，一个优秀的应用程序度量库。</li>
+<li>Logback，Log4j 的继承者，Java 使用最广泛的日志框架。</li>
+<li>Hibernate Validator，Java Bean 验证标准的参考实现。</li>
+</ul>
+<p>官方建议把项目分成三个模块：<code>project-api</code>，<code>project-client</code>，和 <code>project-application</code>。</p>
+<p>api：简单的Java bean</p>
+<p>client：处理HTTP请求</p>
+<p>application：应用类</p>
+<h2 id="日志功能"><a href="#日志功能" class="headerlink" title="日志功能"></a>日志功能</h2><p>Dropwizard 使用<a target="_blank" rel="noopener" href="http://logback.qos.ch/">Logback</a>作为其日志记录后端。它提供了一个<a target="_blank" rel="noopener" href="http://www.slf4j.org/">slf4j</a>实现</p>
+<p>slf4j 提供以下日志级别：</p>
+<ul>
+<li><code>ERROR</code>：可能仍允许应用程序继续运行的错误事件。</li>
+<li><code>WARN</code>：可能有害的情况。</li>
+<li><code>INFO</code>：在粗粒度级别突出显示应用程序进度的信息性消息。</li>
+<li><code>DEBUG</code>：对调试应用程序最有用的细粒度信息事件。</li>
+<li><code>TRACE</code>：比<code>DEBUG</code>级别更细粒度的信息事件。</li>
+</ul>
+<p>如果不想使用可以排除，具体参考：<a target="_blank" rel="noopener" href="https://www.dropwizard.io/en/latest/manual/core.html">https://www.dropwizard.io/en/latest/manual/core.html</a></p>
+<p>日志保存到文件</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">logging:</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">appenders:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">type:</span> <span class="string">file</span></span><br><span class="line">      <span class="comment"># The file to which current statements will be logged.</span></span><br><span class="line">      <span class="attr">currentLogFilename:</span> <span class="string">./logs/example.log</span></span><br><span class="line"></span><br><span class="line">      <span class="comment"># When the log file rotates, the archived log will be renamed to this and gzipped. The</span></span><br><span class="line">      <span class="comment"># %d is replaced with the previous day (yyyy-MM-dd). Custom rolling windows can be created</span></span><br><span class="line">      <span class="comment"># by passing a SimpleDateFormat-compatible format as an argument: &quot;%d&#123;yyyy-MM-dd-hh&#125;&quot;.</span></span><br><span class="line">      <span class="attr">archivedLogFilenamePattern:</span> <span class="string">./logs/example-%d.log.gz</span></span><br><span class="line"></span><br><span class="line">      <span class="comment"># The number of archived files to keep.</span></span><br><span class="line">      <span class="attr">archivedFileCount:</span> <span class="number">5</span></span><br><span class="line"></span><br><span class="line">      <span class="comment"># The timezone used to format dates. HINT: USE THE DEFAULT, UTC.</span></span><br><span class="line">      <span class="attr">timeZone:</span> <span class="string">UTC</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Jersey"><a href="#Jersey" class="headerlink" title="Jersey"></a>Jersey</h2><p>一个框架，用于将传入 HTTP 请求的各个方面映射到 POJO，然后将 POJO 的各个方面映射到传出 HTTP 响应。</p>
+<h2 id="Servlet-过滤器"><a href="#Servlet-过滤器" class="headerlink" title="Servlet 过滤器"></a>Servlet 过滤器</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DateNotSpecifiedServletFilter</span> <span class="keyword">implements</span> <span class="title">javax</span>.<span class="title">servlet</span>.<span class="title">Filter</span> </span>&#123;</span><br><span class="line">    <span class="comment">// Other methods in interface omitted for brevity</span></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doFilter</span><span class="params">(ServletRequest request, ServletResponse response, FilterChain chain)</span> <span class="keyword">throws</span> IOException, ServletException </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (request <span class="keyword">instanceof</span> HttpServletRequest) &#123;</span><br><span class="line">            String dateHeader = ((HttpServletRequest) request).getHeader(HttpHeaders.DATE);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (dateHeader != <span class="keyword">null</span>) &#123;</span><br><span class="line">                chain.doFilter(request, response); <span class="comment">// This signals that the request should pass this filter</span></span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                HttpServletResponse httpResponse = (HttpServletResponse) response;</span><br><span class="line">                httpResponse.setStatus(HttpStatus.BAD_REQUEST_400);</span><br><span class="line">                httpResponse.getWriter().print(<span class="string">&quot;Date Header was not specified&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>将这个 servlet 过滤器包装在自己的 Application 类中<code>FilterHolder</code>并将其添加到应用程序上下文中，并与此过滤器将激活哪些路径的规范一起注册到您的 Application 类中。下面是一个例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">environment.servlets()</span><br><span class="line">    .addFilter(<span class="string">&quot;DateNotSpecifiedServletFilter&quot;</span>, </span><br><span class="line">               <span class="keyword">new</span> DateNotSpecifiedServletFilter()).addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), <span class="keyword">true</span>, <span class="string">&quot;/*&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<h2 id="其他-1"><a href="#其他-1" class="headerlink" title="其他"></a>其他</h2><ol>
+<li>Dropwizard 的所有 API 的设计都考虑到了可测试性，即使应用程序也可以进行单元测试</li>
+<li>可以自定义 banner，放在<code>src/main/resources</code>目录下即可</li>
+<li>每个资源类都必须有一个<code>@Path</code>注解</li>
+<li><code>@Timed</code> 测量对资源请求的持续时间（不能和 <code>@Metered</code> 同时使用</li>
+<li><code>@Metered</code> 衡量资源被访问的速率</li>
+<li><code>@ResponseMetered</code> 测量每类响应代码的速率（1xx/2xx/3xx/4xx/5xx）</li>
+<li><code>@ExceptionMetered</code> 测量处理资源的异常发生的频率</li>
+<li>JSON 的一个常见问题是<code>camelCase</code>和<code>snake_case</code>字段名称之间的分歧。Java 和 Javascript 的人往往喜欢<code>camelCase</code>；Ruby、Python 和 Perl 的人坚持使用 <code>snake_case</code>. 要使 Dropwizard 自动将字段名称转换为<code>snake_case</code>（并返回），只需在类上面加注解<code>@JsonSnakeCase</code></li>
+<li>返回大量信息，使用流式输出可能会大大提高性能和效率。通过返回一个实现 Jersey<code>StreamingOutput</code> 接口的对象，您的方法可以在块编码的输出流中流式传输响应实体</li>
+</ol>
+<h1 id="依赖注入"><a href="#依赖注入" class="headerlink" title="依赖注入"></a>依赖注入</h1><p>依赖注入机制的底层库是 Eclipse 的<a target="_blank" rel="noopener" href="https://github.com/eclipse-ee4j/glassfish-hk2">HK2</a>，推荐 Spring</p>
+<h1 id="JDBI"><a href="#JDBI" class="headerlink" title="JDBI"></a>JDBI</h1><p>JDBI是Java的SQL连接处理的便利工具库。它试图以Java中使用集合，bean等来映射关系来访问关系数据库，同时保持与JDBC相同的粒度</p>
+<p>要创建<a target="_blank" rel="noopener" href="https://www.dropwizard.io/en/latest/manual/core.html#man-core-managed">托管的</a>检测<code>Jdbi</code>实例， <a target="_blank" rel="noopener" href="https://www.dropwizard.io/en/latest/manual/core.html#man-core-configuration">配置类</a>需要一个<code>DataSourceFactory</code>实例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExampleConfiguration</span> <span class="keyword">extends</span> <span class="title">Configuration</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Valid</span></span><br><span class="line">    <span class="meta">@NotNull</span></span><br><span class="line">    <span class="keyword">private</span> DataSourceFactory database = <span class="keyword">new</span> DataSourceFactory();</span><br><span class="line"></span><br><span class="line">    <span class="meta">@JsonProperty(&quot;database&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setDataSourceFactory</span><span class="params">(DataSourceFactory factory)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.database = factory;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@JsonProperty(&quot;database&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> DataSourceFactory <span class="title">getDataSourceFactory</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> database;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后，在Application类的<code>run</code>方法中，创建一个新的<code>JdbiFactory</code>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">(ExampleConfiguration config, Environment environment)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> JdbiFactory factory = <span class="keyword">new</span> JdbiFactory();</span><br><span class="line">    <span class="keyword">final</span> Jdbi jdbi = factory.build(environment, config.getDataSourceFactory(), <span class="string">&quot;postgresql&quot;</span>);</span><br><span class="line">    environment.jersey().register(<span class="keyword">new</span> UserResource(jdbi));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这将创建一个到数据库的新<a target="_blank" rel="noopener" href="https://www.dropwizard.io/en/latest/manual/core.html#man-core-managed">托管</a>连接池、一个用于连接到数据库的 <a target="_blank" rel="noopener" href="https://www.dropwizard.io/en/latest/manual/core.html#man-core-healthchecks">运行状况检查</a>以及一个<code>Jdbi</code> 供您使用的新实例。</p>
+<p>配置文件：</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">database:</span></span><br><span class="line">  <span class="comment"># the name of your JDBC driver</span></span><br><span class="line">  <span class="attr">driverClass:</span> <span class="string">org.postgresql.Driver</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># the username</span></span><br><span class="line">  <span class="attr">user:</span> <span class="string">pg-user</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># the password</span></span><br><span class="line">  <span class="attr">password:</span> <span class="string">iAMs00perSecrEET</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># the JDBC URL</span></span><br><span class="line">  <span class="attr">url:</span> <span class="string">jdbc:postgresql://db.example.com/db-prod</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># any properties specific to your JDBC driver:</span></span><br><span class="line">  <span class="attr">properties:</span></span><br><span class="line">    <span class="attr">charSet:</span> <span class="string">UTF-8</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># the maximum amount of time to wait on an empty pool before throwing an exception</span></span><br><span class="line">  <span class="attr">maxWaitForConnection:</span> <span class="string">1s</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># the SQL query to run when validating a connection&#x27;s liveness</span></span><br><span class="line">  <span class="attr">validationQuery:</span> <span class="string">&quot;/* MyService Health Check */ SELECT 1&quot;</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># the timeout before a connection validation queries fail</span></span><br><span class="line">  <span class="attr">validationQueryTimeout:</span> <span class="string">3s</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># the minimum number of connections to keep open</span></span><br><span class="line">  <span class="attr">minSize:</span> <span class="number">8</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># the maximum number of connections to keep open</span></span><br><span class="line">  <span class="attr">maxSize:</span> <span class="number">32</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># whether or not idle connections should be validated</span></span><br><span class="line">  <span class="attr">checkConnectionWhileIdle:</span> <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># the amount of time to sleep between runs of the idle connection validation, abandoned cleaner and idle pool resizing</span></span><br><span class="line">  <span class="attr">evictionInterval:</span> <span class="string">10s</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># the minimum amount of time an connection must sit idle in the pool before it is eligible for eviction</span></span><br><span class="line">  <span class="attr">minIdleTime:</span> <span class="number">1</span> <span class="string">minute</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>建议使用 JDBI 的<a target="_blank" rel="noopener" href="http://jdbi.org/#_sql_objects">SQL Objects API</a>，它允许将 DAO 类编写为接口：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">MyDAO</span> </span>&#123;</span><br><span class="line">  <span class="meta">@SqlUpdate(&quot;create table something (id int primary key, name varchar(100))&quot;)</span></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">createSomethingTable</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@SqlUpdate(&quot;insert into something (id, name) values (:id, :name)&quot;)</span></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">insert</span><span class="params">(<span class="meta">@Bind(&quot;id&quot;)</span> <span class="keyword">int</span> id, <span class="meta">@Bind(&quot;name&quot;)</span> String name)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@SqlQuery(&quot;select name from something where id = :id&quot;)</span></span><br><span class="line">  <span class="function">String <span class="title">findNameById</span><span class="params">(<span class="meta">@Bind(&quot;id&quot;)</span> <span class="keyword">int</span> id)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">final</span> MyDAO dao = database.onDemand(MyDAO.class);</span><br></pre></td></tr></table></figure>
+
+<h1 id="Dropwizard-Hibernate"><a href="#Dropwizard-Hibernate" class="headerlink" title="Dropwizard Hibernate"></a>Dropwizard Hibernate</h1><h2 id="1、需要一个DataSourceFactory-实例"><a href="#1、需要一个DataSourceFactory-实例" class="headerlink" title="1、需要一个DataSourceFactory 实例"></a>1、需要一个<code>DataSourceFactory</code> 实例</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExampleConfiguration</span> <span class="keyword">extends</span> <span class="title">Configuration</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Valid</span></span><br><span class="line">    <span class="meta">@NotNull</span></span><br><span class="line">    <span class="keyword">private</span> DataSourceFactory database = <span class="keyword">new</span> DataSourceFactory();</span><br><span class="line"></span><br><span class="line">    <span class="meta">@JsonProperty(&quot;database&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> DataSourceFactory <span class="title">getDataSourceFactory</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> database;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@JsonProperty(&quot;database&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setDataSourceFactory</span><span class="params">(DataSourceFactory dataSourceFactory)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.database = dataSourceFactory;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="2、在应用类中注册这个实例"><a href="#2、在应用类中注册这个实例" class="headerlink" title="2、在应用类中注册这个实例"></a>2、在应用类中注册这个实例</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建实例</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> HibernateBundle&lt;ExampleConfiguration&gt; hibernate = <span class="keyword">new</span> HibernateBundle&lt;ExampleConfiguration&gt;(Person.class) &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> DataSourceFactory <span class="title">getDataSourceFactory</span><span class="params">(ExampleConfiguration configuration)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> configuration.getDataSourceFactory();<span class="comment">// 在这里创建并返回</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 添加</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initialize</span><span class="params">(Bootstrap&lt;ExampleConfiguration&gt; bootstrap)</span> </span>&#123;</span><br><span class="line">    bootstrap.addBundle(hibernate);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 注册自定义的实体类</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">(ExampleConfiguration config, Environment environment)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> PersonDAO dao = <span class="keyword">new</span> PersonDAO(hibernate.getSessionFactory());</span><br><span class="line">    environment.jersey().register(<span class="keyword">new</span> UserResource(dao));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>实体类如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PersonDAO</span> <span class="keyword">extends</span> <span class="title">AbstractDAO</span>&lt;<span class="title">Person</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">PersonDAO</span><span class="params">(SessionFactory factory)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(factory);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Person <span class="title">findById</span><span class="params">(Long id)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> get(id);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">create</span><span class="params">(Person person)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> persist(person).getId();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Person&gt; <span class="title">findAll</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> list(namedTypedQuery(<span class="string">&quot;com.example.helloworld.core.Person.findAll&quot;</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>AbstractDAO</code>：一个用于特定于实体的 DAO 类的最小模板。它包含用于<code>SessionFactory</code>的常见操作的类型安全包装器</p>
+<p>配置文件</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">database:</span></span><br><span class="line">  <span class="comment"># the name of your JDBC driver</span></span><br><span class="line">  <span class="attr">driverClass:</span> <span class="string">org.postgresql.Driver</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># the username</span></span><br><span class="line">  <span class="attr">user:</span> <span class="string">pg-user</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># the password</span></span><br><span class="line">  <span class="attr">password:</span> <span class="string">iAMs00perSecrEET</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># the JDBC URL</span></span><br><span class="line">  <span class="attr">url:</span> <span class="string">jdbc:postgresql://db.example.com/db-prod</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># any properties specific to your JDBC driver:</span></span><br><span class="line">  <span class="attr">properties:</span></span><br><span class="line">    <span class="attr">charSet:</span> <span class="string">UTF-8</span></span><br><span class="line">    <span class="attr">hibernate.dialect:</span> <span class="string">org.hibernate.dialect.PostgreSQLDialect</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># the maximum amount of time to wait on an empty pool before throwing an exception</span></span><br><span class="line">  <span class="attr">maxWaitForConnection:</span> <span class="string">1s</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># the SQL query to run when validating a connection&#x27;s liveness</span></span><br><span class="line">  <span class="attr">validationQuery:</span> <span class="string">&quot;/* MyApplication Health Check */ SELECT 1&quot;</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># the minimum number of connections to keep open</span></span><br><span class="line">  <span class="attr">minSize:</span> <span class="number">8</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># the maximum number of connections to keep open</span></span><br><span class="line">  <span class="attr">maxSize:</span> <span class="number">32</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># whether or not idle connections should be validated</span></span><br><span class="line">  <span class="attr">checkConnectionWhileIdle:</span> <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="3、使用"><a href="#3、使用" class="headerlink" title="3、使用"></a>3、使用</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@GET</span></span><br><span class="line"><span class="meta">@Path(&quot;/&#123;id&#125;&quot;)</span></span><br><span class="line"><span class="meta">@Timed</span></span><br><span class="line"><span class="meta">@UnitOfWork</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Person <span class="title">findPerson</span><span class="params">(<span class="meta">@PathParam(&quot;id&quot;)</span> LongParam id)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> dao.findById(id.get());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Wenxiang Xu
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://tcmyxc.github.io/archives/8125fdfd.html" title="Dropwizard学习笔记">https://tcmyxc.github.io/archives/8125fdfd.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"># Java</a>
+              <a href="/tags/Dropwizard/" rel="tag"># Dropwizard</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/archives/e255a10a.html" rel="prev" title="计算机网络">
+      <i class="fa fa-chevron-left"></i> 计算机网络
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Dropwizard%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-text">Dropwizard是什么？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%A0%E4%B8%AA%E9%87%8D%E8%A6%81%E7%9A%84%E7%BB%84%E4%BB%B6"><span class="nav-text">几个重要的组件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Jetty-for-HTTP"><span class="nav-text">Jetty for HTTP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Jersey-for-REST"><span class="nav-text">Jersey for REST</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Jackson-for-JSON"><span class="nav-text">Jackson for JSON</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Metrics-for-metrics"><span class="nav-text">Metrics for metrics</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E4%BB%96"><span class="nav-text">其他</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HelloWorld"><span class="nav-text">HelloWorld</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81%E4%BD%BF%E7%94%A8Maven%E7%94%9F%E6%88%90%E9%A1%B9%E7%9B%AE"><span class="nav-text">1、使用Maven生成项目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81%E5%9F%BA%E6%9C%AC%E7%9A%84%E4%BE%9D%E8%B5%96"><span class="nav-text">2、基本的依赖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3%E3%80%81%E5%88%9B%E5%BB%BA%E9%85%8D%E7%BD%AE%E7%B1%BB"><span class="nav-text">3、创建配置类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4%E3%80%81%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AAApplication%E7%B1%BB"><span class="nav-text">4、创建一个Application类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5%E3%80%81%E5%88%9B%E5%BB%BADAO%E7%B1%BB%EF%BC%88pojo"><span class="nav-text">5、创建DAO类（pojo)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6%E3%80%81%E5%88%9B%E5%BB%BAResource%E7%B1%BB"><span class="nav-text">6、创建Resource类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7%E3%80%81%E6%B3%A8%E5%86%8CResource%E7%B1%BB%E4%BD%BF%E5%85%B6%E7%94%9F%E6%95%88"><span class="nav-text">7、注册Resource类使其生效</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8%E3%80%81%E5%90%AF%E5%8A%A8"><span class="nav-text">8、启动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9%E3%80%81%E6%B5%8B%E8%AF%95"><span class="nav-text">9、测试</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Dropwizard-Core"><span class="nav-text">Dropwizard Core</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%90%E4%BE%9B%E4%BA%86%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-text">提供了什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%A5%E5%BF%97%E5%8A%9F%E8%83%BD"><span class="nav-text">日志功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Jersey"><span class="nav-text">Jersey</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Servlet-%E8%BF%87%E6%BB%A4%E5%99%A8"><span class="nav-text">Servlet 过滤器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96-1"><span class="nav-text">其他</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5"><span class="nav-text">依赖注入</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JDBI"><span class="nav-text">JDBI</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Dropwizard-Hibernate"><span class="nav-text">Dropwizard Hibernate</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81%E9%9C%80%E8%A6%81%E4%B8%80%E4%B8%AADataSourceFactory-%E5%AE%9E%E4%BE%8B"><span class="nav-text">1、需要一个DataSourceFactory 实例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81%E5%9C%A8%E5%BA%94%E7%94%A8%E7%B1%BB%E4%B8%AD%E6%B3%A8%E5%86%8C%E8%BF%99%E4%B8%AA%E5%AE%9E%E4%BE%8B"><span class="nav-text">2、在应用类中注册这个实例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3%E3%80%81%E4%BD%BF%E7%94%A8"><span class="nav-text">3、使用</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Wenxiang Xu"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Wenxiang Xu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tcmyxc" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tcmyxc" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wenxiang Xu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v5.4.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.2
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+  <script src="//cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js"></script>
+  <script>
+      window.addEventListener('load', () => {
+      quicklink({
+        timeout : 3000,
+        priority: true,
+        ignores : [uri => uri.includes('#'),uri => uri == 'https://tcmyxc.github.io/archives/8125fdfd.html',]
+      });
+      });
+  </script>
+
+</body>
+</html>
