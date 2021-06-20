@@ -20,21 +20,20 @@
     var CONFIG = {"hostname":"tcmyxc.github.io","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Servlet简介Servlet（Server Applet）是Java Servlet的简称，称为小服务程序或服务连接器，用Java编写的服务器端程序，具有独立于平台和协议的特性，主要功能在于交互式地浏览和生成数据，生成动态Web内容。 广义的Servlet是指任何实现了Servlet接口的类 Servlet运行于支持Java的应用服务器中。从原理上讲，Servlet可以响应任何类型的请求，但绝">
+  <meta name="description" content="在多表查询时，ON和where都表示筛选条件，on先执行，where后执行。区别：外连接时，on条件是在生成临时表时使用的条件，它不管on中的条件是否为真，都会返回左边表中的记录。而where条件是在临时表生成好后，再对临时表进行过滤的条件。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Servlet学习笔记">
-<meta property="og:url" content="https://tcmyxc.github.io/archives/1a5315c2.html">
+<meta property="og:title" content="MYSQL on和where的区别">
+<meta property="og:url" content="https://tcmyxc.github.io/archives/13ea1464.html">
 <meta property="og:site_name" content="徐文祥的个人博客">
-<meta property="og:description" content="Servlet简介Servlet（Server Applet）是Java Servlet的简称，称为小服务程序或服务连接器，用Java编写的服务器端程序，具有独立于平台和协议的特性，主要功能在于交互式地浏览和生成数据，生成动态Web内容。 广义的Servlet是指任何实现了Servlet接口的类 Servlet运行于支持Java的应用服务器中。从原理上讲，Servlet可以响应任何类型的请求，但绝">
+<meta property="og:description" content="在多表查询时，ON和where都表示筛选条件，on先执行，where后执行。区别：外连接时，on条件是在生成临时表时使用的条件，它不管on中的条件是否为真，都会返回左边表中的记录。而where条件是在临时表生成好后，再对临时表进行过滤的条件。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-06-18T03:22:19.000Z">
-<meta property="article:modified_time" content="2021-06-18T14:28:39.955Z">
+<meta property="article:published_time" content="2021-06-20T09:02:47.000Z">
+<meta property="article:modified_time" content="2021-06-20T09:03:25.385Z">
 <meta property="article:author" content="Wenxiang Xu">
-<meta property="article:tag" content="Java">
-<meta property="article:tag" content="Servlet">
+<meta property="article:tag" content="MySQL">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://tcmyxc.github.io/archives/1a5315c2.html">
+<link rel="canonical" href="https://tcmyxc.github.io/archives/13ea1464.html">
 
 
 <script id="page-configurations">
@@ -46,7 +45,7 @@
   };
 </script>
 
-  <title>Servlet学习笔记 | 徐文祥的个人博客</title>
+  <title>MYSQL on和where的区别 | 徐文祥的个人博客</title>
   
 
 
@@ -122,7 +121,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">7</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">17</span></a>
 
   </li>
         <li class="menu-item menu-item-about">
@@ -132,12 +131,12 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">9</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">19</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">8</span></a>
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">23</span></a>
 
   </li>
       <li class="menu-item menu-item-search">
@@ -191,7 +190,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://tcmyxc.github.io/archives/1a5315c2.html">
+    <link itemprop="mainEntityOfPage" href="https://tcmyxc.github.io/archives/13ea1464.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -204,7 +203,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Servlet学习笔记
+          MYSQL on和where的区别
         </h1>
 
         <div class="post-meta">
@@ -215,7 +214,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2021-06-18 11:22:19 / 修改时间：22:28:39" itemprop="dateCreated datePublished" datetime="2021-06-18T11:22:19+08:00">2021-06-18</time>
+              <time title="创建时间：2021-06-20 17:02:47 / 修改时间：17:03:25" itemprop="dateCreated datePublished" datetime="2021-06-20T17:02:47+08:00">2021-06-20</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -223,11 +222,11 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">学习笔记</span></a>
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
                 </span>
                   ，
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/" itemprop="url" rel="index"><span itemprop="name">MySQL</span></a>
                 </span>
             </span>
 
@@ -247,8 +246,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/archives/1a5315c2.html#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/archives/1a5315c2.html" itemprop="commentCount"></span>
+    <a title="valine" href="/archives/13ea1464.html#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/archives/13ea1464.html" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -263,47 +262,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="Servlet"><a href="#Servlet" class="headerlink" title="Servlet"></a>Servlet</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Servlet（Server Applet）是<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/Java/85979">Java</a> Servlet的简称，称为小服务程序或服务连接器，用Java编写的<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E6%9C%8D%E5%8A%A1%E5%99%A8/100571">服务器</a>端程序，具有独立于平台和<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E5%8D%8F%E8%AE%AE/13020269">协议</a>的特性，主要功能在于交互式地浏览和生成数据，生成动态<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/Web/150564">Web</a>内容。</p>
-<p>广义的Servlet是指任何实现了Servlet接口的类</p>
-<p>Servlet运行于支持Java的应用服务器中。从原理上讲，Servlet可以响应任何类型的请求，但绝大多数情况下Servlet只用来扩展基于HTTP协议的Web服务器。</p>
-<p>【总结】实现了servlet接口的java程序，就是servlet</p>
-<span id="more"></span>
-
-
-
-<h2 id="HelloServlet"><a href="#HelloServlet" class="headerlink" title="HelloServlet"></a>HelloServlet</h2><p>Servlet接口Sun公司有两个默认的实现类：HttpServlet，GenericServlet</p>
-<ol>
-<li><p>maven模板，webapp，修改web.xml（这部分看自己tomcat服务器web.xml是啥，然后复制个头文件过来就行）</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span><br><span class="line">&lt;web-app xmlns=<span class="string">&quot;http://java.sun.com/xml/ns/javaee&quot;</span></span><br><span class="line">         xmlns:xsi=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span><br><span class="line">         xsi:schemaLocation=<span class="string">&quot;http://java.sun.com/xml/ns/javaee</span></span><br><span class="line"><span class="string">                      http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd&quot;</span></span><br><span class="line">         version=<span class="string">&quot;3.0&quot;</span>&gt;</span><br><span class="line"></span><br><span class="line">&lt;/web-app&gt;</span><br></pre></td></tr></table></figure></li>
-<li><p>将项目的结构补充完整，java和resources</p>
-</li>
-<li><p>编写一个Servlet程序</p>
-<ul>
-<li><p>编写一个普通的类</p>
-</li>
-<li><p>实现Servlet接口，这里我们直接继承HttpServlet</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloServlet</span> <span class="keyword">extends</span> <span class="title">HttpServlet</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 由于get或者post只是实现方式不同，可以互相调用，业务逻辑都一样</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doGet</span><span class="params">(HttpServletRequest req, HttpServletResponse resp)</span> <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">        PrintWriter writer = resp.getWriter();</span><br><span class="line"></span><br><span class="line">        writer.print(<span class="string">&quot;Hello Servlet!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doPost</span><span class="params">(HttpServletRequest req, HttpServletResponse resp)</span> <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">        doGet(req, resp);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-<li><p>编写Servlet的映射</p>
-<ul>
-<li><p>为什么需要映射？</p>
-<ul>
-<li><p>因为我们写的是java程序，但是要通过浏览器访问，浏览器访问需要连接服务器，所以我们需要在web服务中注册我们写的Servlet，还需要给个URL路径</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--注册servlet--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">servlet</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>hello<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">servlet-class</span>&gt;</span>com.tcmyxc.servlet.HelloServlet<span class="tag">&lt;/<span class="name">servlet-class</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">servlet</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--servlet请求路径--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">servlet-mapping</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>hello&lt;<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>/hello<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">servlet-mapping</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>配置Tomcat</p>
-<ul>
-<li>注意配置项目发布的路径</li>
-</ul>
-</li>
-<li><p>测试</p>
-</li>
-</ol>
-<h2 id="Servlet原理"><a href="#Servlet原理" class="headerlink" title="Servlet原理"></a>Servlet原理</h2><p>Servlet由Web服务器调用</p>
+        <p>在多表查询时，ON和where都表示筛选条件，on先执行，where后执行。<br>区别：<br>外连接时，on条件是在生成临时表时使用的条件，它不管on中的条件是否为真，都会返回左边表中的记录。而where条件是在临时表生成好后，再对临时表进行过滤的条件。</p>
 
     </div>
 
@@ -319,7 +278,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://tcmyxc.github.io/archives/1a5315c2.html" title="Servlet学习笔记">https://tcmyxc.github.io/archives/1a5315c2.html</a>
+    <a href="https://tcmyxc.github.io/archives/13ea1464.html" title="MYSQL on和where的区别">https://tcmyxc.github.io/archives/13ea1464.html</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -330,8 +289,7 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Java/" rel="tag"># Java</a>
-              <a href="/tags/Servlet/" rel="tag"># Servlet</a>
+              <a href="/tags/MySQL/" rel="tag"># MySQL</a>
           </div>
 
         
@@ -340,12 +298,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/archives/9ec6fc96.html" rel="prev" title="Hibernate学习笔记">
-      <i class="fa fa-chevron-left"></i> Hibernate学习笔记
+    <a href="/archives/14ea6df7.html" rel="prev" title="数据库">
+      <i class="fa fa-chevron-left"></i> 数据库
     </a></div>
       <div class="post-nav-item">
-    <a href="/archives/531663ae.html" rel="next" title="操作系统概念">
-      操作系统概念 <i class="fa fa-chevron-right"></i>
+    <a href="/archives/4509351.html" rel="next" title="Java集合">
+      Java集合 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -407,7 +365,6 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Servlet"><span class="nav-text">Servlet</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HelloServlet"><span class="nav-text">HelloServlet</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Servlet%E5%8E%9F%E7%90%86"><span class="nav-text">Servlet原理</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -423,20 +380,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-count">17</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-count">23</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-count">19</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -558,7 +515,7 @@
       quicklink({
         timeout : 3000,
         priority: true,
-        ignores : [uri => uri.includes('#'),uri => uri == 'https://tcmyxc.github.io/archives/1a5315c2.html',]
+        ignores : [uri => uri.includes('#'),uri => uri == 'https://tcmyxc.github.io/archives/13ea1464.html',]
       });
       });
   </script>

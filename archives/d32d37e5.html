@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"tcmyxc.github.io","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Elasticsearch   百度百科：   是一个基于Lucene的搜索服务器。提供了一个分布式多用户能力的全文搜索引擎，基于RESTful web接口。   是一种流行的企业级搜索引擎。用于云计算，能够达到实时搜索，稳定，可靠，快速，安装使用方便。   与名为Logstash的数据收集和日志解析引擎以及名为Kibana的分析和可视化平台一起开发。这三个产品被设计成一个集成解决方案，称为“El">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Elasticsearch">
+<meta property="og:url" content="https://tcmyxc.github.io/archives/d32d37e5.html">
+<meta property="og:site_name" content="徐文祥的个人博客">
+<meta property="og:description" content="Elasticsearch   百度百科：   是一个基于Lucene的搜索服务器。提供了一个分布式多用户能力的全文搜索引擎，基于RESTful web接口。   是一种流行的企业级搜索引擎。用于云计算，能够达到实时搜索，稳定，可靠，快速，安装使用方便。   与名为Logstash的数据收集和日志解析引擎以及名为Kibana的分析和可视化平台一起开发。这三个产品被设计成一个集成解决方案，称为“El">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://tcmyxc.github.io/images/image-20210103202906338.png">
+<meta property="og:image" content="https://tcmyxc.github.io/images/image-20210104195316906.png">
+<meta property="og:image" content="https://tcmyxc.github.io/images/image-20210104211345453.png">
+<meta property="og:image" content="https://tcmyxc.github.io/images/image-20210104210851589.png">
+<meta property="og:image" content="https://tcmyxc.github.io/images/image-20210104204746447.png">
+<meta property="og:image" content="https://tcmyxc.github.io/images/image-20210104213128327.png">
+<meta property="og:image" content="https://tcmyxc.github.io/images/image-20210104215913849.png">
+<meta property="og:image" content="https://tcmyxc.github.io/images/image-20210104215940169.png">
+<meta property="og:image" content="https://tcmyxc.github.io/images/image-20210104221641139.png">
+<meta property="og:image" content="https://tcmyxc.github.io/images/image-20210104225442026.png">
+<meta property="og:image" content="https://tcmyxc.github.io/images/image-20210104225711505.png">
+<meta property="og:image" content="https://tcmyxc.github.io/images/image-20210104230630801.png">
+<meta property="og:image" content="https://tcmyxc.github.io/images/image-20210104230710933.png">
+<meta property="og:image" content="https://tcmyxc.github.io/images/image-20210105071956199.png">
+<meta property="og:image" content="https://tcmyxc.github.io/images/image-20210104231753274.png">
+<meta property="og:image" content="https://tcmyxc.github.io/images/image-20210104232717397.png">
+<meta property="og:image" content="https://tcmyxc.github.io/images/image-20210104232736307.png">
+<meta property="og:image" content="https://tcmyxc.github.io/images/image-20210104232754643.png">
+<meta property="og:image" content="https://tcmyxc.github.io/images/image-20210105070050309.png">
+<meta property="og:image" content="https://tcmyxc.github.io/images/image-20210105070350055.png">
+<meta property="article:published_time" content="2021-06-20T08:53:53.000Z">
+<meta property="article:modified_time" content="2021-06-20T08:54:53.546Z">
+<meta property="article:author" content="Wenxiang Xu">
+<meta property="article:tag" content="Elasticsearch">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://tcmyxc.github.io/images/image-20210103202906338.png">
+
+<link rel="canonical" href="https://tcmyxc.github.io/archives/d32d37e5.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>Elasticsearch | 徐文祥的个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">徐文祥的个人博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">17</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">19</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">23</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://tcmyxc.github.io/archives/d32d37e5.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Wenxiang Xu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="徐文祥的个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Elasticsearch
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-06-20 16:53:53 / 修改时间：16:54:53" itemprop="dateCreated datePublished" datetime="2021-06-20T16:53:53+08:00">2021-06-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/Elasticsearch/" itemprop="url" rel="index"><span itemprop="name">Elasticsearch</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/archives/d32d37e5.html#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/archives/d32d37e5.html" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Elasticsearch"><a href="#Elasticsearch" class="headerlink" title="Elasticsearch"></a>Elasticsearch</h1><blockquote>
+<p>  百度百科：</p>
+<p>  是一个基于<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/Lucene/6753302">Lucene</a>的搜索服务器。提供了一个分布式多用户能力的全文搜索引擎，基于RESTful web接口。</p>
+<p>  是一种流行的企业级搜索引擎。用于<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E4%BA%91%E8%AE%A1%E7%AE%97/9969353">云计算</a>，能够达到实时搜索，稳定，可靠，快速，安装使用方便。</p>
+<p>  与名为Logstash的数据收集和日志解析引擎以及名为Kibana的分析和可视化平台一起开发。这三个产品被设计成一个集成解决方案，称为“Elastic Stack”</p>
+<p>  支持实时GET请求，适合作为NoSQL数据存储，但缺少<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E5%88%86%E5%B8%83%E5%BC%8F/7316617">分布式</a>事务</p>
+<p>  写入和查询对资源的消耗都很大，如何合理有效地控制资源，既能满足写入和查询的需求，又能满足资源充分利用，这个问题需要考虑</p>
+<p>  官方介绍：</p>
+<p>  Elasticsearch 是一个分布式的开源搜索和分析引擎，适用于所有类型的数据，包括文本、数字、地理空间、结构化和非结构化数据。Elasticsearch 在 Apache Lucene 的基础上开发而成，由 Elasticsearch N.V.（即现在的 Elastic）于 2010 年首次发布。Elasticsearch 以其简单的 REST 风格 API、分布式特性、速度和可扩展性而闻名，是 Elastic Stack 的核心组件；Elastic Stack 是适用于数据采集、充实、存储、分析和可视化的一组开源工具。人们通常将 Elastic Stack 称为 ELK Stack（代指 Elasticsearch、Logstash 和 Kibana），目前 Elastic Stack 包括一系列丰富的轻量型数据采集代理，这些代理统称为 Beats，可用来向 Elasticsearch 发送数据。</p>
+</blockquote>
+<span id="more"></span>
+
+<p>分布式、高扩展、高实时的搜索与<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/6577123">数据分析</a>引擎</p>
+<p><img src="../images/image-20210103202906338.png" alt="image-20210103202906338"></p>
+<h2 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h2><p>1、将数据提交到Elasticsearch 数据库中</p>
+<p>2、通过分词控制器去将对应的语句分词，将其权重和分词结果一并存入数据</p>
+<p>3、当用户搜索数据时候，再根据权重将结果排名，打分，再将返回结果呈现给用户</p>
+<p>Solr是一个高性能，采用<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/Java/85979">Java</a>开发，基于Lucene的全文搜索服务器。同时对其进行了扩展，提供了比Lucene更为丰富的查询语言，同时实现了可配置、可扩展并对查询性能进行了优化，并且提供了一个完善的功能管理界面，是一款非常优秀的<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E5%85%A8%E6%96%87%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E">全文搜索引擎</a>。</p>
+<p>主要特性包括：高效、灵活的缓存功能，垂直搜索功能，高亮显示搜索结果，通过索引复制来提高可用性，提供一套强大Data Schema来定义字段，类型和设置<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E6%96%87%E6%9C%AC%E5%88%86%E6%9E%90">文本分析</a>，提供基于Web的管理界面等。</p>
+<h2 id="ES和solr的差别"><a href="#ES和solr的差别" class="headerlink" title="ES和solr的差别"></a>ES和solr的差别</h2><p>1、当单纯对已有数据进行检索，solr更快；ES建索引快，可用于实时查询</p>
+<p>2、当实时建立索引的时候，solr会IO阻塞，查询性能较差，ES这时候优势明显</p>
+<p>3、随着数据量的增加，solr的搜索效率会变得更低，es基本无变化</p>
+<p>4、solr利用zookeeper进行分布式管理，ES自带分布式协调功能</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p><img src="../images/image-20210104195316906.png" alt="image-20210104195316906"></p>
+<figure class="highlight tex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">bin  启动文件</span><br><span class="line">config  配置文件</span><br><span class="line">	log4j2  日志配置文件</span><br><span class="line">	jvm.options  jvm相关配置</span><br><span class="line">	elasticsearch.yml  es配置文件</span><br><span class="line">lib  相关jar包</span><br><span class="line">modules  功能模块</span><br><span class="line">plugins  插件</span><br></pre></td></tr></table></figure>
+
+<p>localhost:9200</p>
+<p><img src="../images/image-20210104211345453.png" alt="image-20210104211345453"></p>
+<p>可视化插件：head（需要解决跨域问题）</p>
+<h3 id="head安装"><a href="#head安装" class="headerlink" title="head安装"></a>head安装</h3><p>1、下载解压</p>
+<p>2、</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm install</span><br><span class="line">npm run start</span><br></pre></td></tr></table></figure>
+
+<p>3、解决跨域访问问题</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#es配置文件中修改</span></span><br><span class="line"><span class="comment">#开启跨域</span></span><br><span class="line"><span class="attr">http.cors.enabled:</span> <span class="literal">true</span></span><br><span class="line"><span class="comment">#允许所有人访问</span></span><br><span class="line"><span class="attr">http.cors.allow-origin:</span> <span class="string">&quot;*&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>4、127.0.0.1:9100</p>
+<p>中文网址：<a target="_blank" rel="noopener" href="http://127.0.0.1:9100/?lang=zh">http://127.0.0.1:9100/?lang=zh</a></p>
+<p><img src="../images/image-20210104210851589.png" alt="image-20210104210851589"></p>
+<blockquote>
+<p>  head当做数据展示工具。查询用Kibana</p>
+</blockquote>
+<h3 id="Kibana（port-5601"><a href="#Kibana（port-5601" class="headerlink" title="Kibana（port: 5601)"></a>Kibana（port: 5601)</h3><p>Kibana 是一个为 <a target="_blank" rel="noopener" href="http://www.oschina.net/p/logstash">Logstash</a> 和 <a target="_blank" rel="noopener" href="http://www.oschina.net/p/elasticsearch">ElasticSearch</a> 提供的日志分析的 Web 接口。可使用它对日志进行高效的搜索、可视化、分析等各种操作。</p>
+<p>版本要和ES一致</p>
+<p>我们使用Kibana开发工具进行数据操作</p>
+<p><img src="../images/image-20210104204746447.png" alt="image-20210104204746447"></p>
+<h3 id="汉化"><a href="#汉化" class="headerlink" title="汉化"></a>汉化</h3><p>Kibana配置文件</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">i18n.locale:</span> <span class="string">&quot;zh-CN&quot;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="1、Node-与-Cluster"><a href="#1、Node-与-Cluster" class="headerlink" title="1、Node 与 Cluster"></a>1、Node 与 Cluster</h3><p>Elastic 本质上是一个分布式数据库，允许多台服务器协同工作，每台服务器可以运行多个 Elastic 实例。</p>
+<p>单个 Elastic 实例称为一个节点（node）。一组节点构成一个集群（cluster）。</p>
+<h3 id="2、-Index"><a href="#2、-Index" class="headerlink" title="2、 Index"></a>2、 Index</h3><p>Elastic 会索引所有字段，经过处理后写入一个反向索引（Inverted Index）。查找数据的时候，直接查找该索引。</p>
+<p>所以，Elastic 数据管理的顶层单位就叫做 Index（索引）。它是单个数据库的同义词。每个 Index （即数据库）的名字必须是小写。</p>
+<p>查看当前节点的所有 Index</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://localhost:9200/_cat/indices?v</span><br></pre></td></tr></table></figure>
+
+<p><img src="../images/image-20210104213128327.png" alt="image-20210104213128327"></p>
+<h3 id="3、Document"><a href="#3、Document" class="headerlink" title="3、Document"></a>3、Document</h3><p>Index 里面单条的记录称为 Document（文档）。许多条 Document 构成了一个 Index。</p>
+<p>Document 使用 JSON 格式表示，下面是一个例子。</p>
+   <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">&quot;user&quot;</span>: <span class="string">&quot;张三&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;title&quot;</span>: <span class="string">&quot;工程师&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;desc&quot;</span>: <span class="string">&quot;数据库管理&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>同一个 Index 里面的 Document，不要求有相同的结构（scheme），但是最好保持相同，这样有利于提高搜索效率。</p>
+<h3 id="4、Type（移除）"><a href="#4、Type（移除）" class="headerlink" title="4、Type（移除）"></a>4、Type（移除）</h3><p>Document 可以分组，比如<code>weather</code>这个 Index 里面，可以按城市分组（北京和上海），也可以按气候分组（晴天和雨天）。这种分组就叫做 Type，它是虚拟的逻辑分组，用来过滤 Document。</p>
+<p>不同的 Type 应该有相似的结构（schema），举例来说，<code>id</code>字段不能在这个组是字符串，在另一个组是数值。这是与关系型数据库的表的<a target="_blank" rel="noopener" href="https://www.elastic.co/guide/en/elasticsearch/guide/current/mapping.html">一个区别</a>。性质完全不同的数据（比如<code>products</code>和<code>logs</code>）应该存成两个 Index，而不是一个 Index 里面的两个 Type（虽然可以做到）。</p>
+<p>列出每个 Index 所包含的 Type。</p>
+   <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">localhost:9200/_mapping?pretty=<span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<p>根据<a target="_blank" rel="noopener" href="https://www.elastic.co/blog/index-type-parent-child-join-now-future-in-elasticsearch">规划</a>，Elastic 6.x 版只允许每个 Index 包含一个 Type，7.x 版将会彻底移除 Type。</p>
+<h1 id="IK分词器"><a href="#IK分词器" class="headerlink" title="IK分词器"></a>IK分词器</h1><p>两种分词策略：</p>
+<ul>
+<li>  ik_max_word：会将文本做最细粒度的拆分</li>
+<li>  ik_smart：会将文本做最粗粒度的拆分</li>
+</ul>
+<p>直接放在ES的插件目录下即可，然后重启ES</p>
+<p>使用Kibana查看分词结果：</p>
+<p><img src="../images/image-20210104215913849.png" alt="image-20210104215913849"></p>
+<p><img src="../images/image-20210104215940169.png" alt="image-20210104215940169"></p>
+<blockquote>
+<p>  有些词汇被过度拆分，需要我们手动加到词典里面，在配置文件中自己加</p>
+</blockquote>
+<h1 id="REST风格"><a href="#REST风格" class="headerlink" title="REST风格"></a>REST风格</h1><p>REST即表述性状态传递（英文：Representational State Transfer，简称REST）是Roy Fielding博士在2000年他的博士论文中提出来的一种<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84/7485920">软件架构</a>风格。它是一种针对<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E7%BD%91%E7%BB%9C%E5%BA%94%E7%94%A8/2196523">网络应用</a>的设计和开发方式，可以降低开发的复杂性，提高系统的可伸缩性。</p>
+<p>REST是设计风格而不是标准</p>
+<p><img src="../images/image-20210104221641139.png" alt="image-20210104221641139"></p>
+<p>1、创建一个索引</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">PUT /索引/类型名/id</span><br><span class="line">&#123;</span><br><span class="line">	请求体</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="SpringBoot"><a href="#SpringBoot" class="headerlink" title="SpringBoot"></a>SpringBoot</h2><p>1、找官方文档</p>
+<p><a target="_blank" rel="noopener" href="https://www.elastic.co/guide/en/elasticsearch/client/index.html">https://www.elastic.co/guide/en/elasticsearch/client/index.html</a></p>
+<p><img src="../images/image-20210104225442026.png" alt="image-20210104225442026"></p>
+<p>2、找依赖</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">repositories</span>&gt;</span>    <span class="tag">&lt;<span class="name">repository</span>&gt;</span>        <span class="tag">&lt;<span class="name">id</span>&gt;</span>es-snapshots<span class="tag">&lt;/<span class="name">id</span>&gt;</span>        <span class="tag">&lt;<span class="name">name</span>&gt;</span>elasticsearch snapshot repo<span class="tag">&lt;/<span class="name">name</span>&gt;</span>        <span class="tag">&lt;<span class="name">url</span>&gt;</span>https://snapshots.elastic.co/maven/<span class="tag">&lt;/<span class="name">url</span>&gt;</span>    <span class="tag">&lt;/<span class="name">repository</span>&gt;</span><span class="tag">&lt;/<span class="name">repositories</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>3、找对象</p>
+<p><img src="../images/image-20210104225711505.png" alt="image-20210104225711505"></p>
+<p>高级客户端调低级的，低级的维护线程池</p>
+<p>！！！用完一定要关闭</p>
+<p>4、分析类中的方法</p>
+<blockquote>
+<p>  创建项目</p>
+</blockquote>
+<p>1、创建一个空项目</p>
+<p>2、新建一个模块，添加相应的依赖</p>
+<p>3、配置JDK的版本</p>
+<p><img src="../images/image-20210104230630801.png" alt="image-20210104230630801"></p>
+<p><img src="../images/image-20210104230710933.png" alt="image-20210104230710933"></p>
+<p><img src="../images/image-20210105071956199.png" alt="image-20210105071956199"></p>
+<blockquote>
+<p>  分析</p>
+</blockquote>
+<p><img src="../images/image-20210104231753274.png" alt="image-20210104231753274"></p>
+<blockquote>
+<p>  自定义版本依赖，保证和本地一致</p>
+</blockquote>
+<p><img src="../images/image-20210104232717397.png" alt="image-20210104232717397"></p>
+<p><img src="../images/image-20210104232736307.png" alt="image-20210104232736307"></p>
+<p><img src="../images/image-20210104232754643.png" alt="image-20210104232754643"></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">properties</span>&gt;</span>    <span class="tag">&lt;<span class="name">java.version</span>&gt;</span>1.8<span class="tag">&lt;/<span class="name">java.version</span>&gt;</span>    <span class="comment">&lt;!--自定义版本依赖，和自己电脑上的一致--&gt;</span>    <span class="tag">&lt;<span class="name">elasticsearch.version</span>&gt;</span>7.10.1<span class="tag">&lt;/<span class="name">elasticsearch.version</span>&gt;</span><span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="../images/image-20210105070050309.png" alt="image-20210105070050309"></p>
+<p><img src="../images/image-20210105070350055.png" alt="image-20210105070350055"></p>
+<blockquote>
+<p>  具体API测试</p>
+</blockquote>
+<h1 id="官方说明"><a href="#官方说明" class="headerlink" title="官方说明"></a>官方说明</h1><h2 id="Elasticsearch-的用途是什么？"><a href="#Elasticsearch-的用途是什么？" class="headerlink" title="Elasticsearch 的用途是什么？"></a>Elasticsearch 的用途是什么？</h2><p>Elasticsearch 在速度和可扩展性方面都表现出色，而且还能够索引多种类型的内容，这意味着其可用于多种用例：</p>
+<ul>
+<li>  应用程序搜索</li>
+<li>  网站搜索</li>
+<li>  企业搜索</li>
+<li>  日志处理和分析</li>
+<li>  基础设施指标和容器监测</li>
+<li>  应用程序性能监测</li>
+<li>  地理空间数据分析和可视化</li>
+<li>  安全分析</li>
+<li>  业务分析</li>
+</ul>
+<h2 id="Elasticsearch-的工作原理是什么？"><a href="#Elasticsearch-的工作原理是什么？" class="headerlink" title="Elasticsearch 的工作原理是什么？"></a>Elasticsearch 的工作原理是什么？</h2><p>原始数据会从多个来源（包括日志、系统指标和网络应用程序）输入到 Elasticsearch 中。<em>数据采集</em>指在 Elasticsearch 中进行<em>索引</em>之前解析、标准化并充实这些原始数据的过程。这些数据在 Elasticsearch 中索引完成之后，用户便可针对他们的数据运行复杂的查询，并使用聚合来检索自身数据的复杂汇总。在 Kibana 中，用户可以基于自己的数据创建强大的可视化，分享仪表板，并对 Elastic Stack 进行管理。</p>
+<h2 id="Elasticsearch-索引是什么？"><a href="#Elasticsearch-索引是什么？" class="headerlink" title="Elasticsearch 索引是什么？"></a>Elasticsearch 索引是什么？</h2><p>Elasticsearch <em>索引</em>指相互关联的文档集合。Elasticsearch 会以 <strong>JSON 文档的形式存储数据</strong>。每个文档都会在一组<em>键</em>（字段或属性的名称）和它们对应的值（字符串、数字、布尔值、日期、<em>数值</em>组、地理位置或其他类型的数据）之间建立联系。</p>
+<p>Elasticsearch 使用的是一种名为<em>倒排索引</em>的数据结构，这一结构的设计可以允许十分快速地进行全文本搜索。倒排索引会列出在所有文档中出现的每个特有词汇，并且可以找到包含每个词汇的全部文档。</p>
+<p>在索引过程中，Elasticsearch 会存储文档并构建倒排索引，这样用户便可以近实时地对文档数据进行搜索。索引过程是在索引 API 中启动的，通过此 API 您既可向特定索引中添加 JSON 文档，也可更改特定索引中的 JSON 文档。</p>
+<h2 id="Logstash-的用途是什么？"><a href="#Logstash-的用途是什么？" class="headerlink" title="Logstash 的用途是什么？"></a>Logstash 的用途是什么？</h2><p>Logstash 是 Elastic Stack 的核心产品之一，可用来对数据进行聚合和处理，并将数据发送到 Elasticsearch。Logstash 是一个开源的服务器端<strong>数据处理管道</strong>，允许您在将数据索引到 Elasticsearch 之前同时从多个来源采集数据，并对数据进行充实和转换。</p>
+<h2 id="Kibana-的用途是什么？"><a href="#Kibana-的用途是什么？" class="headerlink" title="Kibana 的用途是什么？"></a>Kibana 的用途是什么？</h2><p>Kibana 是一款适用于 Elasticsearch 的<strong>数据可视化和管理工具</strong>，可以提供实时的直方图、线形图、饼状图和地图。Kibana 同时还包括诸如 Canvas 和 Elastic Maps 等高级应用程序；Canvas 允许用户基于自身数据创建定制的动态信息图表，而 Elastic Maps 则可用来对地理空间数据进行可视化。</p>
+<h2 id="为何使用-Elasticsearch？"><a href="#为何使用-Elasticsearch？" class="headerlink" title="为何使用 Elasticsearch？"></a>为何使用 Elasticsearch？</h2><p><strong>Elasticsearch 很快。</strong> 由于 Elasticsearch 是在 Lucene 基础上构建而成的，所以在全文本搜索方面表现十分出色。Elasticsearch 同时还是一个<strong>近实时的搜索平台</strong>，这意味着从文档索引操作到文档变为可搜索状态之间的延时很短，一般只有一秒。因此，Elasticsearch 非常适用于对时间有严苛要求的用例，例如安全分析和基础设施监测。</p>
+<p><strong>Elasticsearch 具有分布式的本质特征。</strong> Elasticsearch 中存储的文档分布在不同的容器中，这些容器称为<em>分片</em>，可以进行复制以提供数据冗余副本，以防发生硬件故障。Elasticsearch 的分布式特性使得它可以扩展至数百台（甚至数千台）服务器，并处理 PB 量级的数据。</p>
+<p><strong>Elasticsearch 包含一系列广泛的功能。</strong> 除了速度、可扩展性和弹性等优势以外，Elasticsearch 还有大量强大的内置功能（例如数据汇总和索引生命周期管理），可以方便用户更加高效地存储和搜索数据。</p>
+<p><strong>Elastic Stack 简化了数据采集、可视化和报告过程。</strong> 通过与 Beats 和 Logstash 进行集成，用户能够在向 Elasticsearch 中索引数据之前轻松地处理数据。同时，Kibana 不仅可针对 Elasticsearch 数据提供实时可视化，同时还提供 UI 以便用户快速访问应用程序性能监测 (APM)、日志和基础设施指标等数据。</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Wenxiang Xu
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://tcmyxc.github.io/archives/d32d37e5.html" title="Elasticsearch">https://tcmyxc.github.io/archives/d32d37e5.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Elasticsearch/" rel="tag"># Elasticsearch</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/archives/3dd30874.html" rel="prev" title="JavaWeb-Servlet">
+      <i class="fa fa-chevron-left"></i> JavaWeb-Servlet
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/archives/364ea8cc.html" rel="next" title="设计模式">
+      设计模式 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Elasticsearch"><span class="nav-text">Elasticsearch</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="nav-text">实现原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ES%E5%92%8Csolr%E7%9A%84%E5%B7%AE%E5%88%AB"><span class="nav-text">ES和solr的差别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-text">安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#head%E5%AE%89%E8%A3%85"><span class="nav-text">head安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Kibana%EF%BC%88port-5601"><span class="nav-text">Kibana（port: 5601)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B1%89%E5%8C%96"><span class="nav-text">汉化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-text">基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%E3%80%81Node-%E4%B8%8E-Cluster"><span class="nav-text">1、Node 与 Cluster</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%E3%80%81-Index"><span class="nav-text">2、 Index</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3%E3%80%81Document"><span class="nav-text">3、Document</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4%E3%80%81Type%EF%BC%88%E7%A7%BB%E9%99%A4%EF%BC%89"><span class="nav-text">4、Type（移除）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#IK%E5%88%86%E8%AF%8D%E5%99%A8"><span class="nav-text">IK分词器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#REST%E9%A3%8E%E6%A0%BC"><span class="nav-text">REST风格</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#SpringBoot"><span class="nav-text">SpringBoot</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%98%E6%96%B9%E8%AF%B4%E6%98%8E"><span class="nav-text">官方说明</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Elasticsearch-%E7%9A%84%E7%94%A8%E9%80%94%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-text">Elasticsearch 的用途是什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Elasticsearch-%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-text">Elasticsearch 的工作原理是什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Elasticsearch-%E7%B4%A2%E5%BC%95%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-text">Elasticsearch 索引是什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Logstash-%E7%9A%84%E7%94%A8%E9%80%94%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-text">Logstash 的用途是什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Kibana-%E7%9A%84%E7%94%A8%E9%80%94%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-text">Kibana 的用途是什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BD%95%E4%BD%BF%E7%94%A8-Elasticsearch%EF%BC%9F"><span class="nav-text">为何使用 Elasticsearch？</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Wenxiang Xu"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Wenxiang Xu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tcmyxc" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tcmyxc" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wenxiang Xu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v5.4.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.2
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+  <script src="//cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js"></script>
+  <script>
+      window.addEventListener('load', () => {
+      quicklink({
+        timeout : 3000,
+        priority: true,
+        ignores : [uri => uri.includes('#'),uri => uri == 'https://tcmyxc.github.io/archives/d32d37e5.html',]
+      });
+      });
+  </script>
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'llo5vulMWXkianf3iqrIdKvx-gzGzoHsz',
+      appKey     : 'stLwOmlODc9xnz35mN59voAs',
+      placeholder: "欢迎留下你的评论",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
