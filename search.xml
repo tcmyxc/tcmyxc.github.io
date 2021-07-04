@@ -3107,4 +3107,110 @@
         <tag>OS</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Nginx学习笔记(狂神版)</title>
+    <url>/archives/5d9e5ec8.html</url>
+    <content><![CDATA[<h1 id="Nginx是什么？"><a href="#Nginx是什么？" class="headerlink" title="Nginx是什么？"></a>Nginx是什么？</h1><p>Nginx (engine x) 是一个轻量级的、高性能的HTTP和反向代理web服务器，第一个公开版本0.1.0发布于2004年10月4日。</p>
+<p>因它的稳定性、丰富的功能集、简单的配置文件和低系统资源的消耗而闻名。</p>
+<p>其特点是占有内存少，并发能力强，事实上nginx的并发能力在同类型的网页服务器中表现较好，中国大陆使用nginx网站用户有：百度、京东、新浪、网易、腾讯、淘宝等。</p>
+<p>对于新建站点，建议使用最新稳定版作为生产版本</p>
+<p>Nginx 既可以在内部直接支持 Rails 和 PHP 程序对外进行服务，也可以支持作为 HTTP代理服务对外进行服务。Nginx采用C进行编写</p>
+<p>能够不间断服务的情况下进行软件版本的升级</p>
+<blockquote>
+<p>以上来自百度百科</p>
+</blockquote>
+<span id="more"></span>
+
+<p>没有什么是加一层是解决不了的</p>
+<h1 id="Nginx作用"><a href="#Nginx作用" class="headerlink" title="Nginx作用"></a>Nginx作用</h1><blockquote>
+<p>Http代理，反向代理，负载均衡（轮训和加权轮训）</p>
+</blockquote>
+<p>正向代理：代理客户端</p>
+<p>反向代理：代理服务器</p>
+<p>iphash 对客户端请求的 ip 进行 hash 操作，然后根据 hash 结果将同一个客户端的 ip 请求发给同一台服务器进行处理</p>
+<p>动静分离：样式那些静态文件可以单独提出来，将其做缓存操作，提高资源的响应速度</p>
+<h1 id="安装步骤"><a href="#安装步骤" class="headerlink" title="安装步骤"></a>安装步骤</h1><h2 id="Windows下安装"><a href="#Windows下安装" class="headerlink" title="Windows下安装"></a>Windows下安装</h2><p>1、下载解压</p>
+<p><img src="../images/image-20210704143948957.png" alt="image-20210704143948957"></p>
+<p>2、直接运行</p>
+<p><img src="../images/image-20210704144201667.png" alt="image-20210704144201667"></p>
+<p>3、浏览器直接输：127.0.0.1:80（或者你改的其他端口）</p>
+<p><img src="../images/image-20210704144243668.png" alt="image-20210704144243668"></p>
+<h2 id="Linux-下安装"><a href="#Linux-下安装" class="headerlink" title="Linux 下安装"></a>Linux 下安装</h2><p>1、下载解压</p>
+<p><img src="../images/image-20210704144703838.png" alt="image-20210704144703838"></p>
+<p>2、手动编译安装</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">./configure</span><br><span class="line">make </span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+
+<p><img src="../images/image-20210704150317847.png" alt="image-20210704150317847"></p>
+<p><img src="../images/image-20210704150432259.png" alt="image-20210704150432259"></p>
+<p><img src="../images/image-20210704150450068.png" alt="image-20210704150450068"></p>
+<p>提示缺少 库</p>
+<figure class="highlight tex"><table><tr><td class="code"><pre><span class="line">./configure: error: the HTTP rewrite module requires the PCRE library.</span><br><span class="line">You can either disable the module by using --without-http<span class="built_in">_</span>rewrite<span class="built_in">_</span>module</span><br><span class="line">option, or install the PCRE library into the system, or build the PCRE library</span><br><span class="line">statically from the source with nginx by using --with-pcre=&lt;path&gt; option.</span><br></pre></td></tr></table></figure>
+
+<p>解决方法：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get install libpcre3 libpcre3-dev -y</span><br></pre></td></tr></table></figure>
+
+<p>其他错误</p>
+<figure class="highlight tex"><table><tr><td class="code"><pre><span class="line">./configure: error: the HTTP gzip module requires the zlib library.</span><br><span class="line">You can either disable the module by using --without-http<span class="built_in">_</span>gzip<span class="built_in">_</span>module</span><br><span class="line">option, or install the zlib library into the system, or build the zlib library</span><br><span class="line">statically from the source with nginx by using --with-zlib=&lt;path&gt; option.</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get install ruby</span><br><span class="line">sudo apt-get install zlib1g</span><br><span class="line">sudo apt-get install zlib1g-dev</span><br></pre></td></tr></table></figure>
+
+
+
+<p>3、查看是否安装成功</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">whereis nginx</span><br></pre></td></tr></table></figure>
+
+<p><img src="../images/image-20210704150602335.png" alt="image-20210704150602335"></p>
+<p>4、进入 <code>bin</code> 目录启动</p>
+<p><img src="../images/image-20210704150751028.png" alt="image-20210704150751028"></p>
+<p>这里说明 80 端口被占用</p>
+<p>看了一下确实被占用了</p>
+<p><img src="../images/image-20210704150928920.png" alt="image-20210704150928920"></p>
+<p>解决方法：</p>
+<p>修改端口</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">        listen       8499;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>再次执行</p>
+<p><img src="../images/image-20210704151625656.png" alt="image-20210704151625656"></p>
+<h1 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h1><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> /usr/<span class="built_in">local</span>/nginx/sbin</span><br><span class="line"></span><br><span class="line">./nginx <span class="comment"># 启动</span></span><br><span class="line">./nginx -s stop <span class="comment"># 停止</span></span><br><span class="line">./nginx -s reload <span class="comment"># 自动重新加载新的配置文件</span></span><br><span class="line">./nginx -s quit <span class="comment"># 安全退出</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="实战演示"><a href="#实战演示" class="headerlink" title="实战演示"></a>实战演示</h1><p>以 <code>dropwizard</code> 项目为例</p>
+<h2 id="1、开启两个服务"><a href="#1、开启两个服务" class="headerlink" title="1、开启两个服务"></a>1、开启两个服务</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">java -jar Nginx-Dropwizard-1.0-SNAPSHOT.jar serve hello.yml</span><br></pre></td></tr></table></figure>
+
+<p><img src="../images/image-20210704163124416.png" alt="image-20210704163124416"></p>
+<p>修改配置文件的端口号之后开启第二个服务</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line">server:</span><br><span class="line">  applicationConnectors:</span><br><span class="line">    - type: http</span><br><span class="line">      port: 8500 # 在同一台服务器开启多个服务需要修改端口号</span><br><span class="line">  adminConnectors:</span><br><span class="line">  - type: http</span><br><span class="line">    port: 8082 # 在同一台服务器开启多个服务需要修改端口号</span><br></pre></td></tr></table></figure>
+
+<p><img src="../images/image-20210704163217518.png" alt="image-20210704163217518"></p>
+<p>测试：</p>
+<p><img src="../images/image-20210704163333785.png" alt="image-20210704163333785"></p>
+<p><img src="../images/image-20210704163343135.png" alt="image-20210704163343135"></p>
+<h2 id="2、使用-Nginx"><a href="#2、使用-Nginx" class="headerlink" title="2、使用 Nginx"></a>2、使用 Nginx</h2><figure class="highlight tex"><table><tr><td class="code"><pre><span class="line"><span class="params">#</span> 增加下面两行</span><br><span class="line">upstream 127.0.0.1 &#123;</span><br><span class="line">    server 127.0.0.1:8499 weight=1;<span class="params">#</span> 配置权重</span><br><span class="line">    server 127.0.0.1:8500 weight=1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">    server &#123;</span><br><span class="line">    listen       80;</span><br><span class="line">    server<span class="built_in">_</span>name  localhost;</span><br><span class="line"></span><br><span class="line">    <span class="params">#</span>charset koi8-r;</span><br><span class="line"></span><br><span class="line">    <span class="params">#</span>access<span class="built_in">_</span>log  logs/host.access.log  main;</span><br><span class="line"></span><br><span class="line">    location / &#123;</span><br><span class="line">    root   html;</span><br><span class="line">    index  index.html index.htm;</span><br><span class="line">    proxy<span class="built_in">_</span>pass   http://127.0.0.1; <span class="params">#</span> 添加这一行</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>出现的问题：</p>
+<p>1、无法重新加载配置文件</p>
+<p>解决方法：找到对应的进程，杀掉重开服务</p>
+<p>2、upstream 位置写错了</p>
+<h2 id="3、测试"><a href="#3、测试" class="headerlink" title="3、测试"></a>3、测试</h2><p><img src="../images/image-20210704170303963.png" alt="image-20210704170303963"></p>
+<h1 id="配置详解"><a href="#配置详解" class="headerlink" title="配置详解"></a>配置详解</h1><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">########### 每个指令必须有分号结束。#################</span></span><br><span class="line"><span class="comment">#user administrator administrators;  #配置用户或者组，默认为nobody nobody。</span></span><br><span class="line"><span class="comment">#worker_processes 2;  #允许生成的进程数，默认为1</span></span><br><span class="line"><span class="comment">#pid /nginx/pid/nginx.pid;   #指定nginx进程运行文件存放地址</span></span><br><span class="line">error_log <span class="built_in">log</span>/error.log debug;  <span class="comment">#制定日志路径，级别。这个设置可以放入全局块，http块，server块，级别以此为：debug|info|notice|warn|error|crit|alert|emerg</span></span><br><span class="line">events &#123;</span><br><span class="line">    accept_mutex on;   <span class="comment">#设置网路连接序列化，防止惊群现象发生，默认为on</span></span><br><span class="line">    multi_accept on;  <span class="comment">#设置一个进程是否同时接受多个网络连接，默认为off</span></span><br><span class="line">    <span class="comment">#use epoll;      #事件驱动模型，select|poll|kqueue|epoll|resig|/dev/poll|eventport</span></span><br><span class="line">    worker_connections  1024;    <span class="comment">#最大连接数，默认为512</span></span><br><span class="line">&#125;</span><br><span class="line">http &#123;</span><br><span class="line">    include       mime.types;   <span class="comment">#文件扩展名与文件类型映射表</span></span><br><span class="line">    default_type  application/octet-stream; <span class="comment">#默认文件类型，默认为text/plain</span></span><br><span class="line">    <span class="comment">#access_log off; #取消服务日志    </span></span><br><span class="line">    log_format myFormat <span class="string">&#x27;$remote_addr–$remote_user [$time_local] $request $status $body_bytes_sent $http_referer $http_user_agent $http_x_forwarded_for&#x27;</span>; <span class="comment">#自定义格式</span></span><br><span class="line">    access_log <span class="built_in">log</span>/access.log myFormat;  <span class="comment">#combined为日志格式的默认值</span></span><br><span class="line">    sendfile on;   <span class="comment">#允许sendfile方式传输文件，默认为off，可以在http块，server块，location块。</span></span><br><span class="line">    sendfile_max_chunk 100k;  <span class="comment">#每个进程每次调用传输数量不能大于设定的值，默认为0，即不设上限。</span></span><br><span class="line">    keepalive_timeout 65;  <span class="comment">#连接超时时间，默认为75s，可以在http，server，location块。</span></span><br><span class="line"></span><br><span class="line">    upstream mysvr &#123;   </span><br><span class="line">      server 127.0.0.1:7878;</span><br><span class="line">      server 192.168.10.121:3333 backup;  <span class="comment">#热备</span></span><br><span class="line">    &#125;</span><br><span class="line">    error_page 404 https://www.baidu.com; <span class="comment">#错误页</span></span><br><span class="line">    server &#123;</span><br><span class="line">        keepalive_requests 120; <span class="comment">#单连接请求上限次数。</span></span><br><span class="line">        listen       4545;   <span class="comment">#监听端口</span></span><br><span class="line">        server_name  127.0.0.1;   <span class="comment">#监听地址       </span></span><br><span class="line">        location  ~*^.+$ &#123;       <span class="comment">#请求的url过滤，正则匹配，~为区分大小写，~*为不区分大小写。</span></span><br><span class="line">           <span class="comment">#root path;  #根目录</span></span><br><span class="line">           <span class="comment">#index vv.txt;  #设置默认页</span></span><br><span class="line">           proxy_pass  http://mysvr;  <span class="comment">#请求转向mysvr 定义的服务器列表</span></span><br><span class="line">           deny 127.0.0.1;  <span class="comment">#拒绝的ip</span></span><br><span class="line">           allow 172.18.5.54; <span class="comment">#允许的ip           </span></span><br><span class="line">        &#125; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><blockquote>
+<ol>
+<li>百度百科</li>
+<li><a href="https://www.bilibili.com/video/BV1F5411J7vK">https://www.bilibili.com/video/BV1F5411J7vK</a></li>
+<li><a href="https://www.runoob.com/w3cnote/nginx-setup-intro.html">https://www.runoob.com/w3cnote/nginx-setup-intro.html</a></li>
+</ol>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Java</category>
+        <category>Nginx</category>
+      </categories>
+      <tags>
+        <tag>Nginx</tag>
+      </tags>
+  </entry>
 </search>
