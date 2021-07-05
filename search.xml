@@ -3213,4 +3213,118 @@
         <tag>Nginx</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Nginx学习笔记(尚硅谷版)</title>
+    <url>/archives/14f945e.html</url>
+    <content><![CDATA[<h1 id="1、-nginx-简介"><a href="#1、-nginx-简介" class="headerlink" title="1、 nginx 简介"></a>1、 nginx 简介</h1><h2 id="（1）什么是-nginx"><a href="#（1）什么是-nginx" class="headerlink" title="（1）什么是 nginx"></a>（1）什么是 nginx</h2><p>Nginx (engine x) 是一个轻量级的、高性能的HTTP和反向代理web服务器</p>
+<p>专为性能优化而开发，性能是其最重要的考量，实现上非常注重效率 ，能经受高负载的考验 有报告表明能支持高达 50,000 个并发连接数。</p>
+<span id="more"></span>
+
+<h2 id="（2）可以做什么"><a href="#（2）可以做什么" class="headerlink" title="（2）可以做什么"></a>（2）可以做什么</h2><p>反向代理、负载均衡、动静分离</p>
+<h3 id="反向代理"><a href="#反向代理" class="headerlink" title="反向代理"></a>反向代理</h3><p>Nginx不仅可以做反向代理，实现负载均衡。还能用作正向代理来进行上网等功能。</p>
+<p>正向代理：如果把局域网外的 Internet 想象成一个巨大的资源库，则局域网中的客户端要访问 Internet ，则需要通过代理服务器来访问，这种代理服务就称为正向代理。</p>
+<p><img src="../images/image-20210705093339524.png" alt="image-20210705093339524"></p>
+<p>反向代理，将请求发送到反向代理服务器，由反向代理服务器去选择目标服务器获取数据后，再返回给客户端。此时反向代理服务器和目标服务器对外就是一个服务器，暴露的是代理服务器地址，隐藏了真实服务器 IP 地址。</p>
+<p>客户端不需要任何配置</p>
+<p><img src="../images/image-20210705093835089.png" alt="image-20210705093835089"></p>
+<h3 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h3><p>将请求分发到多个服务器上，将负载分发到不同的服务器，也就是我们所说的负载均衡</p>
+<p><img src="../images/image-20210705094103385.png" alt="image-20210705094103385"></p>
+<h3 id="动静分离"><a href="#动静分离" class="headerlink" title="动静分离"></a>动静分离</h3><p>为了加快网站的解析速度，可以把动态页面和静态页面由不同的服务器来解析，加快解析速度。降低原来单个服务器的压力。</p>
+<p><img src="../images/image-20210705094142506.png" alt="image-20210705094142506"></p>
+<p>简单来说就是把动态跟静态请求分开，不能理解成只是单纯的把动态页面和静态页面物理分离。严格意义上说应该是动态请求跟静态请求分开，可以理解成使用Nginx 处理静态页面，Tomcat处理动态页面。</p>
+<p>动静分离从目前实现角度来讲大致分为两种：</p>
+<p> 一种是纯粹把静态文件独立成单独的域名，放在独立的服务器上，也是目前主流推崇的方案； </p>
+<p>另外一种方法就是动态跟静态文件混合在一起发布，通过 nginx 来分开。 </p>
+<p>通过 location 指定不同的后缀名实现不同的请求转发。通过 expires 参数设置，可以使浏览器缓存过期时间，减少与服务器之前的请求和流量。</p>
+<p>具体 Expires 定义：是给一个资源设定一个过期时间，也就是说无需去服务端验证，直接通过浏览器自身确认是否过期即可，所以不会产生额外的流量。此种方法非常适合不经常变动的资源。（如果经常更新的文件，不建议使用 Expires 来缓存），我这里设置 3d，表示在这 3 天之内访问这个 URL，发送一个请求，比对服务器该文件最后更新时间没有变化，则不会从服务器抓取，返回状态码 304，如果有修改，则直接从服务器重新下载，返回状态码 200。</p>
+<h1 id="2、-Nginx-的安装"><a href="#2、-Nginx-的安装" class="headerlink" title="2、 Nginx 的安装"></a>2、 Nginx 的安装</h1><img src="../images/image-20210705095050510.png" alt="image-20210705095050510" style="zoom:50%;" />
+
+<p>安装省略，可以参考另外一篇笔记</p>
+<h1 id="3、-Nginx-的常用命令和配置文件"><a href="#3、-Nginx-的常用命令和配置文件" class="headerlink" title="3、 Nginx 的常用命令和配置文件"></a>3、 Nginx 的常用命令和配置文件</h1><h2 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h2><p>在/usr/local/nginx/sbin 目录下执行命令</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 启动</span></span><br><span class="line">./nginx</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看版本号</span></span><br><span class="line">./nginx -v</span><br><span class="line"></span><br><span class="line"><span class="comment"># 停止</span></span><br><span class="line">./nginx -s stop</span><br><span class="line"></span><br><span class="line"><span class="comment"># 重新加载</span></span><br><span class="line">./nginx -s reload</span><br></pre></td></tr></table></figure>
+
+<h2 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">worker_processes  1;<span class="comment"># nginx 处理并发的数量</span></span><br><span class="line"></span><br><span class="line">events &#123;</span><br><span class="line">    worker_connections  1024;<span class="comment"># 最大连接数</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">http &#123;</span><br><span class="line">    include       mime.types;</span><br><span class="line">    default_type  application/octet-stream;</span><br><span class="line">    sendfile        on; </span><br><span class="line">    keepalive_timeout  65;</span><br><span class="line">    server &#123;</span><br><span class="line">        listen       80;</span><br><span class="line">        server_name  localhost;</span><br><span class="line">        location / &#123;</span><br><span class="line">            root   html;</span><br><span class="line">            index  index.html index.htm;</span><br><span class="line">        &#125;</span><br><span class="line">        error_page   500 502 503 504  /50x.html;</span><br><span class="line">        location = /50x.html &#123;</span><br><span class="line">            root   html;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="第一部分：全局块"><a href="#第一部分：全局块" class="headerlink" title="第一部分：全局块"></a>第一部分：全局块</h3><p> 从配置文件开始到 events 块之间的内容，主要会设置一些影响nginx 服务器整体运行的配置指令，主要包括配置运行 Nginx 服务器的用户（组）、允许生成的 worker process 数，进程 PID 存放路径、日志存放路径和类型以及配置文件的引入等。</p>
+<h3 id="第二部分：events块"><a href="#第二部分：events块" class="headerlink" title="第二部分：events块"></a>第二部分：events块</h3><p>events 块涉及的指令主要影响 Nginx 服务器与用户的网络连接，常用的设置包括是否开启对多 work process 下的网络连接进行序列化，是否允许同时接收多个网络连接，选取哪种事件驱动模型来处理连接请求，每个 word process 可以同时支持的最大连接数等。 上述例子就表示每个 work process 支持的最大连接数为 1024. </p>
+<p>这部分的配置对 Nginx 的性能影响较大，在实际中应该灵活配置。</p>
+<h3 id="第三部分：http块"><a href="#第三部分：http块" class="headerlink" title="第三部分：http块"></a>第三部分：http块</h3><p>代理、缓存和日志定义等绝大多数功能和第三方模块的配置都在这里。 需要注意的是：http 块也可以包括 http全局块、server 块。 </p>
+<h4 id="（1）-http-全局块"><a href="#（1）-http-全局块" class="headerlink" title="（1） http 全局块"></a>（1） http 全局块</h4><p>http全局块配置的指令包括文件引入、MIME-TYPE 定义、日志自定义、连接超时时间、单链接请求数上限等。</p>
+<h4 id="（2）server-块"><a href="#（2）server-块" class="headerlink" title="（2）server 块"></a>（2）server 块</h4><p>和虚拟主机有密切关系。</p>
+<p>虚拟主机从用户角度看，和一台独立的硬件主机是完全一样的，该技术的产生是为了节省互联网服务器硬件成本。</p>
+<p> 每个 http 块可以包括多个 server 块，而每个 server 块就相当于一个虚拟主机。 </p>
+<p>而每个 server 块也分为全局 server 块，以及可以同时包含多个 locaton 块。</p>
+<p> 1、全局 server 块 </p>
+<p>最常见的配置是本虚拟机主机的监听配置和本虚拟主机的名称或IP配置。 </p>
+<p>2、location 块 </p>
+<p>一个 server 块可以配置多个 location 块。 </p>
+<p>这块的主要作用是基于 Nginx 服务器接收到的请求字符串（例如 server_name/uri-string），对虚拟主机名称（也可以是IP别名）之外的字符串（例如 前面的 /uri-string）进行匹配，对特定的请求进行处理。地址定向、数据缓存和应答控制等功能，还有许多第三方模块的配置也在这里进行。</p>
+<h1 id="4、反向代理实例"><a href="#4、反向代理实例" class="headerlink" title="4、反向代理实例"></a>4、反向代理实例</h1><h2 id="实例1"><a href="#实例1" class="headerlink" title="实例1"></a>实例1</h2><p><img src="../images/image-20210705121614861.png" alt="image-20210705121614861"></p>
+<p>本机 host 文件添加</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">192.168.17.129 www.123.com</span><br></pre></td></tr></table></figure>
+
+<p>Nginx 配置文件</p>
+<p><img src="../images/image-20210705121808169.png" alt="image-20210705121808169"></p>
+<p>测试</p>
+<p><img src="../images/image-20210705121819438.png" alt="image-20210705121819438"></p>
+<h2 id="实例2"><a href="#实例2" class="headerlink" title="实例2"></a>实例2</h2><h3 id="实现效果"><a href="#实现效果" class="headerlink" title="实现效果"></a>实现效果</h3><p>使用 nginx 反向代理，根据访问的路径跳转到不同端口的服务中<br>nginx 监听端口为 9001</p>
+<p>访问 http:// 192.168.17.129 :9001/edu/ 直接跳转到 127.0.0.1:808 0<br>访问 http:// 192.168.17.129 :9001/vod/ 直接跳转到 127.0.0.1:808 1</p>
+<h3 id="Nginx-配置修改"><a href="#Nginx-配置修改" class="headerlink" title="Nginx 配置修改"></a>Nginx 配置修改</h3><p>再添加一个 server 块，添加配置</p>
+<p><img src="../images/image-20210705122138325.png" alt="image-20210705122138325"></p>
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><p><img src="../images/image-20210705122206917.png" alt="image-20210705122206917"></p>
+<p><img src="../images/image-20210705122215874.png" alt="image-20210705122215874"></p>
+<h1 id="5、负载均衡实例"><a href="#5、负载均衡实例" class="headerlink" title="5、负载均衡实例"></a>5、负载均衡实例</h1><h2 id="负载均衡配置"><a href="#负载均衡配置" class="headerlink" title="负载均衡配置"></a>负载均衡配置</h2><p><img src="../images/image-20210705122847958.png" alt="image-20210705122847958"></p>
+<p><img src="../images/image-20210705122855692.png" alt="image-20210705122855692"></p>
+<h2 id="负载均衡的策略"><a href="#负载均衡的策略" class="headerlink" title="负载均衡的策略"></a>负载均衡的策略</h2><p>轮询、加权、iphash、fair</p>
+<h3 id="轮询（默认）"><a href="#轮询（默认）" class="headerlink" title="轮询（默认）"></a>轮询（默认）</h3><p>每个请求按时间顺序逐一分配到不同的后端服务器，如果后端服务器 down 掉，能自动剔除。</p>
+<h3 id="weight"><a href="#weight" class="headerlink" title="weight"></a>weight</h3><p>weigh t 代表权重默认为 1, 权重越高被分配的客户端越多</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">upstream server_pool&#123; </span><br><span class="line">	server 192.168.5.21 weight=5; </span><br><span class="line">	server 192.168.5.22 weight=10; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="ip-hash"><a href="#ip-hash" class="headerlink" title="ip_hash"></a>ip_hash</h3><p>每个请求按访问 ip 的 hash 结果分配，这样每个访客固定访问一个后端服务器，可以解决session的问题</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">upstream server_pool&#123; </span><br><span class="line">    ip_hash; </span><br><span class="line">    server 192.168.5.21:80; </span><br><span class="line">    server 192.168.5.22:80; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="fair-（第三方）"><a href="#fair-（第三方）" class="headerlink" title="fair （第三方）"></a>fair （第三方）</h3><p>按后端服务器的响应时间来分配请求，响应时间短的优先分配。</p>
+<h1 id="6、-动静分离实例"><a href="#6、-动静分离实例" class="headerlink" title="6、 动静分离实例"></a>6、 动静分离实例</h1><p>这里 <code>www</code> 和 <code>image</code> 是静态目录</p>
+<p><img src="../images/image-20210705125230306.png" alt="image-20210705125230306"></p>
+<h1 id="7、配置高可用集群"><a href="#7、配置高可用集群" class="headerlink" title="7、配置高可用集群"></a>7、配置高可用集群</h1><h2 id="主从"><a href="#主从" class="headerlink" title="主从"></a>主从</h2><p><img src="../images/image-20210705125754935.png" alt="image-20210705125754935"></p>
+<ol>
+<li>需要两台 <strong>nginx</strong> 服务器</li>
+<li>需要 安装<strong>keepalived</strong></li>
+<li>需要虚拟 <strong>ip</strong></li>
+</ol>
+<blockquote>
+<p><a href="https://www.bilibili.com/video/BV1zJ411w7SV?p=14&amp;spm_id_from=pageDriver">https://www.bilibili.com/video/BV1zJ411w7SV?p=14&amp;spm_id_from=pageDriver</a></p>
+</blockquote>
+<h1 id="8、Nginx-原理"><a href="#8、Nginx-原理" class="headerlink" title="8、Nginx 原理"></a>8、Nginx 原理</h1><p><img src="../images/image-20210705130858064.png" alt="image-20210705130858064"></p>
+<h2 id="work-是如何工作的"><a href="#work-是如何工作的" class="headerlink" title="work 是如何工作的"></a>work 是如何工作的</h2><p><img src="../images/image-20210705130928555.png" alt="image-20210705130928555"></p>
+<h2 id="一个-master-和多个-woker-有什么好处"><a href="#一个-master-和多个-woker-有什么好处" class="headerlink" title="一个 master 和多个 woker 有什么好处"></a>一个 master 和多个 woker 有什么好处</h2><p>1 ）可以使用 <code>nginx -s reload</code> 热部署</p>
+<p>2 ）每个 woker 是独立的进程，如果有其中的一个 woker 出现问题，其他 woker 因为是独立的，继续进行争抢，实现请求过程，不会造成服务中断</p>
+<h2 id="设置多少个-woker-合适"><a href="#设置多少个-woker-合适" class="headerlink" title="设置多少个 woker 合适"></a>设置多少个 woker 合适</h2><p>worker 数和服务器的 cpu 数相等是最为适宜的</p>
+<h2 id="连接数-worker-connection"><a href="#连接数-worker-connection" class="headerlink" title="连接数 worker_connection"></a>连接数 worker_connection</h2><p>第一个：发送请求，占用了 woker 的几个连接数？</p>
+<p>答案： 2 或者 4 个</p>
+<p>一来一回是两个，如果只是静态资源，2个；如果访问了动态资源（比如访问了数据库），4个</p>
+<p>第二个： nginx 有一 个 master ，有四个 woker ，每个 woker 支持最大的连接数 1024 ，支持的最大并发数是多少？</p>
+<ul>
+<li>普通的静态访问最大并发数是： <code>worker_connections * worker_processes / 2</code></li>
+<li>而如果是 HTTP 作 为反向代理来说，最大并发数量应该是 <code>worker_connections * worker_processes / 4</code></li>
+</ul>
+<h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><h2 id="session-丢失如何解决？"><a href="#session-丢失如何解决？" class="headerlink" title="session 丢失如何解决？"></a>session 丢失如何解决？</h2><p>（1）使用容器扩展插件来实现</p>
+<p>（2）使用Nginx负载均衡的ip_hash策略</p>
+<p>（3）使用框架的会话管理工具——比如Spring session</p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><blockquote>
+<ol>
+<li><a href="https://www.bilibili.com/video/BV1zJ411w7SV">https://www.bilibili.com/video/BV1zJ411w7SV</a></li>
+</ol>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Java</category>
+        <category>Nginx</category>
+      </categories>
+      <tags>
+        <tag>Nginx</tag>
+      </tags>
+  </entry>
 </search>
