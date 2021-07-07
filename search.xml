@@ -22,7 +22,7 @@
 ]]></content>
       <categories>
         <category>C++</category>
-        <category>代码优化</category>
+        <category>Effective C++</category>
       </categories>
       <tags>
         <tag>C++</tag>
@@ -194,83 +194,7 @@
   <entry>
     <title>JavaWeb-Servlet</title>
     <url>/archives/3dd30874.html</url>
-    <content><![CDATA[<h1 id="Servlet"><a href="#Servlet" class="headerlink" title="Servlet"></a>Servlet</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Servlet（Server Applet）是<a href="https://baike.baidu.com/item/Java/85979">Java</a> Servlet的简称，称为小服务程序或服务连接器，用Java编写的<a href="https://baike.baidu.com/item/%E6%9C%8D%E5%8A%A1%E5%99%A8/100571">服务器</a>端程序，具有独立于平台和<a href="https://baike.baidu.com/item/%E5%8D%8F%E8%AE%AE/13020269">协议</a>的特性，主要功能在于交互式地浏览和生成数据，生成动态<a href="https://baike.baidu.com/item/Web/150564">Web</a>内容。</p>
-<p>广义的Servlet是指任何实现了Servlet接口的类</p>
-<p>Servlet运行于支持Java的应用服务器中。从原理上讲，Servlet可以响应任何类型的请求，但绝大多数情况下Servlet只用来扩展基于HTTP协议的Web服务器。</p>
-<p>【总结】实现了servlet接口的java程序，就是servlet</p>
-<span id="more"></span>
-
-<h2 id="HelloServlet"><a href="#HelloServlet" class="headerlink" title="HelloServlet"></a>HelloServlet</h2><p>Servlet接口Sun公司有两个默认的实现类：HttpServlet，GenericServlet</p>
-<ol>
-<li><p>maven模板，webapp，修改web.xml（这部分看自己tomcat服务器web.xml是啥，然后复制个头文件过来就行）</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">web-app</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://xmlns.jcp.org/xml/ns/javaee&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://xmlns.jcp.org/xml/ns/javaee</span></span></span><br><span class="line"><span class="string"><span class="tag">                      http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">version</span>=<span class="string">&quot;4.0&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">metadata-complete</span>=<span class="string">&quot;true&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  </span><br><span class="line"><span class="tag">&lt;/<span class="name">web-app</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
-<li><p>将项目的结构补充完整，java和resources</p>
-<p><img src="../images/image-20210620151553413.png" alt="image-20210620151553413"></p>
-</li>
-<li><p>编写一个Servlet程序</p>
-<ul>
-<li><p>编写一个普通的类</p>
-</li>
-<li><p>实现Servlet接口，这里我们直接继承HttpServlet</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloServlet</span> <span class="keyword">extends</span> <span class="title">HttpServlet</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 由于get或者post只是实现方式不同，可以互相调用，业务逻辑都一样</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doGet</span><span class="params">(HttpServletRequest req, HttpServletResponse resp)</span> <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">        PrintWriter writer = resp.getWriter();</span><br><span class="line"></span><br><span class="line">        writer.print(<span class="string">&quot;Hello Servlet!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doPost</span><span class="params">(HttpServletRequest req, HttpServletResponse resp)</span> <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">        doGet(req, resp);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-<li><p>编写Servlet的映射</p>
-<ul>
-<li><p>为什么需要映射？</p>
-<ul>
-<li><p>因为我们写的是java程序，但是要通过浏览器访问，浏览器访问需要连接服务器，所以我们需要在web服务中注册我们写的Servlet，还需要给个URL路径</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--注册servlet--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">servlet</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>hello<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">servlet-class</span>&gt;</span>com.tcmyxc.servlet.HelloServlet<span class="tag">&lt;/<span class="name">servlet-class</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">servlet</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--servlet请求路径--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">servlet-mapping</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>hello&lt;<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>/hello<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">servlet-mapping</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>配置Tomcat</p>
-<ul>
-<li>注意配置项目发布的路径</li>
-</ul>
-<p><img src="../images/image-20210620153251176.png" alt="image-20210620153251176"></p>
-</li>
-<li><p>启动测试</p>
-</li>
-</ol>
-<p>从 Servlet3 开始，也可以使用注解开发</p>
-<p>1、修改 web.xml 根标签的属性 metadata-complete 为 false</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">web-app</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://xmlns.jcp.org/xml/ns/javaee&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://xmlns.jcp.org/xml/ns/javaee</span></span></span><br><span class="line"><span class="string"><span class="tag">                      http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">version</span>=<span class="string">&quot;4.0&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">metadata-complete</span>=<span class="string">&quot;false&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>2、使用注解开发，不需要在 web.xml 中配置这个 servlet</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@WebServlet(name = &quot;hello-servlet&quot;, value = &quot;/hello&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloServlet</span> <span class="keyword">extends</span> <span class="title">HttpServlet</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doGet</span><span class="params">(HttpServletRequest req, HttpServletResponse resp)</span> <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">        PrintWriter writer = resp.getWriter();<span class="comment">// 响应流</span></span><br><span class="line">        writer.write(<span class="string">&quot;Hello Servlet&quot;</span>);</span><br><span class="line">        writer.close();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doPost</span><span class="params">(HttpServletRequest req, HttpServletResponse resp)</span> <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">        doGet(req, resp);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="Servlet原理"><a href="#Servlet原理" class="headerlink" title="Servlet原理"></a>Servlet原理</h2><p>Servlet由Web服务器调用</p>
-<p><img src="../images/image-20210620150127559.png" alt="image-20210620150127559"></p>
-<h2 id="Mapping"><a href="#Mapping" class="headerlink" title="Mapping"></a>Mapping</h2><ol>
-<li><p>一个 Servlet 可以指定一个路径</p>
-</li>
-<li><p>一个 Servlet 可以指定多个路径</p>
-</li>
-<li><p>一个 Servlet 可以指定通用路径</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">servlet-mapping</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>hello-servlet<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>/hello/*<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">servlet-mapping</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
-<li><p>可以自定义后缀，但是 <code>*</code> 前面不能加任何东西</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">servlet-mapping</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>hello-servlet<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>*.do<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">servlet-mapping</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
-</ol>
-<h2 id="ServletContext"><a href="#ServletContext" class="headerlink" title="ServletContext"></a>ServletContext</h2><p>每个 web 程序都有一个 ServletContext 对象，代表当前的 web 应用</p>
-<h3 id="1、共享数据"><a href="#1、共享数据" class="headerlink" title="1、共享数据"></a>1、共享数据</h3><p>（方便不同 servlet 之间共享数据），一个设置属性的 k, v，另外一个根据属性的 k 获取 v</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@WebServlet(name = &quot;helloServlet&quot;, value = &quot;/hello&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloServlet</span> <span class="keyword">extends</span> <span class="title">HttpServlet</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doGet</span><span class="params">(HttpServletRequest req, HttpServletResponse resp)</span> </span></span><br><span class="line"><span class="function">        <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">        ServletContext servletContext = <span class="keyword">this</span>.getServletContext();</span><br><span class="line">        servletContext.setAttribute(<span class="string">&quot;name&quot;</span>, <span class="string">&quot;徐文祥&quot;</span>);<span class="comment">// 设置值</span></span><br><span class="line">        resp.getWriter().write(<span class="string">&quot;Hello&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doPost</span><span class="params">(HttpServletRequest req, HttpServletResponse resp)</span> </span></span><br><span class="line"><span class="function">        <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">        doGet(req, resp);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@WebServlet(name = &quot;getHelloMsgServlet&quot;, value = &quot;/getMsg&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GetHelloMsgServlet</span> <span class="keyword">extends</span> <span class="title">HttpServlet</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doPost</span><span class="params">(HttpServletRequest req, HttpServletResponse resp)</span> </span></span><br><span class="line"><span class="function">        <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">        doGet(req, resp);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doGet</span><span class="params">(HttpServletRequest req, HttpServletResponse resp)</span> </span></span><br><span class="line"><span class="function">        <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">        ServletContext servletContext = <span class="keyword">this</span>.getServletContext();</span><br><span class="line">        String name = (String) servletContext.getAttribute(<span class="string">&quot;name&quot;</span>);<span class="comment">// 取值</span></span><br><span class="line">        resp.setContentType(<span class="string">&quot;text/html;charset=utf-8&quot;</span>);</span><br><span class="line">        resp.getWriter().write(<span class="string">&quot;名字是&quot;</span> + name);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="2、获取初始化参数"><a href="#2、获取初始化参数" class="headerlink" title="2、获取初始化参数"></a>2、获取初始化参数</h3><p>首先在 <code>web.xml</code> 中配置</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 配置初始化的参数--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">context-param</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">param-name</span>&gt;</span>jdbcUrl<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">param-value</span>&gt;</span>jdbc:mysql://localhost:3306/mybatis<span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">context-param</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@WebServlet(name = &quot;getInitparameterServlet&quot;, value = &quot;/jdbcUrl&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GetInitparameterServlet</span> <span class="keyword">extends</span> <span class="title">HelloServlet</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doPost</span><span class="params">(HttpServletRequest req, HttpServletResponse resp)</span> </span></span><br><span class="line"><span class="function">        <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">        doGet(req, resp);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doGet</span><span class="params">(HttpServletRequest req, HttpServletResponse resp)</span> </span></span><br><span class="line"><span class="function">        <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">        ServletContext servletContext = <span class="keyword">this</span>.getServletContext();</span><br><span class="line">        String jdbcUrl = servletContext.getInitParameter(<span class="string">&quot;jdbcUrl&quot;</span>);</span><br><span class="line">        resp.setContentType(<span class="string">&quot;text/html;charset=utf-8&quot;</span>);</span><br><span class="line">        resp.getWriter().write(<span class="string">&quot;jdbcUrl: &quot;</span> + jdbcUrl);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>结果：</p>
-<p><img src="../images/image-20210621001815177.png" alt="image-20210621001815177"></p>
-]]></content>
+    <content><![CDATA[]]></content>
       <categories>
         <category>Java</category>
         <category>JavaWeb</category>
@@ -677,6 +601,226 @@
       </categories>
       <tags>
         <tag>Maven</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Nginx学习笔记(尚硅谷版)</title>
+    <url>/archives/14f945e.html</url>
+    <content><![CDATA[<h1 id="1、-nginx-简介"><a href="#1、-nginx-简介" class="headerlink" title="1、 nginx 简介"></a>1、 nginx 简介</h1><h2 id="（1）什么是-nginx"><a href="#（1）什么是-nginx" class="headerlink" title="（1）什么是 nginx"></a>（1）什么是 nginx</h2><p>Nginx (engine x) 是一个轻量级的、高性能的HTTP和反向代理web服务器</p>
+<p>专为性能优化而开发，性能是其最重要的考量，实现上非常注重效率 ，能经受高负载的考验 有报告表明能支持高达 50,000 个并发连接数。</p>
+<span id="more"></span>
+
+<h2 id="（2）可以做什么"><a href="#（2）可以做什么" class="headerlink" title="（2）可以做什么"></a>（2）可以做什么</h2><p>反向代理、负载均衡、动静分离</p>
+<h3 id="反向代理"><a href="#反向代理" class="headerlink" title="反向代理"></a>反向代理</h3><p>Nginx不仅可以做反向代理，实现负载均衡。还能用作正向代理来进行上网等功能。</p>
+<p>正向代理：如果把局域网外的 Internet 想象成一个巨大的资源库，则局域网中的客户端要访问 Internet ，则需要通过代理服务器来访问，这种代理服务就称为正向代理。</p>
+<p><img src="../images/image-20210705093339524.png" alt="image-20210705093339524"></p>
+<p>反向代理，将请求发送到反向代理服务器，由反向代理服务器去选择目标服务器获取数据后，再返回给客户端。此时反向代理服务器和目标服务器对外就是一个服务器，暴露的是代理服务器地址，隐藏了真实服务器 IP 地址。</p>
+<p>客户端不需要任何配置</p>
+<p><img src="../images/image-20210705093835089.png" alt="image-20210705093835089"></p>
+<h3 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h3><p>将请求分发到多个服务器上，将负载分发到不同的服务器，也就是我们所说的负载均衡</p>
+<p><img src="../images/image-20210705094103385.png" alt="image-20210705094103385"></p>
+<h3 id="动静分离"><a href="#动静分离" class="headerlink" title="动静分离"></a>动静分离</h3><p>为了加快网站的解析速度，可以把动态页面和静态页面由不同的服务器来解析，加快解析速度。降低原来单个服务器的压力。</p>
+<p><img src="../images/image-20210705094142506.png" alt="image-20210705094142506"></p>
+<p>简单来说就是把动态跟静态请求分开，不能理解成只是单纯的把动态页面和静态页面物理分离。严格意义上说应该是动态请求跟静态请求分开，可以理解成使用Nginx 处理静态页面，Tomcat处理动态页面。</p>
+<p>动静分离从目前实现角度来讲大致分为两种：</p>
+<p> 一种是纯粹把静态文件独立成单独的域名，放在独立的服务器上，也是目前主流推崇的方案； </p>
+<p>另外一种方法就是动态跟静态文件混合在一起发布，通过 nginx 来分开。 </p>
+<p>通过 location 指定不同的后缀名实现不同的请求转发。通过 expires 参数设置，可以使浏览器缓存过期时间，减少与服务器之前的请求和流量。</p>
+<p>具体 Expires 定义：是给一个资源设定一个过期时间，也就是说无需去服务端验证，直接通过浏览器自身确认是否过期即可，所以不会产生额外的流量。此种方法非常适合不经常变动的资源。（如果经常更新的文件，不建议使用 Expires 来缓存），我这里设置 3d，表示在这 3 天之内访问这个 URL，发送一个请求，比对服务器该文件最后更新时间没有变化，则不会从服务器抓取，返回状态码 304，如果有修改，则直接从服务器重新下载，返回状态码 200。</p>
+<h1 id="2、-Nginx-的安装"><a href="#2、-Nginx-的安装" class="headerlink" title="2、 Nginx 的安装"></a>2、 Nginx 的安装</h1><img src="../images/image-20210705095050510.png" alt="image-20210705095050510" style="zoom:50%;" />
+
+<p>安装省略，可以参考另外一篇笔记</p>
+<h1 id="3、-Nginx-的常用命令和配置文件"><a href="#3、-Nginx-的常用命令和配置文件" class="headerlink" title="3、 Nginx 的常用命令和配置文件"></a>3、 Nginx 的常用命令和配置文件</h1><h2 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h2><p>在/usr/local/nginx/sbin 目录下执行命令</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 启动</span></span><br><span class="line">./nginx</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看版本号</span></span><br><span class="line">./nginx -v</span><br><span class="line"></span><br><span class="line"><span class="comment"># 停止</span></span><br><span class="line">./nginx -s stop</span><br><span class="line"></span><br><span class="line"><span class="comment"># 重新加载</span></span><br><span class="line">./nginx -s reload</span><br></pre></td></tr></table></figure>
+
+<h2 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">worker_processes  1;<span class="comment"># nginx 处理并发的数量</span></span><br><span class="line"></span><br><span class="line">events &#123;</span><br><span class="line">    worker_connections  1024;<span class="comment"># 最大连接数</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">http &#123;</span><br><span class="line">    include       mime.types;</span><br><span class="line">    default_type  application/octet-stream;</span><br><span class="line">    sendfile        on; </span><br><span class="line">    keepalive_timeout  65;</span><br><span class="line">    server &#123;</span><br><span class="line">        listen       80;</span><br><span class="line">        server_name  localhost;</span><br><span class="line">        location / &#123;</span><br><span class="line">            root   html;</span><br><span class="line">            index  index.html index.htm;</span><br><span class="line">        &#125;</span><br><span class="line">        error_page   500 502 503 504  /50x.html;</span><br><span class="line">        location = /50x.html &#123;</span><br><span class="line">            root   html;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="第一部分：全局块"><a href="#第一部分：全局块" class="headerlink" title="第一部分：全局块"></a>第一部分：全局块</h3><p> 从配置文件开始到 events 块之间的内容，主要会设置一些影响nginx 服务器整体运行的配置指令，主要包括配置运行 Nginx 服务器的用户（组）、允许生成的 worker process 数，进程 PID 存放路径、日志存放路径和类型以及配置文件的引入等。</p>
+<h3 id="第二部分：events块"><a href="#第二部分：events块" class="headerlink" title="第二部分：events块"></a>第二部分：events块</h3><p>events 块涉及的指令主要影响 Nginx 服务器与用户的网络连接，常用的设置包括是否开启对多 work process 下的网络连接进行序列化，是否允许同时接收多个网络连接，选取哪种事件驱动模型来处理连接请求，每个 word process 可以同时支持的最大连接数等。 上述例子就表示每个 work process 支持的最大连接数为 1024. </p>
+<p>这部分的配置对 Nginx 的性能影响较大，在实际中应该灵活配置。</p>
+<h3 id="第三部分：http块"><a href="#第三部分：http块" class="headerlink" title="第三部分：http块"></a>第三部分：http块</h3><p>代理、缓存和日志定义等绝大多数功能和第三方模块的配置都在这里。 需要注意的是：http 块也可以包括 http全局块、server 块。 </p>
+<h4 id="（1）-http-全局块"><a href="#（1）-http-全局块" class="headerlink" title="（1） http 全局块"></a>（1） http 全局块</h4><p>http全局块配置的指令包括文件引入、MIME-TYPE 定义、日志自定义、连接超时时间、单链接请求数上限等。</p>
+<h4 id="（2）server-块"><a href="#（2）server-块" class="headerlink" title="（2）server 块"></a>（2）server 块</h4><p>和虚拟主机有密切关系。</p>
+<p>虚拟主机从用户角度看，和一台独立的硬件主机是完全一样的，该技术的产生是为了节省互联网服务器硬件成本。</p>
+<p> 每个 http 块可以包括多个 server 块，而每个 server 块就相当于一个虚拟主机。 </p>
+<p>而每个 server 块也分为全局 server 块，以及可以同时包含多个 locaton 块。</p>
+<p> 1、全局 server 块 </p>
+<p>最常见的配置是本虚拟机主机的监听配置和本虚拟主机的名称或IP配置。 </p>
+<p>2、location 块 </p>
+<p>一个 server 块可以配置多个 location 块。 </p>
+<p>这块的主要作用是基于 Nginx 服务器接收到的请求字符串（例如 server_name/uri-string），对虚拟主机名称（也可以是IP别名）之外的字符串（例如 前面的 /uri-string）进行匹配，对特定的请求进行处理。地址定向、数据缓存和应答控制等功能，还有许多第三方模块的配置也在这里进行。</p>
+<h1 id="4、反向代理实例"><a href="#4、反向代理实例" class="headerlink" title="4、反向代理实例"></a>4、反向代理实例</h1><h2 id="实例1"><a href="#实例1" class="headerlink" title="实例1"></a>实例1</h2><p><img src="../images/image-20210705121614861.png" alt="image-20210705121614861"></p>
+<p>本机 host 文件添加</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">192.168.17.129 www.123.com</span><br></pre></td></tr></table></figure>
+
+<p>Nginx 配置文件</p>
+<p><img src="../images/image-20210705121808169.png" alt="image-20210705121808169"></p>
+<p>测试</p>
+<p><img src="../images/image-20210705121819438.png" alt="image-20210705121819438"></p>
+<h2 id="实例2"><a href="#实例2" class="headerlink" title="实例2"></a>实例2</h2><h3 id="实现效果"><a href="#实现效果" class="headerlink" title="实现效果"></a>实现效果</h3><p>使用 nginx 反向代理，根据访问的路径跳转到不同端口的服务中<br>nginx 监听端口为 9001</p>
+<p>访问 http:// 192.168.17.129 :9001/edu/ 直接跳转到 127.0.0.1:808 0<br>访问 http:// 192.168.17.129 :9001/vod/ 直接跳转到 127.0.0.1:808 1</p>
+<h3 id="Nginx-配置修改"><a href="#Nginx-配置修改" class="headerlink" title="Nginx 配置修改"></a>Nginx 配置修改</h3><p>再添加一个 server 块，添加配置</p>
+<p><img src="../images/image-20210705122138325.png" alt="image-20210705122138325"></p>
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><p><img src="../images/image-20210705122206917.png" alt="image-20210705122206917"></p>
+<p><img src="../images/image-20210705122215874.png" alt="image-20210705122215874"></p>
+<h1 id="5、负载均衡实例"><a href="#5、负载均衡实例" class="headerlink" title="5、负载均衡实例"></a>5、负载均衡实例</h1><h2 id="负载均衡配置"><a href="#负载均衡配置" class="headerlink" title="负载均衡配置"></a>负载均衡配置</h2><p><img src="../images/image-20210705122847958.png" alt="image-20210705122847958"></p>
+<p><img src="../images/image-20210705122855692.png" alt="image-20210705122855692"></p>
+<h2 id="负载均衡的策略"><a href="#负载均衡的策略" class="headerlink" title="负载均衡的策略"></a>负载均衡的策略</h2><p>轮询、加权、iphash、fair</p>
+<h3 id="轮询（默认）"><a href="#轮询（默认）" class="headerlink" title="轮询（默认）"></a>轮询（默认）</h3><p>每个请求按时间顺序逐一分配到不同的后端服务器，如果后端服务器 down 掉，能自动剔除。</p>
+<h3 id="weight"><a href="#weight" class="headerlink" title="weight"></a>weight</h3><p>weigh t 代表权重默认为 1, 权重越高被分配的客户端越多</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">upstream server_pool&#123; </span><br><span class="line">	server 192.168.5.21 weight=5; </span><br><span class="line">	server 192.168.5.22 weight=10; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="ip-hash"><a href="#ip-hash" class="headerlink" title="ip_hash"></a>ip_hash</h3><p>每个请求按访问 ip 的 hash 结果分配，这样每个访客固定访问一个后端服务器，可以解决session的问题</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">upstream server_pool&#123; </span><br><span class="line">    ip_hash; </span><br><span class="line">    server 192.168.5.21:80; </span><br><span class="line">    server 192.168.5.22:80; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="fair-（第三方）"><a href="#fair-（第三方）" class="headerlink" title="fair （第三方）"></a>fair （第三方）</h3><p>按后端服务器的响应时间来分配请求，响应时间短的优先分配。</p>
+<h1 id="6、-动静分离实例"><a href="#6、-动静分离实例" class="headerlink" title="6、 动静分离实例"></a>6、 动静分离实例</h1><p>这里 <code>www</code> 和 <code>image</code> 是静态目录</p>
+<p><img src="../images/image-20210705125230306.png" alt="image-20210705125230306"></p>
+<h1 id="7、配置高可用集群"><a href="#7、配置高可用集群" class="headerlink" title="7、配置高可用集群"></a>7、配置高可用集群</h1><h2 id="主从"><a href="#主从" class="headerlink" title="主从"></a>主从</h2><p><img src="../images/image-20210705125754935.png" alt="image-20210705125754935"></p>
+<ol>
+<li>需要两台 <strong>nginx</strong> 服务器</li>
+<li>需要 安装<strong>keepalived</strong></li>
+<li>需要虚拟 <strong>ip</strong></li>
+</ol>
+<blockquote>
+<p><a href="https://www.bilibili.com/video/BV1zJ411w7SV?p=14&amp;spm_id_from=pageDriver">https://www.bilibili.com/video/BV1zJ411w7SV?p=14&amp;spm_id_from=pageDriver</a></p>
+</blockquote>
+<h1 id="8、Nginx-原理"><a href="#8、Nginx-原理" class="headerlink" title="8、Nginx 原理"></a>8、Nginx 原理</h1><p><img src="../images/image-20210705130858064.png" alt="image-20210705130858064"></p>
+<h2 id="work-是如何工作的"><a href="#work-是如何工作的" class="headerlink" title="work 是如何工作的"></a>work 是如何工作的</h2><p><img src="../images/image-20210705130928555.png" alt="image-20210705130928555"></p>
+<h2 id="一个-master-和多个-woker-有什么好处"><a href="#一个-master-和多个-woker-有什么好处" class="headerlink" title="一个 master 和多个 woker 有什么好处"></a>一个 master 和多个 woker 有什么好处</h2><p>1 ）可以使用 <code>nginx -s reload</code> 热部署</p>
+<p>2 ）每个 woker 是独立的进程，如果有其中的一个 woker 出现问题，其他 woker 因为是独立的，继续进行争抢，实现请求过程，不会造成服务中断</p>
+<h2 id="设置多少个-woker-合适"><a href="#设置多少个-woker-合适" class="headerlink" title="设置多少个 woker 合适"></a>设置多少个 woker 合适</h2><p>worker 数和服务器的 cpu 数相等是最为适宜的</p>
+<h2 id="连接数-worker-connection"><a href="#连接数-worker-connection" class="headerlink" title="连接数 worker_connection"></a>连接数 worker_connection</h2><p>第一个：发送请求，占用了 woker 的几个连接数？</p>
+<p>答案： 2 或者 4 个</p>
+<p>一来一回是两个，如果只是静态资源，2个；如果访问了动态资源（比如访问了数据库），4个</p>
+<p>第二个： nginx 有一 个 master ，有四个 woker ，每个 woker 支持最大的连接数 1024 ，支持的最大并发数是多少？</p>
+<ul>
+<li>普通的静态访问最大并发数是： <code>worker_connections * worker_processes / 2</code></li>
+<li>而如果是 HTTP 作 为反向代理来说，最大并发数量应该是 <code>worker_connections * worker_processes / 4</code></li>
+</ul>
+<h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><h2 id="session-丢失如何解决？"><a href="#session-丢失如何解决？" class="headerlink" title="session 丢失如何解决？"></a>session 丢失如何解决？</h2><p>（1）使用容器扩展插件来实现</p>
+<p>（2）使用Nginx负载均衡的ip_hash策略</p>
+<p>（3）使用框架的会话管理工具——比如Spring session</p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><blockquote>
+<ol>
+<li><a href="https://www.bilibili.com/video/BV1zJ411w7SV">https://www.bilibili.com/video/BV1zJ411w7SV</a></li>
+</ol>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Java</category>
+        <category>Nginx</category>
+      </categories>
+      <tags>
+        <tag>Nginx</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Nginx学习笔记(狂神版)</title>
+    <url>/archives/5d9e5ec8.html</url>
+    <content><![CDATA[<h1 id="Nginx是什么？"><a href="#Nginx是什么？" class="headerlink" title="Nginx是什么？"></a>Nginx是什么？</h1><p>Nginx (engine x) 是一个轻量级的、高性能的HTTP和反向代理web服务器，第一个公开版本0.1.0发布于2004年10月4日。</p>
+<p>因它的稳定性、丰富的功能集、简单的配置文件和低系统资源的消耗而闻名。</p>
+<p>其特点是占有内存少，并发能力强，事实上nginx的并发能力在同类型的网页服务器中表现较好，中国大陆使用nginx网站用户有：百度、京东、新浪、网易、腾讯、淘宝等。</p>
+<p>对于新建站点，建议使用最新稳定版作为生产版本</p>
+<p>Nginx 既可以在内部直接支持 Rails 和 PHP 程序对外进行服务，也可以支持作为 HTTP代理服务对外进行服务。Nginx采用C进行编写</p>
+<p>能够不间断服务的情况下进行软件版本的升级</p>
+<blockquote>
+<p>以上来自百度百科</p>
+</blockquote>
+<span id="more"></span>
+
+<p>没有什么是加一层是解决不了的</p>
+<h1 id="Nginx作用"><a href="#Nginx作用" class="headerlink" title="Nginx作用"></a>Nginx作用</h1><blockquote>
+<p>Http代理，反向代理，负载均衡（轮训和加权轮训）</p>
+</blockquote>
+<p>正向代理：代理客户端</p>
+<p>反向代理：代理服务器</p>
+<p>iphash 对客户端请求的 ip 进行 hash 操作，然后根据 hash 结果将同一个客户端的 ip 请求发给同一台服务器进行处理</p>
+<p>动静分离：样式那些静态文件可以单独提出来，将其做缓存操作，提高资源的响应速度</p>
+<h1 id="安装步骤"><a href="#安装步骤" class="headerlink" title="安装步骤"></a>安装步骤</h1><h2 id="Windows下安装"><a href="#Windows下安装" class="headerlink" title="Windows下安装"></a>Windows下安装</h2><p>1、下载解压</p>
+<p><img src="../images/image-20210704143948957.png" alt="image-20210704143948957"></p>
+<p>2、直接运行</p>
+<p><img src="../images/image-20210704144201667.png" alt="image-20210704144201667"></p>
+<p>3、浏览器直接输：127.0.0.1:80（或者你改的其他端口）</p>
+<p><img src="../images/image-20210704144243668.png" alt="image-20210704144243668"></p>
+<h2 id="Linux-下安装"><a href="#Linux-下安装" class="headerlink" title="Linux 下安装"></a>Linux 下安装</h2><p>1、下载解压</p>
+<p><img src="../images/image-20210704144703838.png" alt="image-20210704144703838"></p>
+<p>2、手动编译安装</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">./configure</span><br><span class="line">make </span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+
+<p><img src="../images/image-20210704150317847.png" alt="image-20210704150317847"></p>
+<p><img src="../images/image-20210704150432259.png" alt="image-20210704150432259"></p>
+<p><img src="../images/image-20210704150450068.png" alt="image-20210704150450068"></p>
+<p>提示缺少 库</p>
+<figure class="highlight tex"><table><tr><td class="code"><pre><span class="line">./configure: error: the HTTP rewrite module requires the PCRE library.</span><br><span class="line">You can either disable the module by using --without-http<span class="built_in">_</span>rewrite<span class="built_in">_</span>module</span><br><span class="line">option, or install the PCRE library into the system, or build the PCRE library</span><br><span class="line">statically from the source with nginx by using --with-pcre=&lt;path&gt; option.</span><br></pre></td></tr></table></figure>
+
+<p>解决方法：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get install libpcre3 libpcre3-dev -y</span><br></pre></td></tr></table></figure>
+
+<p>其他错误</p>
+<figure class="highlight tex"><table><tr><td class="code"><pre><span class="line">./configure: error: the HTTP gzip module requires the zlib library.</span><br><span class="line">You can either disable the module by using --without-http<span class="built_in">_</span>gzip<span class="built_in">_</span>module</span><br><span class="line">option, or install the zlib library into the system, or build the zlib library</span><br><span class="line">statically from the source with nginx by using --with-zlib=&lt;path&gt; option.</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get install ruby</span><br><span class="line">sudo apt-get install zlib1g</span><br><span class="line">sudo apt-get install zlib1g-dev</span><br></pre></td></tr></table></figure>
+
+
+
+<p>3、查看是否安装成功</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">whereis nginx</span><br></pre></td></tr></table></figure>
+
+<p><img src="../images/image-20210704150602335.png" alt="image-20210704150602335"></p>
+<p>4、进入 <code>bin</code> 目录启动</p>
+<p><img src="../images/image-20210704150751028.png" alt="image-20210704150751028"></p>
+<p>这里说明 80 端口被占用</p>
+<p>看了一下确实被占用了</p>
+<p><img src="../images/image-20210704150928920.png" alt="image-20210704150928920"></p>
+<p>解决方法：</p>
+<p>修改端口</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">        listen       8499;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>再次执行</p>
+<p><img src="../images/image-20210704151625656.png" alt="image-20210704151625656"></p>
+<h1 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h1><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> /usr/<span class="built_in">local</span>/nginx/sbin</span><br><span class="line"></span><br><span class="line">./nginx <span class="comment"># 启动</span></span><br><span class="line">./nginx -s stop <span class="comment"># 停止</span></span><br><span class="line">./nginx -s reload <span class="comment"># 自动重新加载新的配置文件</span></span><br><span class="line">./nginx -s quit <span class="comment"># 安全退出</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="实战演示"><a href="#实战演示" class="headerlink" title="实战演示"></a>实战演示</h1><p>以 <code>dropwizard</code> 项目为例</p>
+<h2 id="1、开启两个服务"><a href="#1、开启两个服务" class="headerlink" title="1、开启两个服务"></a>1、开启两个服务</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">java -jar Nginx-Dropwizard-1.0-SNAPSHOT.jar serve hello.yml</span><br></pre></td></tr></table></figure>
+
+<p><img src="../images/image-20210704163124416.png" alt="image-20210704163124416"></p>
+<p>修改配置文件的端口号之后开启第二个服务</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line">server:</span><br><span class="line">  applicationConnectors:</span><br><span class="line">    - type: http</span><br><span class="line">      port: 8500 # 在同一台服务器开启多个服务需要修改端口号</span><br><span class="line">  adminConnectors:</span><br><span class="line">  - type: http</span><br><span class="line">    port: 8082 # 在同一台服务器开启多个服务需要修改端口号</span><br></pre></td></tr></table></figure>
+
+<p><img src="../images/image-20210704163217518.png" alt="image-20210704163217518"></p>
+<p>测试：</p>
+<p><img src="../images/image-20210704163333785.png" alt="image-20210704163333785"></p>
+<p><img src="../images/image-20210704163343135.png" alt="image-20210704163343135"></p>
+<h2 id="2、使用-Nginx"><a href="#2、使用-Nginx" class="headerlink" title="2、使用 Nginx"></a>2、使用 Nginx</h2><figure class="highlight tex"><table><tr><td class="code"><pre><span class="line"><span class="params">#</span> 增加下面两行</span><br><span class="line">upstream 127.0.0.1 &#123;</span><br><span class="line">    server 127.0.0.1:8499 weight=1;<span class="params">#</span> 配置权重</span><br><span class="line">    server 127.0.0.1:8500 weight=1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">    server &#123;</span><br><span class="line">    listen       80;</span><br><span class="line">    server<span class="built_in">_</span>name  localhost;</span><br><span class="line"></span><br><span class="line">    <span class="params">#</span>charset koi8-r;</span><br><span class="line"></span><br><span class="line">    <span class="params">#</span>access<span class="built_in">_</span>log  logs/host.access.log  main;</span><br><span class="line"></span><br><span class="line">    location / &#123;</span><br><span class="line">    root   html;</span><br><span class="line">    index  index.html index.htm;</span><br><span class="line">    proxy<span class="built_in">_</span>pass   http://127.0.0.1; <span class="params">#</span> 添加这一行</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>出现的问题：</p>
+<p>1、无法重新加载配置文件</p>
+<p>解决方法：找到对应的进程，杀掉重开服务</p>
+<p>2、upstream 位置写错了</p>
+<h2 id="3、测试"><a href="#3、测试" class="headerlink" title="3、测试"></a>3、测试</h2><p><img src="../images/image-20210704170303963.png" alt="image-20210704170303963"></p>
+<h1 id="配置详解"><a href="#配置详解" class="headerlink" title="配置详解"></a>配置详解</h1><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">########### 每个指令必须有分号结束。#################</span></span><br><span class="line"><span class="comment">#user administrator administrators;  #配置用户或者组，默认为nobody nobody。</span></span><br><span class="line"><span class="comment">#worker_processes 2;  #允许生成的进程数，默认为1</span></span><br><span class="line"><span class="comment">#pid /nginx/pid/nginx.pid;   #指定nginx进程运行文件存放地址</span></span><br><span class="line">error_log <span class="built_in">log</span>/error.log debug;  <span class="comment">#制定日志路径，级别。这个设置可以放入全局块，http块，server块，级别以此为：debug|info|notice|warn|error|crit|alert|emerg</span></span><br><span class="line">events &#123;</span><br><span class="line">    accept_mutex on;   <span class="comment">#设置网路连接序列化，防止惊群现象发生，默认为on</span></span><br><span class="line">    multi_accept on;  <span class="comment">#设置一个进程是否同时接受多个网络连接，默认为off</span></span><br><span class="line">    <span class="comment">#use epoll;      #事件驱动模型，select|poll|kqueue|epoll|resig|/dev/poll|eventport</span></span><br><span class="line">    worker_connections  1024;    <span class="comment">#最大连接数，默认为512</span></span><br><span class="line">&#125;</span><br><span class="line">http &#123;</span><br><span class="line">    include       mime.types;   <span class="comment">#文件扩展名与文件类型映射表</span></span><br><span class="line">    default_type  application/octet-stream; <span class="comment">#默认文件类型，默认为text/plain</span></span><br><span class="line">    <span class="comment">#access_log off; #取消服务日志    </span></span><br><span class="line">    log_format myFormat <span class="string">&#x27;$remote_addr–$remote_user [$time_local] $request $status $body_bytes_sent $http_referer $http_user_agent $http_x_forwarded_for&#x27;</span>; <span class="comment">#自定义格式</span></span><br><span class="line">    access_log <span class="built_in">log</span>/access.log myFormat;  <span class="comment">#combined为日志格式的默认值</span></span><br><span class="line">    sendfile on;   <span class="comment">#允许sendfile方式传输文件，默认为off，可以在http块，server块，location块。</span></span><br><span class="line">    sendfile_max_chunk 100k;  <span class="comment">#每个进程每次调用传输数量不能大于设定的值，默认为0，即不设上限。</span></span><br><span class="line">    keepalive_timeout 65;  <span class="comment">#连接超时时间，默认为75s，可以在http，server，location块。</span></span><br><span class="line"></span><br><span class="line">    upstream mysvr &#123;   </span><br><span class="line">      server 127.0.0.1:7878;</span><br><span class="line">      server 192.168.10.121:3333 backup;  <span class="comment">#热备</span></span><br><span class="line">    &#125;</span><br><span class="line">    error_page 404 https://www.baidu.com; <span class="comment">#错误页</span></span><br><span class="line">    server &#123;</span><br><span class="line">        keepalive_requests 120; <span class="comment">#单连接请求上限次数。</span></span><br><span class="line">        listen       4545;   <span class="comment">#监听端口</span></span><br><span class="line">        server_name  127.0.0.1;   <span class="comment">#监听地址       </span></span><br><span class="line">        location  ~*^.+$ &#123;       <span class="comment">#请求的url过滤，正则匹配，~为区分大小写，~*为不区分大小写。</span></span><br><span class="line">           <span class="comment">#root path;  #根目录</span></span><br><span class="line">           <span class="comment">#index vv.txt;  #设置默认页</span></span><br><span class="line">           proxy_pass  http://mysvr;  <span class="comment">#请求转向mysvr 定义的服务器列表</span></span><br><span class="line">           deny 127.0.0.1;  <span class="comment">#拒绝的ip</span></span><br><span class="line">           allow 172.18.5.54; <span class="comment">#允许的ip           </span></span><br><span class="line">        &#125; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><blockquote>
+<ol>
+<li>百度百科</li>
+<li><a href="https://www.bilibili.com/video/BV1F5411J7vK">https://www.bilibili.com/video/BV1F5411J7vK</a></li>
+<li><a href="https://www.runoob.com/w3cnote/nginx-setup-intro.html">https://www.runoob.com/w3cnote/nginx-setup-intro.html</a></li>
+</ol>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Java</category>
+        <category>Nginx</category>
+      </categories>
+      <tags>
+        <tag>Nginx</tag>
       </tags>
   </entry>
   <entry>
@@ -3108,223 +3252,760 @@
       </tags>
   </entry>
   <entry>
-    <title>Nginx学习笔记(狂神版)</title>
-    <url>/archives/5d9e5ec8.html</url>
-    <content><![CDATA[<h1 id="Nginx是什么？"><a href="#Nginx是什么？" class="headerlink" title="Nginx是什么？"></a>Nginx是什么？</h1><p>Nginx (engine x) 是一个轻量级的、高性能的HTTP和反向代理web服务器，第一个公开版本0.1.0发布于2004年10月4日。</p>
-<p>因它的稳定性、丰富的功能集、简单的配置文件和低系统资源的消耗而闻名。</p>
-<p>其特点是占有内存少，并发能力强，事实上nginx的并发能力在同类型的网页服务器中表现较好，中国大陆使用nginx网站用户有：百度、京东、新浪、网易、腾讯、淘宝等。</p>
-<p>对于新建站点，建议使用最新稳定版作为生产版本</p>
-<p>Nginx 既可以在内部直接支持 Rails 和 PHP 程序对外进行服务，也可以支持作为 HTTP代理服务对外进行服务。Nginx采用C进行编写</p>
-<p>能够不间断服务的情况下进行软件版本的升级</p>
-<blockquote>
-<p>以上来自百度百科</p>
-</blockquote>
-<span id="more"></span>
-
-<p>没有什么是加一层是解决不了的</p>
-<h1 id="Nginx作用"><a href="#Nginx作用" class="headerlink" title="Nginx作用"></a>Nginx作用</h1><blockquote>
-<p>Http代理，反向代理，负载均衡（轮训和加权轮训）</p>
-</blockquote>
-<p>正向代理：代理客户端</p>
-<p>反向代理：代理服务器</p>
-<p>iphash 对客户端请求的 ip 进行 hash 操作，然后根据 hash 结果将同一个客户端的 ip 请求发给同一台服务器进行处理</p>
-<p>动静分离：样式那些静态文件可以单独提出来，将其做缓存操作，提高资源的响应速度</p>
-<h1 id="安装步骤"><a href="#安装步骤" class="headerlink" title="安装步骤"></a>安装步骤</h1><h2 id="Windows下安装"><a href="#Windows下安装" class="headerlink" title="Windows下安装"></a>Windows下安装</h2><p>1、下载解压</p>
-<p><img src="../images/image-20210704143948957.png" alt="image-20210704143948957"></p>
-<p>2、直接运行</p>
-<p><img src="../images/image-20210704144201667.png" alt="image-20210704144201667"></p>
-<p>3、浏览器直接输：127.0.0.1:80（或者你改的其他端口）</p>
-<p><img src="../images/image-20210704144243668.png" alt="image-20210704144243668"></p>
-<h2 id="Linux-下安装"><a href="#Linux-下安装" class="headerlink" title="Linux 下安装"></a>Linux 下安装</h2><p>1、下载解压</p>
-<p><img src="../images/image-20210704144703838.png" alt="image-20210704144703838"></p>
-<p>2、手动编译安装</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">./configure</span><br><span class="line">make </span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
-
-<p><img src="../images/image-20210704150317847.png" alt="image-20210704150317847"></p>
-<p><img src="../images/image-20210704150432259.png" alt="image-20210704150432259"></p>
-<p><img src="../images/image-20210704150450068.png" alt="image-20210704150450068"></p>
-<p>提示缺少 库</p>
-<figure class="highlight tex"><table><tr><td class="code"><pre><span class="line">./configure: error: the HTTP rewrite module requires the PCRE library.</span><br><span class="line">You can either disable the module by using --without-http<span class="built_in">_</span>rewrite<span class="built_in">_</span>module</span><br><span class="line">option, or install the PCRE library into the system, or build the PCRE library</span><br><span class="line">statically from the source with nginx by using --with-pcre=&lt;path&gt; option.</span><br></pre></td></tr></table></figure>
-
-<p>解决方法：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get install libpcre3 libpcre3-dev -y</span><br></pre></td></tr></table></figure>
-
-<p>其他错误</p>
-<figure class="highlight tex"><table><tr><td class="code"><pre><span class="line">./configure: error: the HTTP gzip module requires the zlib library.</span><br><span class="line">You can either disable the module by using --without-http<span class="built_in">_</span>gzip<span class="built_in">_</span>module</span><br><span class="line">option, or install the zlib library into the system, or build the zlib library</span><br><span class="line">statically from the source with nginx by using --with-zlib=&lt;path&gt; option.</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get install ruby</span><br><span class="line">sudo apt-get install zlib1g</span><br><span class="line">sudo apt-get install zlib1g-dev</span><br></pre></td></tr></table></figure>
-
-
-
-<p>3、查看是否安装成功</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">whereis nginx</span><br></pre></td></tr></table></figure>
-
-<p><img src="../images/image-20210704150602335.png" alt="image-20210704150602335"></p>
-<p>4、进入 <code>bin</code> 目录启动</p>
-<p><img src="../images/image-20210704150751028.png" alt="image-20210704150751028"></p>
-<p>这里说明 80 端口被占用</p>
-<p>看了一下确实被占用了</p>
-<p><img src="../images/image-20210704150928920.png" alt="image-20210704150928920"></p>
-<p>解决方法：</p>
-<p>修改端口</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">        listen       8499;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-
-<p>再次执行</p>
-<p><img src="../images/image-20210704151625656.png" alt="image-20210704151625656"></p>
-<h1 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h1><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> /usr/<span class="built_in">local</span>/nginx/sbin</span><br><span class="line"></span><br><span class="line">./nginx <span class="comment"># 启动</span></span><br><span class="line">./nginx -s stop <span class="comment"># 停止</span></span><br><span class="line">./nginx -s reload <span class="comment"># 自动重新加载新的配置文件</span></span><br><span class="line">./nginx -s quit <span class="comment"># 安全退出</span></span><br></pre></td></tr></table></figure>
-
-<h1 id="实战演示"><a href="#实战演示" class="headerlink" title="实战演示"></a>实战演示</h1><p>以 <code>dropwizard</code> 项目为例</p>
-<h2 id="1、开启两个服务"><a href="#1、开启两个服务" class="headerlink" title="1、开启两个服务"></a>1、开启两个服务</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">java -jar Nginx-Dropwizard-1.0-SNAPSHOT.jar serve hello.yml</span><br></pre></td></tr></table></figure>
-
-<p><img src="../images/image-20210704163124416.png" alt="image-20210704163124416"></p>
-<p>修改配置文件的端口号之后开启第二个服务</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line">server:</span><br><span class="line">  applicationConnectors:</span><br><span class="line">    - type: http</span><br><span class="line">      port: 8500 # 在同一台服务器开启多个服务需要修改端口号</span><br><span class="line">  adminConnectors:</span><br><span class="line">  - type: http</span><br><span class="line">    port: 8082 # 在同一台服务器开启多个服务需要修改端口号</span><br></pre></td></tr></table></figure>
-
-<p><img src="../images/image-20210704163217518.png" alt="image-20210704163217518"></p>
-<p>测试：</p>
-<p><img src="../images/image-20210704163333785.png" alt="image-20210704163333785"></p>
-<p><img src="../images/image-20210704163343135.png" alt="image-20210704163343135"></p>
-<h2 id="2、使用-Nginx"><a href="#2、使用-Nginx" class="headerlink" title="2、使用 Nginx"></a>2、使用 Nginx</h2><figure class="highlight tex"><table><tr><td class="code"><pre><span class="line"><span class="params">#</span> 增加下面两行</span><br><span class="line">upstream 127.0.0.1 &#123;</span><br><span class="line">    server 127.0.0.1:8499 weight=1;<span class="params">#</span> 配置权重</span><br><span class="line">    server 127.0.0.1:8500 weight=1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">    server &#123;</span><br><span class="line">    listen       80;</span><br><span class="line">    server<span class="built_in">_</span>name  localhost;</span><br><span class="line"></span><br><span class="line">    <span class="params">#</span>charset koi8-r;</span><br><span class="line"></span><br><span class="line">    <span class="params">#</span>access<span class="built_in">_</span>log  logs/host.access.log  main;</span><br><span class="line"></span><br><span class="line">    location / &#123;</span><br><span class="line">    root   html;</span><br><span class="line">    index  index.html index.htm;</span><br><span class="line">    proxy<span class="built_in">_</span>pass   http://127.0.0.1; <span class="params">#</span> 添加这一行</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<p>出现的问题：</p>
-<p>1、无法重新加载配置文件</p>
-<p>解决方法：找到对应的进程，杀掉重开服务</p>
-<p>2、upstream 位置写错了</p>
-<h2 id="3、测试"><a href="#3、测试" class="headerlink" title="3、测试"></a>3、测试</h2><p><img src="../images/image-20210704170303963.png" alt="image-20210704170303963"></p>
-<h1 id="配置详解"><a href="#配置详解" class="headerlink" title="配置详解"></a>配置详解</h1><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">########### 每个指令必须有分号结束。#################</span></span><br><span class="line"><span class="comment">#user administrator administrators;  #配置用户或者组，默认为nobody nobody。</span></span><br><span class="line"><span class="comment">#worker_processes 2;  #允许生成的进程数，默认为1</span></span><br><span class="line"><span class="comment">#pid /nginx/pid/nginx.pid;   #指定nginx进程运行文件存放地址</span></span><br><span class="line">error_log <span class="built_in">log</span>/error.log debug;  <span class="comment">#制定日志路径，级别。这个设置可以放入全局块，http块，server块，级别以此为：debug|info|notice|warn|error|crit|alert|emerg</span></span><br><span class="line">events &#123;</span><br><span class="line">    accept_mutex on;   <span class="comment">#设置网路连接序列化，防止惊群现象发生，默认为on</span></span><br><span class="line">    multi_accept on;  <span class="comment">#设置一个进程是否同时接受多个网络连接，默认为off</span></span><br><span class="line">    <span class="comment">#use epoll;      #事件驱动模型，select|poll|kqueue|epoll|resig|/dev/poll|eventport</span></span><br><span class="line">    worker_connections  1024;    <span class="comment">#最大连接数，默认为512</span></span><br><span class="line">&#125;</span><br><span class="line">http &#123;</span><br><span class="line">    include       mime.types;   <span class="comment">#文件扩展名与文件类型映射表</span></span><br><span class="line">    default_type  application/octet-stream; <span class="comment">#默认文件类型，默认为text/plain</span></span><br><span class="line">    <span class="comment">#access_log off; #取消服务日志    </span></span><br><span class="line">    log_format myFormat <span class="string">&#x27;$remote_addr–$remote_user [$time_local] $request $status $body_bytes_sent $http_referer $http_user_agent $http_x_forwarded_for&#x27;</span>; <span class="comment">#自定义格式</span></span><br><span class="line">    access_log <span class="built_in">log</span>/access.log myFormat;  <span class="comment">#combined为日志格式的默认值</span></span><br><span class="line">    sendfile on;   <span class="comment">#允许sendfile方式传输文件，默认为off，可以在http块，server块，location块。</span></span><br><span class="line">    sendfile_max_chunk 100k;  <span class="comment">#每个进程每次调用传输数量不能大于设定的值，默认为0，即不设上限。</span></span><br><span class="line">    keepalive_timeout 65;  <span class="comment">#连接超时时间，默认为75s，可以在http，server，location块。</span></span><br><span class="line"></span><br><span class="line">    upstream mysvr &#123;   </span><br><span class="line">      server 127.0.0.1:7878;</span><br><span class="line">      server 192.168.10.121:3333 backup;  <span class="comment">#热备</span></span><br><span class="line">    &#125;</span><br><span class="line">    error_page 404 https://www.baidu.com; <span class="comment">#错误页</span></span><br><span class="line">    server &#123;</span><br><span class="line">        keepalive_requests 120; <span class="comment">#单连接请求上限次数。</span></span><br><span class="line">        listen       4545;   <span class="comment">#监听端口</span></span><br><span class="line">        server_name  127.0.0.1;   <span class="comment">#监听地址       </span></span><br><span class="line">        location  ~*^.+$ &#123;       <span class="comment">#请求的url过滤，正则匹配，~为区分大小写，~*为不区分大小写。</span></span><br><span class="line">           <span class="comment">#root path;  #根目录</span></span><br><span class="line">           <span class="comment">#index vv.txt;  #设置默认页</span></span><br><span class="line">           proxy_pass  http://mysvr;  <span class="comment">#请求转向mysvr 定义的服务器列表</span></span><br><span class="line">           deny 127.0.0.1;  <span class="comment">#拒绝的ip</span></span><br><span class="line">           allow 172.18.5.54; <span class="comment">#允许的ip           </span></span><br><span class="line">        &#125; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><blockquote>
-<ol>
-<li>百度百科</li>
-<li><a href="https://www.bilibili.com/video/BV1F5411J7vK">https://www.bilibili.com/video/BV1F5411J7vK</a></li>
-<li><a href="https://www.runoob.com/w3cnote/nginx-setup-intro.html">https://www.runoob.com/w3cnote/nginx-setup-intro.html</a></li>
-</ol>
-</blockquote>
-]]></content>
-      <categories>
-        <category>Java</category>
-        <category>Nginx</category>
-      </categories>
-      <tags>
-        <tag>Nginx</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Nginx学习笔记(尚硅谷版)</title>
-    <url>/archives/14f945e.html</url>
-    <content><![CDATA[<h1 id="1、-nginx-简介"><a href="#1、-nginx-简介" class="headerlink" title="1、 nginx 简介"></a>1、 nginx 简介</h1><h2 id="（1）什么是-nginx"><a href="#（1）什么是-nginx" class="headerlink" title="（1）什么是 nginx"></a>（1）什么是 nginx</h2><p>Nginx (engine x) 是一个轻量级的、高性能的HTTP和反向代理web服务器</p>
-<p>专为性能优化而开发，性能是其最重要的考量，实现上非常注重效率 ，能经受高负载的考验 有报告表明能支持高达 50,000 个并发连接数。</p>
-<span id="more"></span>
-
-<h2 id="（2）可以做什么"><a href="#（2）可以做什么" class="headerlink" title="（2）可以做什么"></a>（2）可以做什么</h2><p>反向代理、负载均衡、动静分离</p>
-<h3 id="反向代理"><a href="#反向代理" class="headerlink" title="反向代理"></a>反向代理</h3><p>Nginx不仅可以做反向代理，实现负载均衡。还能用作正向代理来进行上网等功能。</p>
-<p>正向代理：如果把局域网外的 Internet 想象成一个巨大的资源库，则局域网中的客户端要访问 Internet ，则需要通过代理服务器来访问，这种代理服务就称为正向代理。</p>
-<p><img src="../images/image-20210705093339524.png" alt="image-20210705093339524"></p>
-<p>反向代理，将请求发送到反向代理服务器，由反向代理服务器去选择目标服务器获取数据后，再返回给客户端。此时反向代理服务器和目标服务器对外就是一个服务器，暴露的是代理服务器地址，隐藏了真实服务器 IP 地址。</p>
-<p>客户端不需要任何配置</p>
-<p><img src="../images/image-20210705093835089.png" alt="image-20210705093835089"></p>
-<h3 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h3><p>将请求分发到多个服务器上，将负载分发到不同的服务器，也就是我们所说的负载均衡</p>
-<p><img src="../images/image-20210705094103385.png" alt="image-20210705094103385"></p>
-<h3 id="动静分离"><a href="#动静分离" class="headerlink" title="动静分离"></a>动静分离</h3><p>为了加快网站的解析速度，可以把动态页面和静态页面由不同的服务器来解析，加快解析速度。降低原来单个服务器的压力。</p>
-<p><img src="../images/image-20210705094142506.png" alt="image-20210705094142506"></p>
-<p>简单来说就是把动态跟静态请求分开，不能理解成只是单纯的把动态页面和静态页面物理分离。严格意义上说应该是动态请求跟静态请求分开，可以理解成使用Nginx 处理静态页面，Tomcat处理动态页面。</p>
-<p>动静分离从目前实现角度来讲大致分为两种：</p>
-<p> 一种是纯粹把静态文件独立成单独的域名，放在独立的服务器上，也是目前主流推崇的方案； </p>
-<p>另外一种方法就是动态跟静态文件混合在一起发布，通过 nginx 来分开。 </p>
-<p>通过 location 指定不同的后缀名实现不同的请求转发。通过 expires 参数设置，可以使浏览器缓存过期时间，减少与服务器之前的请求和流量。</p>
-<p>具体 Expires 定义：是给一个资源设定一个过期时间，也就是说无需去服务端验证，直接通过浏览器自身确认是否过期即可，所以不会产生额外的流量。此种方法非常适合不经常变动的资源。（如果经常更新的文件，不建议使用 Expires 来缓存），我这里设置 3d，表示在这 3 天之内访问这个 URL，发送一个请求，比对服务器该文件最后更新时间没有变化，则不会从服务器抓取，返回状态码 304，如果有修改，则直接从服务器重新下载，返回状态码 200。</p>
-<h1 id="2、-Nginx-的安装"><a href="#2、-Nginx-的安装" class="headerlink" title="2、 Nginx 的安装"></a>2、 Nginx 的安装</h1><img src="../images/image-20210705095050510.png" alt="image-20210705095050510" style="zoom:50%;" />
-
-<p>安装省略，可以参考另外一篇笔记</p>
-<h1 id="3、-Nginx-的常用命令和配置文件"><a href="#3、-Nginx-的常用命令和配置文件" class="headerlink" title="3、 Nginx 的常用命令和配置文件"></a>3、 Nginx 的常用命令和配置文件</h1><h2 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h2><p>在/usr/local/nginx/sbin 目录下执行命令</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 启动</span></span><br><span class="line">./nginx</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看版本号</span></span><br><span class="line">./nginx -v</span><br><span class="line"></span><br><span class="line"><span class="comment"># 停止</span></span><br><span class="line">./nginx -s stop</span><br><span class="line"></span><br><span class="line"><span class="comment"># 重新加载</span></span><br><span class="line">./nginx -s reload</span><br></pre></td></tr></table></figure>
-
-<h2 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">worker_processes  1;<span class="comment"># nginx 处理并发的数量</span></span><br><span class="line"></span><br><span class="line">events &#123;</span><br><span class="line">    worker_connections  1024;<span class="comment"># 最大连接数</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">http &#123;</span><br><span class="line">    include       mime.types;</span><br><span class="line">    default_type  application/octet-stream;</span><br><span class="line">    sendfile        on; </span><br><span class="line">    keepalive_timeout  65;</span><br><span class="line">    server &#123;</span><br><span class="line">        listen       80;</span><br><span class="line">        server_name  localhost;</span><br><span class="line">        location / &#123;</span><br><span class="line">            root   html;</span><br><span class="line">            index  index.html index.htm;</span><br><span class="line">        &#125;</span><br><span class="line">        error_page   500 502 503 504  /50x.html;</span><br><span class="line">        location = /50x.html &#123;</span><br><span class="line">            root   html;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="第一部分：全局块"><a href="#第一部分：全局块" class="headerlink" title="第一部分：全局块"></a>第一部分：全局块</h3><p> 从配置文件开始到 events 块之间的内容，主要会设置一些影响nginx 服务器整体运行的配置指令，主要包括配置运行 Nginx 服务器的用户（组）、允许生成的 worker process 数，进程 PID 存放路径、日志存放路径和类型以及配置文件的引入等。</p>
-<h3 id="第二部分：events块"><a href="#第二部分：events块" class="headerlink" title="第二部分：events块"></a>第二部分：events块</h3><p>events 块涉及的指令主要影响 Nginx 服务器与用户的网络连接，常用的设置包括是否开启对多 work process 下的网络连接进行序列化，是否允许同时接收多个网络连接，选取哪种事件驱动模型来处理连接请求，每个 word process 可以同时支持的最大连接数等。 上述例子就表示每个 work process 支持的最大连接数为 1024. </p>
-<p>这部分的配置对 Nginx 的性能影响较大，在实际中应该灵活配置。</p>
-<h3 id="第三部分：http块"><a href="#第三部分：http块" class="headerlink" title="第三部分：http块"></a>第三部分：http块</h3><p>代理、缓存和日志定义等绝大多数功能和第三方模块的配置都在这里。 需要注意的是：http 块也可以包括 http全局块、server 块。 </p>
-<h4 id="（1）-http-全局块"><a href="#（1）-http-全局块" class="headerlink" title="（1） http 全局块"></a>（1） http 全局块</h4><p>http全局块配置的指令包括文件引入、MIME-TYPE 定义、日志自定义、连接超时时间、单链接请求数上限等。</p>
-<h4 id="（2）server-块"><a href="#（2）server-块" class="headerlink" title="（2）server 块"></a>（2）server 块</h4><p>和虚拟主机有密切关系。</p>
-<p>虚拟主机从用户角度看，和一台独立的硬件主机是完全一样的，该技术的产生是为了节省互联网服务器硬件成本。</p>
-<p> 每个 http 块可以包括多个 server 块，而每个 server 块就相当于一个虚拟主机。 </p>
-<p>而每个 server 块也分为全局 server 块，以及可以同时包含多个 locaton 块。</p>
-<p> 1、全局 server 块 </p>
-<p>最常见的配置是本虚拟机主机的监听配置和本虚拟主机的名称或IP配置。 </p>
-<p>2、location 块 </p>
-<p>一个 server 块可以配置多个 location 块。 </p>
-<p>这块的主要作用是基于 Nginx 服务器接收到的请求字符串（例如 server_name/uri-string），对虚拟主机名称（也可以是IP别名）之外的字符串（例如 前面的 /uri-string）进行匹配，对特定的请求进行处理。地址定向、数据缓存和应答控制等功能，还有许多第三方模块的配置也在这里进行。</p>
-<h1 id="4、反向代理实例"><a href="#4、反向代理实例" class="headerlink" title="4、反向代理实例"></a>4、反向代理实例</h1><h2 id="实例1"><a href="#实例1" class="headerlink" title="实例1"></a>实例1</h2><p><img src="../images/image-20210705121614861.png" alt="image-20210705121614861"></p>
-<p>本机 host 文件添加</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">192.168.17.129 www.123.com</span><br></pre></td></tr></table></figure>
-
-<p>Nginx 配置文件</p>
-<p><img src="../images/image-20210705121808169.png" alt="image-20210705121808169"></p>
-<p>测试</p>
-<p><img src="../images/image-20210705121819438.png" alt="image-20210705121819438"></p>
-<h2 id="实例2"><a href="#实例2" class="headerlink" title="实例2"></a>实例2</h2><h3 id="实现效果"><a href="#实现效果" class="headerlink" title="实现效果"></a>实现效果</h3><p>使用 nginx 反向代理，根据访问的路径跳转到不同端口的服务中<br>nginx 监听端口为 9001</p>
-<p>访问 http:// 192.168.17.129 :9001/edu/ 直接跳转到 127.0.0.1:808 0<br>访问 http:// 192.168.17.129 :9001/vod/ 直接跳转到 127.0.0.1:808 1</p>
-<h3 id="Nginx-配置修改"><a href="#Nginx-配置修改" class="headerlink" title="Nginx 配置修改"></a>Nginx 配置修改</h3><p>再添加一个 server 块，添加配置</p>
-<p><img src="../images/image-20210705122138325.png" alt="image-20210705122138325"></p>
-<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><p><img src="../images/image-20210705122206917.png" alt="image-20210705122206917"></p>
-<p><img src="../images/image-20210705122215874.png" alt="image-20210705122215874"></p>
-<h1 id="5、负载均衡实例"><a href="#5、负载均衡实例" class="headerlink" title="5、负载均衡实例"></a>5、负载均衡实例</h1><h2 id="负载均衡配置"><a href="#负载均衡配置" class="headerlink" title="负载均衡配置"></a>负载均衡配置</h2><p><img src="../images/image-20210705122847958.png" alt="image-20210705122847958"></p>
-<p><img src="../images/image-20210705122855692.png" alt="image-20210705122855692"></p>
-<h2 id="负载均衡的策略"><a href="#负载均衡的策略" class="headerlink" title="负载均衡的策略"></a>负载均衡的策略</h2><p>轮询、加权、iphash、fair</p>
-<h3 id="轮询（默认）"><a href="#轮询（默认）" class="headerlink" title="轮询（默认）"></a>轮询（默认）</h3><p>每个请求按时间顺序逐一分配到不同的后端服务器，如果后端服务器 down 掉，能自动剔除。</p>
-<h3 id="weight"><a href="#weight" class="headerlink" title="weight"></a>weight</h3><p>weigh t 代表权重默认为 1, 权重越高被分配的客户端越多</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">upstream server_pool&#123; </span><br><span class="line">	server 192.168.5.21 weight=5; </span><br><span class="line">	server 192.168.5.22 weight=10; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="ip-hash"><a href="#ip-hash" class="headerlink" title="ip_hash"></a>ip_hash</h3><p>每个请求按访问 ip 的 hash 结果分配，这样每个访客固定访问一个后端服务器，可以解决session的问题</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">upstream server_pool&#123; </span><br><span class="line">    ip_hash; </span><br><span class="line">    server 192.168.5.21:80; </span><br><span class="line">    server 192.168.5.22:80; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="fair-（第三方）"><a href="#fair-（第三方）" class="headerlink" title="fair （第三方）"></a>fair （第三方）</h3><p>按后端服务器的响应时间来分配请求，响应时间短的优先分配。</p>
-<h1 id="6、-动静分离实例"><a href="#6、-动静分离实例" class="headerlink" title="6、 动静分离实例"></a>6、 动静分离实例</h1><p>这里 <code>www</code> 和 <code>image</code> 是静态目录</p>
-<p><img src="../images/image-20210705125230306.png" alt="image-20210705125230306"></p>
-<h1 id="7、配置高可用集群"><a href="#7、配置高可用集群" class="headerlink" title="7、配置高可用集群"></a>7、配置高可用集群</h1><h2 id="主从"><a href="#主从" class="headerlink" title="主从"></a>主从</h2><p><img src="../images/image-20210705125754935.png" alt="image-20210705125754935"></p>
-<ol>
-<li>需要两台 <strong>nginx</strong> 服务器</li>
-<li>需要 安装<strong>keepalived</strong></li>
-<li>需要虚拟 <strong>ip</strong></li>
-</ol>
-<blockquote>
-<p><a href="https://www.bilibili.com/video/BV1zJ411w7SV?p=14&amp;spm_id_from=pageDriver">https://www.bilibili.com/video/BV1zJ411w7SV?p=14&amp;spm_id_from=pageDriver</a></p>
-</blockquote>
-<h1 id="8、Nginx-原理"><a href="#8、Nginx-原理" class="headerlink" title="8、Nginx 原理"></a>8、Nginx 原理</h1><p><img src="../images/image-20210705130858064.png" alt="image-20210705130858064"></p>
-<h2 id="work-是如何工作的"><a href="#work-是如何工作的" class="headerlink" title="work 是如何工作的"></a>work 是如何工作的</h2><p><img src="../images/image-20210705130928555.png" alt="image-20210705130928555"></p>
-<h2 id="一个-master-和多个-woker-有什么好处"><a href="#一个-master-和多个-woker-有什么好处" class="headerlink" title="一个 master 和多个 woker 有什么好处"></a>一个 master 和多个 woker 有什么好处</h2><p>1 ）可以使用 <code>nginx -s reload</code> 热部署</p>
-<p>2 ）每个 woker 是独立的进程，如果有其中的一个 woker 出现问题，其他 woker 因为是独立的，继续进行争抢，实现请求过程，不会造成服务中断</p>
-<h2 id="设置多少个-woker-合适"><a href="#设置多少个-woker-合适" class="headerlink" title="设置多少个 woker 合适"></a>设置多少个 woker 合适</h2><p>worker 数和服务器的 cpu 数相等是最为适宜的</p>
-<h2 id="连接数-worker-connection"><a href="#连接数-worker-connection" class="headerlink" title="连接数 worker_connection"></a>连接数 worker_connection</h2><p>第一个：发送请求，占用了 woker 的几个连接数？</p>
-<p>答案： 2 或者 4 个</p>
-<p>一来一回是两个，如果只是静态资源，2个；如果访问了动态资源（比如访问了数据库），4个</p>
-<p>第二个： nginx 有一 个 master ，有四个 woker ，每个 woker 支持最大的连接数 1024 ，支持的最大并发数是多少？</p>
+    <title>Redis学习笔记</title>
+    <url>/archives/8eda3648.html</url>
+    <content><![CDATA[<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><blockquote>
 <ul>
-<li>普通的静态访问最大并发数是： <code>worker_connections * worker_processes / 2</code></li>
-<li>而如果是 HTTP 作 为反向代理来说，最大并发数量应该是 <code>worker_connections * worker_processes / 4</code></li>
+<li>  [1] 狂神B站视频：<a href="https://www.bilibili.com/video/BV1S54y1R7SB">https://www.bilibili.com/video/BV1S54y1R7SB</a></li>
+<li>  [2]菜鸟论坛</li>
 </ul>
-<h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><h2 id="session-丢失如何解决？"><a href="#session-丢失如何解决？" class="headerlink" title="session 丢失如何解决？"></a>session 丢失如何解决？</h2><p>（1）使用容器扩展插件来实现</p>
-<p>（2）使用Nginx负载均衡的ip_hash策略</p>
-<p>（3）使用框架的会话管理工具——比如Spring session</p>
-<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><blockquote>
+</blockquote>
+<p>一定要逼着自己学习</p>
+<span id="more"></span>
+
+<h1 id="NoSQL概述"><a href="#NoSQL概述" class="headerlink" title="NoSQL概述"></a>NoSQL概述</h1><h2 id="网站演进"><a href="#网站演进" class="headerlink" title="网站演进"></a>网站演进</h2><blockquote>
+<p>  1、单机 mysql 时代</p>
+</blockquote>
+<p><img src="../images/image-20210129103812924.png" alt="image-20210129103812924"></p>
+<p>网站访问量不会太大，单个数据库基本足够用。更多使用静态 html</p>
+<p>思考：网站瓶颈是什么？</p>
+<p>1、数据量太大，一个机器放不下</p>
+<p>2、数据的索引，一个机器的内存也放不下</p>
+<p>3、访问量过大，一个服务器承受不了</p>
+<blockquote>
+<p>  2、Memcached（缓存）+ MySQL + 垂直拆分（读写分离）</p>
+</blockquote>
+<p>网站80%的情况都是在读，如果每次都从数据库读，太麻烦，不如放到缓存里面，可以减轻数据库的压力。</p>
+<p>发展过程：</p>
+<p>优化数据结构和索引 –&gt; 文件缓存（IO）–&gt; Memcached（当时的热门）</p>
+<p><img src="../images/image-20210129104453727.png" alt="image-20210129104453727"></p>
+<p>数据库读写分离</p>
+<blockquote>
+<p>  3、分库分表+水平拆分</p>
+</blockquote>
+<p>每个集群放 ${ 1/3 }$ 的数据，查数据的时候通过一些技术定位数据在那个集群</p>
+<p>分库分表减轻压力</p>
+<p><img src="../images/image-20210129105111010.png" alt="image-20210129105111010"></p>
+<blockquote>
+<p>  4、如今</p>
+</blockquote>
+<p>世界变化很快，技术革新也很快</p>
+<p>数据量大，变化也很快。MySQL 存数据量比较大的文件，如图片、文件，效率比较低。</p>
+<p>大数据的 IO 压力下，表结构基本没法更改。</p>
+<blockquote>
+<p>  目前基本的互联网项目架构</p>
+</blockquote>
+<p> <img src="../images/image-20210129110216263.png" alt="image-20210129110216263"></p>
+<h2 id="为什么要用-NoSQL"><a href="#为什么要用-NoSQL" class="headerlink" title="为什么要用 NoSQL?"></a>为什么要用 NoSQL?</h2><p>用户个人信息，社交网络，地理位置。用户自己产生的数据，用户日志等等爆发式增长。</p>
+<p>这个时候，NoSQL 可以很好处理这些数据。</p>
+<h2 id="什么是NoSQL"><a href="#什么是NoSQL" class="headerlink" title="什么是NoSQL?"></a>什么是NoSQL?</h2><blockquote>
+<p>  NoSQL，泛指非关系型的数据库。随着互联网<a href="https://baike.baidu.com/item/web2.0/97695">web2.0</a>网站的兴起，传统的关系数据库在处理web2.0网站，特别是超大规模和高并发的<a href="https://baike.baidu.com/item/SNS/10242">SNS</a>类型的web2.0纯<a href="https://baike.baidu.com/item/%E5%8A%A8%E6%80%81%E7%BD%91">动态网</a>站已经显得力不从心，出现了很多难以克服的问题，而非关系型的数据库则由于其本身的特点得到了非常迅速的发展。NoSQL数据库的产生就是为了解决大规模数据集合多重数据种类带来的挑战，特别是大数据应用难题。</p>
+<p>  来源：百度百科</p>
+</blockquote>
+<p>NoSQL最常见的解释是“non-relational”， “Not Only SQL”也被很多人接受。</p>
+<h2 id="四大分类"><a href="#四大分类" class="headerlink" title="四大分类"></a>四大分类</h2><p><strong>Key-Value 型数据库</strong></p>
+<p>这一类数据库主要会使用到一个<strong>哈希表</strong>，这个表中有一个特定的键和一个指针指向特定的数据。Key/value模型对于IT系统来说的优势在于简单、易部署。但是如果数据库管理员(DBA)只对部分值进行查询或更新的时候，Key/value就显得效率低下了。举例如：Tokyo Cabinet/Tyrant， <strong>Redis</strong>， Voldemort， Oracle BDB。</p>
+<p><strong>列存储数据库</strong></p>
+<p>这部分数据库通常是用来<strong>应对分布式存储的海量数据</strong>。键仍然存在，但是它们的特点是指向了多个列。这些列是由列家族来安排的。如：Cassandra， <strong>HBase</strong>， Riak.</p>
+<p><strong>文档型数据库</strong></p>
+<ul>
+<li>MongoDB<ul>
+<li>  基于分布式文件存储的数据库</li>
+<li>  介于关系型数据库和非关系型数据库的产品，非关系型数据库中功能最丰富的</li>
+</ul>
+</li>
+</ul>
+<p>文档型数据库的灵感是来自于Lotus Notes办公软件的，而且它同第一种键值存储相类似。该类型的数据模型是版本化的文档，半结构化的文档以特定的格式存储，比如JSON。文档型数据库可以看作是键值数据库的升级版，允许之间嵌套键值，在处理网页等复杂数据时，文档型数据库比传统键值数据库的查询效率更高。如：CouchDB， MongoDb. 国内也有文档型数据库SequoiaDB，已经开源。</p>
+<p><strong>图形(Graph)数据库</strong></p>
+<ul>
+<li>  放的是关系，比如社交网络</li>
+</ul>
+<p>图形结构的数据库同其他行列以及刚性结构的SQL数据库不同，它是使用灵活的图形模型，并且能够扩展到多个服务器上。NoSQL数据库没有标准的查询语言(SQL)，因此进行数据库查询需要制定数据模型。许多NoSQL数据库都有REST式的数据接口或者查询API。如：Neo4J， InfoGrid， Infinite Graph。</p>
+<p><img src="../images/image-20210129115721896.png" alt="image-20210129115721896"></p>
+<h2 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h2><ul>
+<li>  易扩展</li>
+<li>  大数据量，高性能</li>
+<li>  数据库结构简单。不需要事先设计数据库，随取随用</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">NoSQL</span><br><span class="line">- 最终一致性</span><br><span class="line">- CAP 定理 和 BASE （异地多活）</span><br><span class="line">- 高性能、高可用、高可拓展</span><br><span class="line">- 。。。</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>  了解 3V + 3高</p>
+</blockquote>
+<p>大数据时代的3V:主要是描述问题的</p>
+<p>1.海量Volume</p>
+<p>2.多样Variety</p>
+<p>3.实时Velocity</p>
+<p>大数据时代的3高:主要是对程序的要求</p>
+<p>1.高并发</p>
+<p>2高可扩</p>
+<p>3.高性能</p>
+<p>真正在公司中的实践:NoSQL + RDBMS</p>
+<h2 id="阿里巴巴演进"><a href="#阿里巴巴演进" class="headerlink" title="阿里巴巴演进"></a>阿里巴巴演进</h2><p><img src="../images/image-20210129112505194.png" alt="image-20210129112505194"></p>
+<p>技术急不得，越是慢慢学，才能越扎实！</p>
+<p>开源才是技术的王道。</p>
+<p>没有什么是加一层解决不了的。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 1、商品的基本信息</span></span><br><span class="line">	名称、价格、商品信息。。。</span><br><span class="line">	关系型数据库就可以了</span><br><span class="line">	</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2、商品的描述（文字比较多）</span></span><br><span class="line">	文档型数据库，MongoDB</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3、图片</span></span><br><span class="line">	分布式文件系统 FastDFS</span><br><span class="line">	- 淘宝自己的 TFS</span><br><span class="line">	- Google 的 GFS</span><br><span class="line">	- Hadoop HDFS</span><br><span class="line">	- 阿里云 oss</span><br><span class="line"></span><br><span class="line"><span class="comment"># 4、商品的关键字（搜索）</span></span><br><span class="line">	- 搜索引擎 solr es</span><br><span class="line">	- iSearch ：多隆</span><br><span class="line"></span><br><span class="line"><span class="comment"># 5、商品热门的波段信息</span></span><br><span class="line">	- 内存数据库</span><br><span class="line">	- Redis Tair</span><br><span class="line"></span><br><span class="line"><span class="comment"># 6、商品的交易，外部的支付接口</span></span><br><span class="line">	- 三方应用</span><br></pre></td></tr></table></figure>
+
+<p>王坚：阿里云的这群疯子</p>
+<blockquote>
+<p>  <a href="https://mp.weixin.qq.com/s?__biz=MzU0NDEwMTc1MA==&amp;mid=2247490379&amp;idx=1&amp;sn=17857e09e980b41bc188e592422c3459&amp;chksm=fb001f52cc7796444cb18e5a483d3ad26e44fc70d543fa03fb2f56ae74d4db7d65e8d5df7b4e&amp;mpshare=1&amp;scene=1&amp;srcid=1016QBaRRz9JrroPgKJ8xXBp#rd">https://mp.weixin.qq.com/s?__biz=MzU0NDEwMTc1MA==&amp;mid=2247490379&amp;idx=1&amp;sn=17857e09e980b41bc188e592422c3459&amp;chksm=fb001f52cc7796444cb18e5a483d3ad26e44fc70d543fa03fb2f56ae74d4db7d65e8d5df7b4e&amp;mpshare=1&amp;scene=1&amp;srcid=1016QBaRRz9JrroPgKJ8xXBp#rd</a></p>
+</blockquote>
+<p>大型互联网应用问题：</p>
+<ul>
+<li>  数据类型太多了</li>
+<li>  数据源繁多，经常重构</li>
+<li>  数据要改造，大面积改造</li>
+</ul>
+<p>解决方案：</p>
+<p><img src="../images/image-20210129114933182.png" alt="image-20210129114933182"></p>
+<h1 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><blockquote>
+<p>  是什么？</p>
+</blockquote>
+<p>Redis（Remote Dictionary Server )，即远程字典服务，是一个开源的使用ANSI C语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API。</p>
+<p>免费、开源、也被称为结构化数据库。</p>
+<p>redis会周期性的把更新的数据写入磁盘或者把修改操作写入追加的记录文件，并且在此基础上实现了master-slave(主从)同步。</p>
+<blockquote>
+<p>  redis是一个key-value<a href="https://baike.baidu.com/item/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F">存储系统</a>。和Memcached类似，它支持存储的value类型相对更多，包括string(字符串)、list(<a href="https://baike.baidu.com/item/%E9%93%BE%E8%A1%A8">链表</a>)、set(集合)、zset(sorted set –有序集合)和hash（哈希类型）。这些<a href="https://baike.baidu.com/item/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B">数据类型</a>都支持push/pop、add/remove及取交集并集和差集及更丰富的操作，而且这些操作都是原子性的。在此基础上，redis支持各种不同方式的排序。与memcached一样，为了保证效率，<strong>数据都是缓存在内存中</strong>。区别的是redis会周期性的把更新的数据写入磁盘或者把修改操作写入追加的记录文件，并且在此基础上实现了master-slave(主从)同步。</p>
+<p>  Redis 是一个高性能的key-value数据库。 redis的出现，很大程度补偿了<a href="https://baike.baidu.com/item/memcached">memcached</a>这类key/value存储的不足，在部 分场合可以对关系数据库起到很好的补充作用。它提供了Java，C/C++，C#，PHP，JavaScript，Perl，Object-C，Python，Ruby，Erlang等客户端，使用很方便。 [1] </p>
+<p>  Redis支持<strong>主从同步</strong>。数据可以从主服务器向任意数量的从服务器上同步，从服务器可以是关联其他从服务器的主服务器。这使得Redis可执行单层树复制。存盘可以有意无意的对数据进行写操作。由于完全实现了发布/订阅机制，使得从数据库在任何地方同步树时，可订阅一个频道并接收主服务器完整的消息发布记录。同步对读取操作的可扩展性和数据冗余很有帮助。</p>
+</blockquote>
+<p><img src="../images/image-20210129120421191.png" alt="image-20210129120421191"></p>
+<blockquote>
+<p>  能干啥？</p>
+</blockquote>
+<p>1、内存存储、持久化（rdb, aof）</p>
+<p>2、效率高、可用于告诉缓存</p>
+<p>3、发布订阅系统</p>
+<p>4、地图信息分析</p>
+<p>5、计时器、计数器（浏览量）</p>
+<p>6、。。。</p>
+<blockquote>
+<p>  学习中用到的东西</p>
+</blockquote>
+<p>1、官网：<a href="https://redis.io/">https://redis.io/</a></p>
+<p>2、中文网：<a href="http://www.redis.cn/">http://www.redis.cn/</a></p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><h3 id="windows安装"><a href="#windows安装" class="headerlink" title="windows安装"></a>windows安装</h3><p>下载地址：<a href="https://github.com/tporadowski/redis/releases">https://github.com/tporadowski/redis/releases</a></p>
+<p>下载解压即可</p>
+<p>推荐在 Linux 下使用</p>
+<p><img src="../images/image-20210129121906222.png" alt="image-20210129121906222"></p>
+<h3 id="Linux-安装"><a href="#Linux-安装" class="headerlink" title="Linux 安装"></a>Linux 安装</h3><p>下载解压</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">make </span><br><span class="line">make install</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装路径在 /usr/local/bin</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="../images/image-20210129125913256.png" alt="image-20210129125913256"></p>
+<p><img src="../images/image-20210129132135846.png" alt="image-20210129132135846"></p>
+<p>后面我们使用单机多 Redis 启动集群测试</p>
+<h2 id="测试性能"><a href="#测试性能" class="headerlink" title="测试性能"></a>测试性能</h2><blockquote>
+<p>  参考文献;<a href="https://www.runoob.com/redis/redis-benchmarks.html">https://www.runoob.com/redis/redis-benchmarks.html</a></p>
+</blockquote>
+<p>redis 性能测试的基本命令如下：</p>
+<p><code>redis-benchmark [option] [option value]</code><br>注意：该命令是在 redis 的目录下执行的，而不是 redis 客户端的内部指令。</p>
+<p><img src="../images/image-20210129124738982.png" alt="image-20210129124738982"></p>
+<p><img src="../images/image-20210129132630402.png" alt="image-20210129132630402"></p>
+<p>默认 16 个数据库，默认使用 0 号数据库，可以使用 select 选择数据库</p>
+<p><img src="../images/image-20210129132910143.png" alt="image-20210129132910143"></p>
+<h2 id="一些命令"><a href="#一些命令" class="headerlink" title="一些命令"></a>一些命令</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">flushdb <span class="comment"># 清空当前数据库</span></span><br><span class="line">keys * <span class="comment"># 查看所有 key</span></span><br><span class="line">SET key value</span><br><span class="line">exists keyname <span class="comment"># 查看 key 是否存在</span></span><br><span class="line">expire keyname 过期时间 <span class="comment"># 设置过期时间</span></span><br><span class="line">ttl keyname <span class="comment"># 查看过期时间</span></span><br><span class="line">MOVE key db <span class="comment"># 移动一个key到另一个数据库</span></span><br><span class="line">DECR key <span class="comment"># 对key对应的数字做减1操作</span></span><br><span class="line">DEL key [key ...] <span class="comment"># 删除指定的key（一个或多个）</span></span><br><span class="line">RENAME key newkey <span class="comment"># 将key重命名为newkey，如果key与newkey相同，将返回一个错误。如果newkey已经存在，则值将被覆盖。</span></span><br><span class="line">APPEND key value <span class="comment"># 追加一个值到key上，如果不存在，就相当于 setkey</span></span><br><span class="line"></span><br><span class="line">INCR key <span class="comment"># 对存储在指定key的数值执行原子的加1操作。如果指定的key不存在，那么在执行incr操作之前，会先将它的值设定为0。如果指定的key中存储的值不是字符串类型（fix：）或者存储的字符串类型不能表示为一个整数，那么执行这个命令时服务器会返回一个错误</span></span><br></pre></td></tr></table></figure>
+
+<p>官网：<a href="http://www.redis.cn/commands.html#">http://www.redis.cn/commands.html#</a></p>
+<blockquote>
+<p>  Redis 是单线程的</p>
+</blockquote>
+<p>Redis是很快的，官方表示，Redis是基于内存操作，CPU不是Redis性能瓶颈，Redis的瓶颈是机器的内存和网络带宽，既然可以使用单线程来实现，就使用单线程了!</p>
+<blockquote>
+<p>  那为什么Redis这么快？</p>
+<p>  <strong>首先，采用了多路复用io阻塞机制</strong><br>  <strong>然后，数据结构简单，操作节省时间</strong><br>  <strong>最后，运行在内存中，自然速度快</strong></p>
+</blockquote>
+<p>首先，高性能的服务器不一定是多线程的</p>
+<p>其次，多线程不一定比单线程效率高（比如，单核 CPU，多线程反而有上下文切换的开销）</p>
+<p>Redis 把数据都放到内存，单线程不存在上下文切换的开销，cpu利用率会比多线程高</p>
+<h1 id="五大数据类型"><a href="#五大数据类型" class="headerlink" title="五大数据类型"></a>五大数据类型</h1><p>String、list、set、zset、hash</p>
+<blockquote>
+<p>  Redis 是一个开源（BSD许可）的，内存中的数据结构存储系统，它可以用作<strong>数据库</strong>、<strong>缓存</strong>和<strong>消息中间件</strong>。 它支持多种类型的数据结构，如 <a href="http://www.redis.cn/topics/data-types-intro.html#strings">字符串（strings）</a>， <a href="http://www.redis.cn/topics/data-types-intro.html#hashes">散列（hashes）</a>， <a href="http://www.redis.cn/topics/data-types-intro.html#lists">列表（lists）</a>， <a href="http://www.redis.cn/topics/data-types-intro.html#sets">集合（sets）</a>， <a href="http://www.redis.cn/topics/data-types-intro.html#sorted-sets">有序集合（sorted sets）</a> 与范围查询， <a href="http://www.redis.cn/topics/data-types-intro.html#bitmaps">bitmaps</a>， <a href="http://www.redis.cn/topics/data-types-intro.html#hyperloglogs">hyperloglogs</a> 和 <a href="http://www.redis.cn/commands/geoadd.html">地理空间（geospatial）</a> 索引半径查询。 Redis 内置了 <a href="http://www.redis.cn/topics/replication.html">复制（replication）</a>，<a href="http://www.redis.cn/commands/eval.html">LUA脚本（Lua scripting）</a>， <a href="http://www.redis.cn/topics/lru-cache.html">LRU驱动事件（LRU eviction）</a>，<a href="http://www.redis.cn/topics/transactions.html">事务（transactions）</a> 和不同级别的 <a href="http://www.redis.cn/topics/persistence.html">磁盘持久化（persistence）</a>， 并通过 <a href="http://www.redis.cn/topics/sentinel.html">Redis哨兵（Sentinel）</a>和自动 <a href="http://www.redis.cn/topics/cluster-tutorial.html">分区（Cluster）</a>提供高可用性（high availability）。</p>
+</blockquote>
+<h2 id="String字符串"><a href="#String字符串" class="headerlink" title="String字符串"></a>String字符串</h2><ul>
+<li>  set</li>
+<li>  get</li>
+<li>  exists</li>
+<li>  append</li>
+<li>  incr，incrby</li>
+<li>  decr，decrby</li>
+<li>  getrange：闭区间</li>
+<li>  setrange：替换</li>
+<li>  setex：如果存在，则设置过期时间 set with expire</li>
+<li>  setnx key value # 如果不存在，则设置值，如果存在，则啥也不干，SET if Not eXists</li>
+<li>  mset，mget：批量设置、批量获取</li>
+<li>  getset：先get后set，如果不存在值，则返回nil；如果存在值，返回原来的值，并设置新的值</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">127.0.0.1:6379&gt; select 4</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379[4]&gt; select 0</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; <span class="built_in">set</span> key1 v1</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; get key1</span><br><span class="line"><span class="string">&quot;v1&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; exists key1</span><br><span class="line">(<span class="built_in">integer</span>) 1</span><br><span class="line">127.0.0.1:6379&gt; append key1 12345</span><br><span class="line">(<span class="built_in">integer</span>) 7</span><br><span class="line">127.0.0.1:6379&gt; get key1</span><br><span class="line"><span class="string">&quot;v112345&quot;</span></span><br><span class="line"><span class="comment">#####################################################</span></span><br><span class="line"><span class="comment"># i++</span></span><br><span class="line"><span class="comment"># 步长 i+=</span></span><br><span class="line">127.0.0.1:6379&gt; <span class="built_in">set</span> views 0</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; incr views</span><br><span class="line">(<span class="built_in">integer</span>) 1</span><br><span class="line">127.0.0.1:6379&gt; incr views</span><br><span class="line">(<span class="built_in">integer</span>) 2</span><br><span class="line">127.0.0.1:6379&gt; decr views</span><br><span class="line">(<span class="built_in">integer</span>) 1</span><br><span class="line">127.0.0.1:6379&gt; incrby views 10</span><br><span class="line">(<span class="built_in">integer</span>) 11</span><br><span class="line">127.0.0.1:6379&gt; decrby views 10</span><br><span class="line">(<span class="built_in">integer</span>) 1</span><br><span class="line"><span class="comment">#######################################################</span></span><br><span class="line"><span class="comment"># 字符串范围</span></span><br><span class="line"><span class="comment"># GETRANGE key start end</span></span><br><span class="line"><span class="comment"># 这里都是闭区间的，处理超出范围的请求时，都把结果限制在string内</span></span><br><span class="line">redis&gt; SET mykey <span class="string">&quot;This is a string&quot;</span></span><br><span class="line">OK</span><br><span class="line">redis&gt; GETRANGE mykey 0 3</span><br><span class="line"><span class="string">&quot;This&quot;</span></span><br><span class="line">redis&gt; GETRANGE mykey -3 -1</span><br><span class="line"><span class="string">&quot;ing&quot;</span></span><br><span class="line">redis&gt; GETRANGE mykey 0 -1</span><br><span class="line"><span class="string">&quot;This is a string&quot;</span></span><br><span class="line">redis&gt; GETRANGE mykey 10 100</span><br><span class="line"><span class="string">&quot;string&quot;</span></span><br><span class="line"><span class="comment">#####################################################</span></span><br><span class="line"><span class="comment"># 替换</span></span><br><span class="line"><span class="comment"># SETRANGE key offset value</span></span><br><span class="line">redis&gt; SET key1 <span class="string">&quot;Hello World&quot;</span></span><br><span class="line">OK</span><br><span class="line">redis&gt; SETRANGE key1 6 <span class="string">&quot;Redis&quot;</span></span><br><span class="line">(<span class="built_in">integer</span>) 11</span><br><span class="line">redis&gt; GET key1</span><br><span class="line"><span class="string">&quot;Hello Redis&quot;</span></span><br><span class="line"><span class="comment">################################</span></span><br><span class="line"><span class="comment"># SETEX key seconds value # 如果存在，则设置过期时间 set with expire</span></span><br><span class="line"><span class="comment"># SETNX key value # 如果不存在，则设置值，如果存在，则啥也不干，SET if Not eXists</span></span><br><span class="line">redis&gt; SETEX mykey 10 <span class="string">&quot;Hello&quot;</span></span><br><span class="line">OK</span><br><span class="line">redis&gt; TTL mykey</span><br><span class="line">(<span class="built_in">integer</span>) 10</span><br><span class="line">redis&gt; GET mykey</span><br><span class="line"><span class="string">&quot;Hello&quot;</span></span><br><span class="line">redis&gt; SETNX mykey <span class="string">&quot;Hello&quot;</span></span><br><span class="line">(<span class="built_in">integer</span>) 1</span><br><span class="line">redis&gt; SETNX mykey <span class="string">&quot;World&quot;</span></span><br><span class="line">(<span class="built_in">integer</span>) 0</span><br><span class="line">redis&gt; GET mykey</span><br><span class="line"><span class="string">&quot;Hello&quot;</span></span><br><span class="line"><span class="comment">#################################</span></span><br><span class="line"><span class="comment"># 批量设置</span></span><br><span class="line"><span class="comment"># mset # MSET是原子的</span></span><br><span class="line"><span class="comment"># mget</span></span><br><span class="line">redis&gt; MSET key1 <span class="string">&quot;Hello&quot;</span> key2 <span class="string">&quot;World&quot;</span>	<span class="comment"># 同时设置多个值</span></span><br><span class="line">OK</span><br><span class="line">redis&gt; GET key1</span><br><span class="line"><span class="string">&quot;Hello&quot;</span></span><br><span class="line">redis&gt; GET key2</span><br><span class="line"><span class="string">&quot;World&quot;</span></span><br><span class="line">redis&gt; MGET key1 key2 nonexisting</span><br><span class="line">1) <span class="string">&quot;Hello&quot;</span></span><br><span class="line">2) <span class="string">&quot;World&quot;</span></span><br><span class="line">3) (nil)</span><br><span class="line">127.0.0.1:6379&gt; MSET key1 <span class="string">&quot;Hello&quot;</span> key2 <span class="string">&quot;World&quot;</span></span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; get key1</span><br><span class="line"><span class="string">&quot;Hello&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; MSETNX key1 <span class="string">&quot;Hello&quot;</span> key2 <span class="string">&quot;World&quot;</span> <span class="comment"># 原子性操作</span></span><br><span class="line">(<span class="built_in">integer</span>) 0</span><br><span class="line">127.0.0.1:6379&gt; MSETNX key1 <span class="string">&quot;Hello&quot;</span> key3 <span class="string">&quot;Redis&quot;</span></span><br><span class="line">(<span class="built_in">integer</span>) 0</span><br><span class="line">127.0.0.1:6379&gt; get key3</span><br><span class="line">(nil)</span><br><span class="line"><span class="comment">#####################</span></span><br><span class="line"><span class="comment"># 设置对象</span></span><br><span class="line"><span class="built_in">set</span> user:1&#123;name:zhangsan,age:2&#125;</span><br><span class="line">127.0.0.1:6379&gt; mset user:1:name zhangsan user:1:age 2</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; mget user:1:name user:1:age</span><br><span class="line">1) <span class="string">&quot;zhangsan&quot;</span></span><br><span class="line">2) <span class="string">&quot;2&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">##############################</span></span><br><span class="line">getset <span class="comment"># 先get后set</span></span><br><span class="line">127.0.0.1:6379&gt; getset db redis <span class="comment"># 如果不存在值，则返回nil</span></span><br><span class="line">(nil)</span><br><span class="line">127.0.0.1:6379&gt; get db</span><br><span class="line"><span class="string">&quot;redis&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; getset db mongodb <span class="comment"># 如果存在值，返回原来的值，并设置新的值</span></span><br><span class="line"><span class="string">&quot;redis&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; get db</span><br><span class="line"><span class="string">&quot;mongodb&quot;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>使用场景：</p>
+<p>value 可以是字符串，也可以是数字</p>
+<ul>
+<li>  计数器</li>
+<li>  统计多单位的数量：uid:2393040:follow 0</li>
+<li>  粉丝数</li>
+<li>  对象缓存存储</li>
+</ul>
+<h2 id="List列表"><a href="#List列表" class="headerlink" title="List列表"></a>List列表</h2><p>可以当队列，可以当栈</p>
+<p>可以存在重复的值</p>
+<p>所有的 list 命令都是 l 开头的</p>
+<ul>
+<li>  lpush：头插法插入线性表中</li>
+<li>  rpush：尾插</li>
+<li>  lrange：获取索引范围内的值</li>
+<li>  lpop：弹出表头元素</li>
+<li>  rpop：弹出表尾元素</li>
+<li>  lindex：根据索引取值</li>
+<li>  llen：获取线性表长度</li>
+<li>  lrem：移除指定的值</li>
+<li>  ltrim：修剪</li>
+<li>  rpoplpush：移除表 1 的最后一个值，并把这个值放到表 2 头</li>
+<li>  lset key index value ：将列表 key 下标为 index 的元素的值设置为 value ，当 index 参数超出范围，或对一个空列表( key 不存在)进行 LSET 时，返回一个错误</li>
+<li>  linsert key BEFORE|AFTER pivot value ：将值 value 插入到列表 key 当中，位于值 pivot 之前或之后。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">127.0.0.1:6379&gt; lpush list one</span><br><span class="line">(<span class="built_in">integer</span>) 1</span><br><span class="line">127.0.0.1:6379&gt; lpush list two</span><br><span class="line">(<span class="built_in">integer</span>) 2</span><br><span class="line">127.0.0.1:6379&gt; lpush list 2</span><br><span class="line">(<span class="built_in">integer</span>) 3</span><br><span class="line">127.0.0.1:6379&gt; lrange list 0 -1 <span class="comment"># 顺序和放入的顺序相反，也就是每次都放到队列头(头插)</span></span><br><span class="line">1) <span class="string">&quot;2&quot;</span></span><br><span class="line">2) <span class="string">&quot;two&quot;</span></span><br><span class="line">3) <span class="string">&quot;one&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; lrange list 0 1</span><br><span class="line">1) <span class="string">&quot;2&quot;</span></span><br><span class="line">2) <span class="string">&quot;two&quot;</span></span><br><span class="line"><span class="comment">########################################################</span></span><br><span class="line"><span class="comment"># 尾部添加值</span></span><br><span class="line">127.0.0.1:6379&gt; rpush list 5</span><br><span class="line">(<span class="built_in">integer</span>) 4</span><br><span class="line">127.0.0.1:6379&gt; lrange list 0 -1</span><br><span class="line">1) <span class="string">&quot;2&quot;</span></span><br><span class="line">2) <span class="string">&quot;two&quot;</span></span><br><span class="line">3) <span class="string">&quot;one&quot;</span></span><br><span class="line">4) <span class="string">&quot;5&quot;</span></span><br><span class="line"><span class="comment">####################################################</span></span><br><span class="line"><span class="comment"># lpop</span></span><br><span class="line"><span class="comment"># rpop</span></span><br><span class="line">127.0.0.1:6379&gt; lrange list 0 -1</span><br><span class="line">1) <span class="string">&quot;2&quot;</span></span><br><span class="line">2) <span class="string">&quot;two&quot;</span></span><br><span class="line">3) <span class="string">&quot;one&quot;</span></span><br><span class="line">4) <span class="string">&quot;5&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; lpop list</span><br><span class="line"><span class="string">&quot;2&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; lrange list 0 -1</span><br><span class="line">1) <span class="string">&quot;two&quot;</span></span><br><span class="line">2) <span class="string">&quot;one&quot;</span></span><br><span class="line">3) <span class="string">&quot;5&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; rpop list</span><br><span class="line"><span class="string">&quot;5&quot;</span></span><br><span class="line">127.0.0.1:6379&gt; lrange list 0 -1</span><br><span class="line">1) <span class="string">&quot;two&quot;</span></span><br><span class="line">2) <span class="string">&quot;one&quot;</span></span><br><span class="line"><span class="comment">######################################</span></span><br><span class="line"><span class="comment"># lindex 根据索引取值</span></span><br><span class="line">127.0.0.1:6379&gt; lindex list 0</span><br><span class="line"><span class="string">&quot;two&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># LLEN 获取队列的长度</span></span><br><span class="line">127.0.0.1:6379&gt; llen list</span><br><span class="line">(<span class="built_in">integer</span>) 2</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>应用场景：</p>
+<ul>
+<li>  消息队列</li>
+</ul>
+<h2 id="Set（集合）"><a href="#Set（集合）" class="headerlink" title="Set（集合）"></a>Set（集合）</h2><p>值不能重复</p>
+<p>命令都以 S 开头</p>
+<ul>
+<li>  sadd key member [member …] :将一个或多个 member 元素加入到集合 key 当中，已存在于的元素将被忽略。</li>
+<li>  srem：移除值</li>
+<li>  smembers key：查看所有成员</li>
+<li>  sismember key member ：判断 member 元素是否集合 key 的成员</li>
+<li>  scard key：返回集合 key 的数量</li>
+<li>  smove source destination member：将 member 元素从 source 集合移动到 destination 集合（原子性操作）</li>
+<li>  spop：随机移除一个元素</li>
+<li>  srandmember key [count]：返回集合中的一个随机元素</li>
+<li>  sinter key [key …] ：取交集</li>
+<li>  sinterstore destination key [key …]：把交集存到目标集合中</li>
+<li>  sunion key [key …]：取并集</li>
+<li>  sunionstore destination key [key …]：取并集，并放到目标集合</li>
+<li>  sdiff key [key …] ：取差集</li>
+<li>  sdiffstore destination key [key …]：取差集，并放到目标集合</li>
+</ul>
+<p>应用场景：</p>
+<ul>
+<li>  抽奖</li>
+<li>  共同关注（交集）</li>
+</ul>
+<h2 id="Hash（哈希表）"><a href="#Hash（哈希表）" class="headerlink" title="Hash（哈希表）"></a>Hash（哈希表）</h2><p>以 H 开头</p>
+<ul>
+<li>  hset key field value ：将哈希表 key 中的域 field 的值设为 value </li>
+<li>  hsetnx key field value：不存在，设置值</li>
+<li>  hmset：批量设置值</li>
+<li>  hget key field：获取值</li>
+<li>  hmget：批量获取值</li>
+<li>  hgetall key：获取全部数据</li>
+<li>  hdel key field [field …] ：删除哈希表 key 中的一个或多个指定域，不存在的域将被忽略</li>
+<li>  hlen</li>
+<li>  hexists key field</li>
+<li>  hincrby key field increment</li>
+<li>  hincrbyfloat key field increment：为哈希表 key 中的域 field 加上浮点数增量 increment</li>
+<li>  hkeys key：返回哈希表 key 中的所有字段</li>
+<li>  hvals key ：返回哈希表 key 中所有字段的值</li>
+</ul>
+<p>应用场景：</p>
+<ul>
+<li>  存变更的数据（比如存一个对象）</li>
+<li></li>
+</ul>
+<h2 id="ZSet（有序集合）"><a href="#ZSet（有序集合）" class="headerlink" title="ZSet（有序集合）"></a>ZSet（有序集合）</h2><ul>
+<li>  zadd</li>
+<li>  zrem</li>
+<li>  zcard</li>
+<li>  zcount key min max：统计一定范围内的成员数量</li>
+<li>  zscore key member ：返回有序集 key 中，成员 member 的 score 值</li>
+<li>  zincrby key increment member：为有序集 key 的成员 member 的 score 值加上增量 increment</li>
+<li>  zrange：从小到大</li>
+<li>  zrevrange：从大到小</li>
+<li>  zrangebyscore key min max [WITHSCORES] [LIMIT offset count]：返回有序集 key 中，所有 score 值介于 min 和 max 之间(包括等于 min 或 max )的成员。min 和 max 可以是 -inf 和 +inf</li>
+<li>  zrevrangebyscore</li>
+<li>  zrank key member ：返回有序集 key 中成员 member 的排名</li>
+<li>  zrevrank</li>
+<li>  ZREMRANGEBYRANK key start stop ：移除有序集 key 中，指定排名(rank)区间内的所有成员</li>
+<li>  zremrangebyscore key min max：移除有序集 key 中，所有 score 值介于 min 和 max 之间(闭区间)的成员</li>
+<li>  ZINTERSTORE</li>
+<li>  ZUNIONSTORE</li>
+</ul>
+<p>应用场景：</p>
+<ul>
+<li>  排序</li>
+<li>  加权，如排行榜</li>
+</ul>
+<h1 id="三大特殊数据类型"><a href="#三大特殊数据类型" class="headerlink" title="三大特殊数据类型"></a>三大特殊数据类型</h1><h2 id="Geospatial"><a href="#Geospatial" class="headerlink" title="Geospatial"></a>Geospatial</h2><p>应用：定位、附近的人，打车距离计算</p>
+<p>相关命令</p>
+<ul>
+<li>GEOADD：将指定的地理空间位置（纬度、经度、名称）添加到指定的key中。<ul>
+<li>  这些数据将会存储到 <strong>sorted set</strong>。这样的目的是为了方便使用 GEORADIUS 或者 GEORADIUSBYMEMBER 命令对数据进行半径查询等操作。</li>
+<li>  有效的经度从-180度到180度。</li>
+<li>  有效的纬度从-85.05112878度到85.05112878度</li>
+</ul>
+</li>
+<li>  GEODIST：返回两个给定位置之间的距离。</li>
+<li>  GEOHASH：返回一个或多个位置元素的 Geohash 表示</li>
+<li>  GEOPOS：从<code>key</code>里返回所有给定位置元素的位置（经度和纬度）。</li>
+<li>  GEORADIUS：以给定的经纬度为中心， 返回键包含的位置元素当中， 与中心的距离不超过给定最大距离的所有位置元素</li>
+<li>  GEORADIUSBYMEMBER：找出位于指定范围内的元素， 但是 <code>GEORADIUSBYMEMBER</code> 的中心点是由给定的位置元素决定的</li>
+</ul>
+<p>【注意点】：由于是用 ZSET 实现的，所以，zset 的所有命令也适用</p>
+<p>参考文档：<a href="http://www.redis.cn/commands/geoadd.html">http://www.redis.cn/commands/geoadd.html</a></p>
+<h2 id="Bitmaps"><a href="#Bitmaps" class="headerlink" title="Bitmaps"></a>Bitmaps</h2><blockquote>
+<p>  位存储</p>
+</blockquote>
+<p><img src="../images/874963-20190930154945790-1681218156.png" alt="img"></p>
+<p>基本命令：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">setbit key offset value：对 key 所储存的字符串值，设置或清除指定偏移量上的位(bit)。</span><br><span class="line">getbit key offset：对 key 所储存的字符串值，获取指定偏移量上的位(bit)。</span><br><span class="line">bitcount</span><br></pre></td></tr></table></figure>
+
+<p>应用场景：</p>
+<ul>
+<li>  统计用户信息，活跃不活跃</li>
+<li>  打卡分析</li>
+<li>  两种状态的场景都可以使用</li>
+</ul>
+<h2 id="Hyperloglogs"><a href="#Hyperloglogs" class="headerlink" title="Hyperloglogs"></a>Hyperloglogs</h2><blockquote>
+<p>  基数：集合的大小（不重复元素个数）</p>
+</blockquote>
+<p>HyperLogLog是一种概率数据结构，用于对唯一事物进行计数（从技术上讲，这是指估计集合的基数）。通常，对唯一项目进行计数需要使用与要计数的项目数量成比例的内存量，因为您需要记住过去已经看到的元素，以避免多次对其进行计数。但是，有一组算法会以内存换取精度：在Redis实现的情况下，您得出的带有标准误差的估计度量最终会小于1％。该算法的神奇之处在于，您不再需要使用与所计数项目数量成比例的内存量，而可以使用恒定数量的内存！最坏情况下为12k字节，</p>
+<p>Redis中的HLL尽管在技术上是不同的数据结构，但被编码为Redis字符串，因此您可以调用GET以序列化HLL，并将SET 其反序列化回服务器。</p>
+<p> HyperLogLog 只会根据输入元素来计算基数，而不会储存输入元素本身，所以 HyperLogLog 不能像集合那样，返回输入的各个元素</p>
+<p>优点：占用内存是固定的，最坏情况下为12k字节</p>
+<p><strong>UV（Unique visitor）</strong>：一天内同个访客多次访问仅计算一个UV</p>
+<p>传统方式，set 保存用户的 id，然后统计 set 中的元素数量作为判断标准</p>
+<p>这种方式保存了大量的用户 id，比较麻烦！而且随着数据量的增长，占用的空间也会越来越大。</p>
+<ul>
+<li>  pfadd</li>
+<li>  pfcount</li>
+<li>  pfmerge</li>
+</ul>
+<p>应用场景：</p>
+<ul>
+<li>  页面统计（允许 1% 左右的误差）</li>
+</ul>
+<h1 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h1><p>官方文档：<a href="http://www.redis.cn/topics/transactions.html">http://www.redis.cn/topics/transactions.html</a></p>
+<p><a href="https://www.redis.net.cn/tutorial/3515.html">https://www.redis.net.cn/tutorial/3515.html</a></p>
+<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>Redis 单条命令保证原子性，但是事务不保证原子性</p>
+<p>事务可以理解为一个批量执行脚本，但批量指令并非原子化的操作，中间某条指令的失败不会导致前面已做指令的回滚，也不会造成后续的指令不做</p>
+<p>Redis 事务可以一次执行多个命令， 并且带有以下三个重要的保证：</p>
+<ul>
+<li>  批量操作在发送 EXEC 命令前被放入队列缓存。</li>
+<li>  收到 EXEC 命令后进入事务执行，事务中任意命令执行失败，其余的命令依然被执行。</li>
+<li>  在事务执行过程，其他客户端提交的命令请求不会插入到事务执行命令序列中。</li>
+</ul>
+<p><strong>这里的事务没有隔离级别的概念</strong></p>
+<h2 id="事务如何执行？"><a href="#事务如何执行？" class="headerlink" title="事务如何执行？"></a>事务如何执行？</h2><ul>
+<li>  开始事务。 <strong>multi</strong></li>
+<li>  命令入队。</li>
+<li>  执行事务。<strong>exec</strong></li>
+</ul>
+<p>放弃事务：<strong>discard</strong>（由于没有执行 exec 命令，所以命令都不会被执行）</p>
+<h2 id="为什么-Redis-不支持回滚（roll-back）"><a href="#为什么-Redis-不支持回滚（roll-back）" class="headerlink" title="为什么 Redis 不支持回滚（roll back）"></a>为什么 Redis 不支持回滚（roll back）</h2><ul>
+<li>  Redis 命令只会因为错误的语法而失败（并且这些问题不能在入队时发现），或是命令用在了错误类型的键上面：这也就是说，从实用性的角度来说，失败的命令是由编程错误造成的，而这些错误应该在开发的过程中被发现，而不应该出现在生产环境中。</li>
+<li>  因为不需要对回滚进行支持，所以 Redis 的内部可以保持简单且快速。</li>
+</ul>
+<p>如果命令本身有错误，那整个事务都不会被执行（类似于编译型异常）</p>
+<p>如果命令没问题，但是逻辑有问题，那条错误逻辑的语句不会被执行（类似于运行时异常）</p>
+<p>示例：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">127.0.0.1:6379&gt; multi</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; <span class="built_in">set</span> k1 v1</span><br><span class="line">QUEUED</span><br><span class="line">127.0.0.1:6379&gt; <span class="built_in">set</span> k2 v2</span><br><span class="line">QUEUED</span><br><span class="line">127.0.0.1:6379&gt; getset k2 <span class="comment"># 这里命令是错的，少了一个参数</span></span><br><span class="line">(error) ERR wrong number of arguments <span class="keyword">for</span> <span class="string">&#x27;getset&#x27;</span> <span class="built_in">command</span></span><br><span class="line">127.0.0.1:6379&gt; <span class="built_in">exec</span></span><br><span class="line">(error) EXECABORT Transaction discarded because of previous errors.</span><br><span class="line">127.0.0.1:6379&gt;     </span><br></pre></td></tr></table></figure>
+
+
+
+<p>逻辑有误示例：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">127.0.0.1:6379&gt; multiOK127.0.0.1:6379&gt; <span class="built_in">set</span> k1 v1QUEUED127.0.0.1:6379&gt; <span class="built_in">set</span> k2 <span class="string">&quot;v2&quot;</span>QUEUED127.0.0.1:6379&gt; incr k2 <span class="comment"># 字符串不能加 1QUEUED127.0.0.1:6379&gt; exec1) OK2) OK3) (error) ERR value is not an integer or out of range127.0.0.1:6379&gt;         </span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>其他示例代码：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">127.0.0.1:6379&gt; multiOK127.0.0.1:6379&gt; <span class="built_in">set</span> k1 v1QUEUED127.0.0.1:6379&gt; <span class="built_in">set</span> k2 v2QUEUED127.0.0.1:6379&gt; <span class="built_in">set</span> k3 v3QUEUED127.0.0.1:6379&gt; discard <span class="comment"># 放弃事务OK127.0.0.1:6379&gt; get k1(nil)127.0.0.1:6379&gt; get k2(nil)127.0.0.1:6379&gt; get k3(nil)127.0.0.1:6379&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="锁"><a href="#锁" class="headerlink" title="锁"></a>锁</h1><p>悲观锁：认为什么时候都会有问题，无论做什么都会加锁</p>
+<p>乐观锁：认为不会有问题。更新数据的时候判断一下是否有人修改过这个数据，MySQL 使用版本号来处理</p>
+<h2 id="Redis-可以实现乐观锁吗？"><a href="#Redis-可以实现乐观锁吗？" class="headerlink" title="Redis 可以实现乐观锁吗？"></a>Redis 可以实现乐观锁吗？</h2><p>Redis 可以实现乐观锁（watch)，使用 check-and-set 操作实现乐观锁</p>
+<p>WATCH 命令可以为 Redis 事务提供 check-and-set （CAS）行为。</p>
+<p>被 WATCH 的键会被监视，并会发觉这些键是否被改动过了。 如果有至少一个被监视的键在 EXEC 执行之前被修改了， 那么整个事务都会被取消， EXEC 返回nil-reply来表示事务已经失败。</p>
+<p>当 EXEC 被调用时， 不管事务是否成功执行， 对所有键的监视都会被取消。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">WATCH key [key ...]：监视一个(或多个) key ，如果在事务执行之前这个(或这些) key 被其他命令所改动，那么事务将被打断。UNWATCH：取消 WATCH 命令对所有 key 的监视。</span><br></pre></td></tr></table></figure>
+
+<p><img src="../images/image-20210202120527685.png" alt="image-20210202120527685"></p>
+<p>如果发现事务执行失败，就先解锁，然后重新获取锁即可。</p>
+<h1 id="Jedis"><a href="#Jedis" class="headerlink" title="Jedis"></a>Jedis</h1><p>1、导入依赖</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span>    <span class="comment">&lt;!-- https://mvnrepository.com/artifact/redis.clients/jedis --&gt;</span>    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span>        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>redis.clients<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jedis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>        <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.5.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span>    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>    <span class="comment">&lt;!--fast-json--&gt;</span>    <span class="comment">&lt;!-- https://mvnrepository.com/artifact/com.alibaba/fastjson --&gt;</span>    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span>        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>fastjson<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>        <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.2.75<span class="tag">&lt;/<span class="name">version</span>&gt;</span>    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>2、编码测试</p>
+<ul>
+<li>  连接数据库</li>
+<li>  数据库操作</li>
+<li>  断开连接</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> redis.clients.jedis.Jedis;<span class="comment">/** * <span class="doctag">@author</span> 徐文祥 * <span class="doctag">@date</span> 2021/2/2 12:45 */</span><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestPing</span> </span>&#123;    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;        <span class="comment">// 1、new jedis 对象        Jedis jedis = new Jedis();        String ping = jedis.ping();        System.out.println(ping);        jedis.close();    &#125;&#125;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>运行结果：</p>
+<p><img src="../images/image-20210202131827825.png" alt="image-20210202131827825"></p>
+<p><img src="../images/image-20210202131938414.png" alt="image-20210202131938414"></p>
+<p>可以看到，各种操作都有。</p>
+<p>没啥意思，以前讲过，跳过</p>
+<h1 id="SpringBoot-整合"><a href="#SpringBoot-整合" class="headerlink" title="SpringBoot 整合"></a>SpringBoot 整合</h1><p>SpringBoot 操作数据：SpringData</p>
+<h2 id="Spring-Data-Redis"><a href="#Spring-Data-Redis" class="headerlink" title="Spring Data Redis"></a>Spring Data Redis</h2><p><a href="https://spring.io/projects/spring-data-redis">https://spring.io/projects/spring-data-redis</a></p>
+<ul>
+<li>  连接包是跨多个Redis驱动程序（<a href="https://github.com/lettuce-io/lettuce-core">Lettuce</a>和<a href="https://github.com/xetorthio/jedis">Jedis</a>）的底层抽象。</li>
+<li>  将Redis驱动程序<a href="https://docs.spring.io/spring-data/data-redis/docs/current/reference/html/#redis:connectors">异常</a>转换为Spring的可移植数据访问异常层次结构。</li>
+<li>  <a href="https://docs.spring.io/spring-data/data-redis/docs/current/reference/html/#redis:template">RedisTemplate</a>提供了用于执行各种Redis操作，异常转换和序列化支持的高级抽象。</li>
+<li>  <a href="https://docs.spring.io/spring-data/data-redis/docs/current/reference/html/#pubsub">Pubsub</a>支持（例如，消息驱动的POJO的MessageListenerContainer）。</li>
+<li>  <a href="https://docs.spring.io/spring-data/data-redis/docs/current/reference/html/#redis:sentinel">Redis Sentinel</a>和<a href="https://docs.spring.io/spring-data/data-redis/docs/current/reference/html/#cluster">Redis Cluster</a>支持。</li>
+<li>  使用Lettuce驱动程序的反应性API。</li>
+<li>  JDK，String，JSON和Spring Object / XML映射<a href="https://docs.spring.io/spring-data/data-redis/docs/current/reference/html/#redis:serializer">序列化器</a>。</li>
+<li>  Redis之上的JDK <a href="https://docs.spring.io/spring-data/data-redis/docs/current/reference/html/#redis:support">Collection</a>实现。</li>
+<li>  原子<a href="https://docs.spring.io/spring-data/data-redis/docs/current/reference/html/#redis:support">计数器</a>支持类。</li>
+<li>  排序和流水线功能。</li>
+<li>  专门支持SORT，SORT / GET模式和返回的批量值。</li>
+<li>  Spring 3.1缓存抽象的Redis<a href="https://docs.spring.io/spring-data/data-redis/docs/current/reference/html/#redis:support:cache-abstraction">实现</a>。</li>
+<li>  <code>Repository</code>接口的自动实现，包括使用的自定义查询方法的支持<code>@EnableRedisRepositories</code>。</li>
+<li>  CDI对存储库的支持。</li>
+</ul>
+<p>Jedis：采用直连的问题，多个线程操作是不安全的，如果想要避免不安全，就要使用连接池，BIO</p>
+<p>Lettuce（莱忒丝）：使用 netty ，实例可以在多个线程中共享，不存在不安全的情况</p>
+<p>源码分析</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Bean</span><span class="meta">@ConditionalOnMissingBean(name = &quot;redisTemplate&quot;)</span><span class="comment">// 这个注解说明我们可以自定义模板public RedisTemplate&lt;Object, Object&gt; redisTemplate(RedisConnectionFactory redisConnectionFactory)    throws UnknownHostException &#123;    // 默认的 RedisTemplate 没有过多的设置， redis 对象都是需要序列化的    // 两个泛型都是 Object，我们使用需要强制转换    RedisTemplate&lt;Object, Object&gt; template = new RedisTemplate&lt;&gt;();    template.setConnectionFactory(redisConnectionFactory);    return template;&#125;@Bean@ConditionalOnMissingBean// 由于 String 类型最常用，所以这个被单独提取出来了public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory redisConnectionFactory)    throws UnknownHostException &#123;    StringRedisTemplate template = new StringRedisTemplate();    template.setConnectionFactory(redisConnectionFactory);    return template;&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>1、导入依赖</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span>    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-data-redis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>2、配置连接</p>
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="meta">spring.redis.host</span>=<span class="string">127.0.0.1spring.redis.port=6379</span></span><br></pre></td></tr></table></figure>
+
+<p>3、测试</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@SpringBootTestclass</span> Redis02SpringbootApplicationTests &#123;    <span class="meta">@Autowired</span>    <span class="keyword">private</span> RedisTemplate redisTemplate;    <span class="meta">@Test</span>    <span class="function"><span class="keyword">void</span> <span class="title">contextLoads</span><span class="params">()</span> </span>&#123;        redisTemplate.opsForValue().set(<span class="string">&quot;k1&quot;</span>, <span class="string">&quot;v1&quot;</span>);        System.out.println(redisTemplate.opsForValue().get(<span class="string">&quot;k1&quot;</span>));        <span class="comment">// 常用的操作被单独提了出来，可以直接使用，比如事务和基本的CRUD        // 获取连接对象        // RedisConnection connection = redisTemplate.getConnectionFactory().getConnection();    &#125;&#125;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="../images/image-20210202165950083.png" alt="image-20210202165950083"></p>
+<p>再观源码：</p>
+<p><img src="../images/image-20210202170834366.png" alt="image-20210202170834366"></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (defaultSerializer == <span class="keyword">null</span>) &#123;    defaultSerializer = <span class="keyword">new</span> JdkSerializationRedisSerializer(        classLoader != <span class="keyword">null</span> ? classLoader : <span class="keyword">this</span>.getClass().getClassLoader());&#125;</span><br></pre></td></tr></table></figure>
+
+<p>默认是 JDK 序列化，这样会使字符串转义，我们可以使用 JSON </p>
+<p>如果对象没有序列化，那么对象就无法在 IO 流中传输，那么就会报错</p>
+<p>【强制】：所有的 pojo 类必须序列化（声明实现序列化接口即可）</p>
+<p><img src="../images/image-20210202172252965.png" alt="image-20210202172252965"></p>
+<p>序列化之后</p>
+<p><img src="../images/image-20210202172937353.png" alt="image-20210202172937353"></p>
+<p>但是数据库里面还不是人看的:dog:</p>
+<p><img src="../images/image-20210202173200585.png" alt="image-20210202173200585"></p>
+<h2 id="自定义序列化"><a href="#自定义序列化" class="headerlink" title="自定义序列化"></a>自定义序列化</h2><p>先看 RedisTemplate 的 set 方法：</p>
+<p><img src="../images/image-20210202173148766.png" alt="image-20210202173148766"></p>
+<p>查看序列化方式</p>
+<p><img src="../images/image-20210202173425648.png" alt="image-20210202173425648"></p>
+<p>固定模板：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Configurationpublic</span> <span class="class"><span class="keyword">class</span> <span class="title">RedisConfig</span> </span>&#123;    <span class="comment">// 自定义 RedisTemplate    @Bean    public RedisTemplate&lt;String, Object&gt; redisTemplate(RedisConnectionFactory redisConnectionFactory) &#123;                RedisTemplate&lt;String, Object&gt; template = new RedisTemplate&lt;&gt;();        template.setConnectionFactory(redisConnectionFactory);// 设置连接        // 创建序列化器        Jackson2JsonRedisSerializer&lt;Object&gt; jsonRedisSerializer = new Jackson2JsonRedisSerializer&lt;&gt;(Object.class);        ObjectMapper mapper = new ObjectMapper();        mapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);        mapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);        jsonRedisSerializer.setObjectMapper(mapper);        StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();        // key 使用 String 的序列化方式        template.setKeySerializer(stringRedisSerializer);        // hash 的 key 同上        template.setHashKeySerializer(stringRedisSerializer);        // hash 的 value 使用 jackson 的        template.setHashValueSerializer(jsonRedisSerializer);        template.afterPropertiesSet();        return template;    &#125;&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="../images/image-20210202180229008.png" alt="image-20210202180229008"></p>
+<h1 id="redis-conf-详解"><a href="#redis-conf-详解" class="headerlink" title="redis.conf 详解"></a>redis.conf 详解</h1><p><a href="./redis.conf">详细文件</a></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">bind</span> 127.0.0.1 <span class="comment"># 绑定的地址，注释掉就允许所有的主机连接protected-mode no # 保护模式loglevel notice # 日志级别logfile &quot;&quot; # 这里可以自定义文件名databases 16 # 数据库数量# 多长时间保存一次快照（持久化）# save &lt;seconds&gt; &lt;changes&gt;save 900 1 # 900秒内，如果至少有一个 key 发生变动，则自动保存save 300 10save 60 10000rdbcompression yes # rdb 文件压缩rdbchecksum yes # 是否校验dbfilename dump.rdb # rdb 文件名maxclients 10000 # 允许连接的最大客户端数量maxmemory &lt;bytes&gt; # 最大内存容量maxmemory-policy noeviction # 内存达到上限之后的处理策略noeviction: 不删除策略, 达到最大内存限制时, 如果需要更多内存, 直接返回错误信息。（默认值）allkeys-lru: 所有key通用; 优先删除最近最少使用(less recently used ,LRU) 的 key。volatile-lru: 只限于设置了 expire 的部分; 优先删除最近最少使用(less recently used ,LRU) 的 key。allkeys-random: 所有key通用; 随机删除一部分 key。volatile-random: 只限于设置了 expire 的部分; 随机删除一部分 key。volatile-ttl: 只限于设置了 expire 的部分; 优先删除剩余时间(time to live,TTL) 短的key。</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>  REPLICATION 复制</p>
+</blockquote>
+<p>在 redis-cli 中设置密码</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">config get requirepassconfig <span class="built_in">set</span> requirepass</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>APPEND ONLY MODE aof配置</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">appendonly no <span class="comment"># 默认不开启appendfilename &quot;appendonly.aof&quot; # aof 文件名# 下面三行是同步策略# appendfsync alwaysappendfsync everysec# appendfsync no</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="持久化"><a href="#持久化" class="headerlink" title="持久化"></a>持久化</h1><p>RDB 和 AOF</p>
+<h2 id="为什么要持久化？"><a href="#为什么要持久化？" class="headerlink" title="为什么要持久化？"></a>为什么要持久化？</h2><p>首先 redis 是内存型数据库，一旦断电数据就会消失。持久化功能有效地避免因进程退出造成的数据丢失问题，当下次重启时利用之前持久化的文件即可实现数 据恢复</p>
+<h2 id="RDB（Redis-DataBase）"><a href="#RDB（Redis-DataBase）" class="headerlink" title="RDB（Redis DataBase）"></a>RDB（Redis DataBase）</h2><p>默认文件名：dump.rdb</p>
+<p>在主从复制中， RDB 是备用的</p>
+<p>RDB持久化是把当前进程数据生成快照保存到硬盘的过程，触发RDB持久化过程分为手动触发和自动触发</p>
+<p>手动触发分别对应save和bgsave命令</p>
+<ul>
+<li><p>  save 命令：阻塞当前 Redis 服务器，直到 RDB 过程完成为止，对于内存比较大的实例会造成长时间阻塞，线上环境不建议使用</p>
+</li>
+<li><p>  bgsave 命令：执行 fork 操作创建子进程，持久化过程由子进程负责，完成后自动结束。阻塞只发生在 fork 阶段，一般时间很短</p>
+</li>
+</ul>
+<p>自动触发</p>
+<ul>
+<li>  配置文件中定义的策略</li>
+<li>  从节点执行全量复制操作，主节点自动执行 bgsave 生成 RDB 文件并发送给从节点</li>
+<li>  执行 flushall 命令</li>
+<li>  默认情况下执行 shutdown 命令时，如果没有开启 AOF 持久化功能则自动执行 bgsave</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">127.0.0.1:6379&gt; saveOK<span class="comment">########## save 输出 #########[11748] 03 Feb 14:05:30.333 * DB saved on disk# 测试 bgsave127.0.0.1:6379&gt; bgsaveBackground saving started######### bgsave 输出 ###########[11748] 03 Feb 14:06:37.973 * Background saving started by pid 11432[11748] 03 Feb 14:06:38.109 # fork operation complete[11748] 03 Feb 14:06:38.126 * Background saving terminated with success</span></span><br></pre></td></tr></table></figure>
+
+<p>如何恢复数据？</p>
+<p>将 dump.rdb 文件放在 redis 启动目录即可，程序启动的时候会自动检测，自己恢复数据</p>
+<p>那如何获取启动目录呢？</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">127.0.0.1:6379&gt; config get dir1) <span class="string">&quot;dir&quot;</span>2) <span class="string">&quot;D:\\Environment\\Redis\\Redis-5.0.10&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="RDB优点"><a href="#RDB优点" class="headerlink" title="RDB优点"></a>RDB优点</h3><p>（1）RDB文件紧凑，全量备份，非常适合用于进行备份和灾难恢复。</p>
+<p>（2）生成RDB文件的时候，redis主进程会fork()一个子进程来处理所有保存工作，主进程不需要进行任何磁盘IO操作。</p>
+<p>（3）RDB 在恢复大数据集时的速度比 AOF 的恢复速度要快。</p>
+<h3 id="RDB缺点"><a href="#RDB缺点" class="headerlink" title="RDB缺点"></a>RDB缺点</h3><p>（1）在快照持久化期间修改的数据不会被保存，可能丢失数据</p>
+<h2 id="AOF（Append-Only-File）"><a href="#AOF（Append-Only-File）" class="headerlink" title="AOF（Append Only File）"></a>AOF（Append Only File）</h2><p>将每一个写操作都通过write函数追加到 <code>appendonly.aof</code> 文件中</p>
+<p>默认文件名：<code>appendonly.aof</code></p>
+<p>默认不开启，可以自定义 AOF 的策略</p>
+<p>如果 <code>appendonly.aof</code> 文件有错误，可以使用 <code>redis-check-aof</code>来修复</p>
+<p>【问题来了】：持久化文件会变的越来越大。</p>
+<p>为了压缩 aof 的持久化文件。redis 提供了 bgrewriteaof 命令。将内存中的数据以命令的方式保存到临时文件中，同时会 fork 出一条新进程来将文件重写。</p>
+<p>重写 aof 文件的操作，并没有读取旧的 aof 文件，而是将整个内存中的数据库内容用命令的方式重写了一个新的 aof 文件</p>
+<p><img src="../images/09fa513d269759ee28454d2c4cea4b106c22dfd3.jpeg" alt="img"></p>
+<blockquote>
+<p>  图片来源：<a href="https://baijiahao.baidu.com/s?id=1654694618189745916&amp;wfr=spider&amp;for=pc">https://baijiahao.baidu.com/s?id=1654694618189745916&amp;wfr=spider&amp;for=pc</a></p>
+</blockquote>
+<p>同步策略：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 下面三行是同步策略# appendfsync always # 每次都同步，性能地appendfsync everysec# appendfsync no # 操作系统自己同步数据，效率高</span></span><br></pre></td></tr></table></figure>
+
+<p>（1）always：每次发生数据变更会被立即记录到磁盘，性能较差但数据完整性比较好</p>
+<p>（2）everysec：异步操作，每秒记录 如果同步的这一秒机器宕机，这一秒的数据会丢失</p>
+<p>（3）no：从不同步</p>
+<p>缺点：</p>
+<p>（1）文件会越来远大</p>
+<p>（2）aof 消耗服务器性能</p>
+<p>优点：</p>
+<p>（1）可以更好的保护数据不丢失</p>
+<p>（2）AOF日志文件没有任何磁盘寻址的开销，写入性能非常高，文件不容易破损。</p>
+<p>（3）AOF日志文件即使过大的时候，出现后台重写操作，也不会影响客户端的读写。</p>
+<p>（4）AOF日志文件的命令通过非常可读的方式进行记录，这个特性非常适合做灾难性的误删除的紧急恢复。比如某人不小心用flushall命令清空了所有数据，只要这个时候后台rewrite还没有发生，那么就可以立即拷贝AOF文件，将最后一条flushall命令给删了，然后再将该AOF文件放回去，就可以通过恢复机制，自动恢复所有数据</p>
+<h1 id="发布订阅"><a href="#发布订阅" class="headerlink" title="发布订阅"></a>发布订阅</h1><p>一种消息通信模式：发送者 (pub) 发送消息，订阅者 (sub) 接收消息。</p>
+<p>Redis 客户端可以订阅任意数量的频道。</p>
+<p>消息发布者、频道、消息接受者</p>
+<p>下图展示了频道 channel1 ， 以及订阅这个频道的三个客户端 —— client2 、 client5 和 client1 之间的关系：</p>
+<p><img src="../images/pubsub1.png" alt="img"></p>
+<p>当有新消息通过 PUBLISH 命令发送给频道 channel1 时， 这个消息就会被发送给订阅它的三个客户端：</p>
+<p><img src="../images/pubsub2.png" alt="img"></p>
+<blockquote>
+<p>  图片来源：菜鸟论坛</p>
+</blockquote>
+<h2 id="Redis-发布订阅命令"><a href="#Redis-发布订阅命令" class="headerlink" title="Redis 发布订阅命令"></a>Redis 发布订阅命令</h2><p>redis 发布订阅常用命令：</p>
+<table>
+<thead>
+<tr>
+<th align="left">序号</th>
+<th align="left">命令及描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">1</td>
+<td align="left">[PSUBSCRIBE pattern <a href="https://www.runoob.com/redis/pub-sub-psubscribe.html">pattern …]</a> 订阅一个或多个符合给定模式的频道。</td>
+</tr>
+<tr>
+<td align="left">2</td>
+<td align="left">[PUBSUB subcommand <a href="https://www.runoob.com/redis/pub-sub-pubsub.html">argument [argument …]]</a> 查看订阅与发布系统状态。</td>
+</tr>
+<tr>
+<td align="left">3</td>
+<td align="left"><a href="https://www.runoob.com/redis/pub-sub-publish.html">PUBLISH channel message</a> 将信息发送到指定的频道。</td>
+</tr>
+<tr>
+<td align="left">4</td>
+<td align="left">[PUNSUBSCRIBE <a href="https://www.runoob.com/redis/pub-sub-punsubscribe.html">pattern [pattern …]]</a> 退订所有给定模式的频道。</td>
+</tr>
+<tr>
+<td align="left">5</td>
+<td align="left">[SUBSCRIBE channel <a href="https://www.runoob.com/redis/pub-sub-subscribe.html">channel …]</a> 订阅给定的一个或多个频道的信息。</td>
+</tr>
+<tr>
+<td align="left">6</td>
+<td align="left">[UNSUBSCRIBE <a href="https://www.runoob.com/redis/pub-sub-unsubscribe.html">channel [channel …]]</a> 指退订给定的频道。</td>
+</tr>
+</tbody></table>
+<p>原理：</p>
+<p>源码里的pubsub.c</p>
+<p>Redis通过PUBLISH、SUBSCRIBE和PSUBSCRIBE等命令实现发布和订阅功能。</p>
+<p>通过SUBSCRIBE 命令订阅某频道后，redis-server里维护了一个字典，字典的键就是一个个频道!，而字典的值则是一个链表，链表中保存了所有订阅这个channel的客户端。SUBSCRIBE命令的关键，就是将客户端添加到给定channel的订阅链表中。</p>
+<p>通过PUBLISH命令向订阅者发送消息，redis-server会使用给定的频道作为键，在它所维护的channel字典中查找记录了订阅这个频道的所有客户端的链表，遍历这个链表，将消息发布给所有订阅者。</p>
+<p>Pub/Sub从字面上理解就是发布( Publish )与订阅(Subscribe )，在Redis中，你可以设定对某一个key值进行消息发布及消息订阅，当一个key值上进行了消息发布后，所有订阅它的客户端都会收到相应的消息。这一功能最明显的用法就是用作实时消息系统，比如普通的即时聊天，群聊等功能。</p>
+<p>使用场景：</p>
+<p>（1）实时聊天系统</p>
+<p>（2）实时消息系统</p>
+<p>（3）订阅关注系统</p>
+<p>稍微复杂的场景一般使用消息中间件</p>
+<h1 id="主从复制"><a href="#主从复制" class="headerlink" title="主从复制"></a>主从复制</h1><h2 id="概述-1"><a href="#概述-1" class="headerlink" title="概述"></a>概述</h2><p>主从复制，是指将一台Redis服务器的数据，复制到其他的Redis服务器。前者称为主节点(master/leader)，后者称为从节点(slave/follower)。<strong>数据的复制是单向的</strong>，只能由主节点到从节点。Master 以写为主，Slave 以读为主。</p>
+<p>默认情况下，每台Redis服务器都是主节点；且一个主节点可以有多个从节点(或没有从节点)，但一个从节点只能有一个主节点。</p>
+<h2 id="复制原理"><a href="#复制原理" class="headerlink" title="复制原理"></a>复制原理</h2><p>Slave 启动成功连接到 master 后会发送一个 sync 同步命令</p>
+<p>Master 接到命令，启动后台的存盘进程，同时收集所有接收到的用于修改数据集命令，在后台进程执行完毕之后，master 将传送整个数据文件到 slave，并完成一次完全同步。</p>
+<p>全量复制︰slave 服务在接收到数据库文件数据后，将其存盘并加载到内存中。</p>
+<p>增量复制：Master 继续将新的所有收集到的修改命令依次传给 slave，完成同步</p>
+<p>如果 slave 断开之后重新连接 master，自动执行一次全量复制</p>
+<h2 id="主从复制的作用"><a href="#主从复制的作用" class="headerlink" title="主从复制的作用"></a>主从复制的作用</h2><p>1、<strong>数据冗余</strong>∶主从复制实现了数据的热备份，是持久化之外的一种数据冗余方式。</p>
+<p>2、<strong>故障恢复</strong>∶当主节点出现问题时，可以由从节点提供服务，实现快速的故障恢复;实际上是一种服务的冗余。</p>
+<p>3、<strong>负载均衡</strong>∶在主从复制的基础上，配合读写分离，可以由主节点提供写服务，由从节点提供读服务（即写Redis数据时应用连接主节点，读Redis数据时应用连接从节点），分担服务器负载;尤其是在写少读多的场景下，通过多个从节点分担读负载，可以大大提高Redis服务器的并发量。</p>
+<p>4、<strong>高可用基石</strong>∶主从复制还是哨兵和集群能够实施的基础，因此说主从复制是Redis高可用的基础。</p>
+<h2 id="为什么要主从复制？"><a href="#为什么要主从复制？" class="headerlink" title="为什么要主从复制？"></a>为什么要主从复制？</h2><p>负载均衡、减缓服务器的压力、数据冗余</p>
+<p>一般来说，要将 Redis 运用于工程项目中，只使用一台Redis是万万不能的（宕机)），原因如下:</p>
+<p>1、从结构上，单个 Redis 服务器会发生单点故障，并且一台服务器需要处理所有的请求负载，压力较大;</p>
+<p>2、从容量上，单个 Redis 服务器内存容量有限，就算一台 Redis 服务器内存容量为 256G，也不能将所有内存用作Redis 存储内存，一般来说，单台 Redis 最大使用内存不应该超过 20G。</p>
+<p>电商网站上的商品，一般都是一次上传，无数次浏览的，说专业点也就是”多读少写”。</p>
+<h2 id="主从复制的模型"><a href="#主从复制的模型" class="headerlink" title="主从复制的模型"></a>主从复制的模型</h2><p>1、一主多从</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Redis(master)	|--- Redis(slave)	|--- Redis(slave)	|--- Redis(slave)	|--- Redis(slave)</span><br></pre></td></tr></table></figure>
+
+<p>2、链式结构</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Redis(master)	|--- Redis(slave)	|--- Redis(slave)<span class="comment"># 这个依旧是从机，依旧是只读的			|--- Redis(slave)			...			|--- Redis(slave)	|--- Redis(slave)			|--- Redis(slave)			|--- Redis(slave)					|--- Redis(slave)					|--- Redis(slave)							|--- Redis(slave)			...			|--- Redis(slave)	|--- Redis(slave)</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>只配置从库，不用配置主库</p>
+<p>查看配置：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">127.0.0.1:6379&gt; info replication<span class="comment"># Replicationrole:masterconnected_slaves:0master_replid:9dec5892ed6e147c01d2f70f6623358384a3082fmaster_replid2:0000000000000000000000000000000000000000master_repl_offset:0second_repl_offset:-1repl_backlog_active:0repl_backlog_size:1048576repl_backlog_first_byte_offset:0repl_backlog_histlen:0</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>改配置：</p>
+<p>1、修改端口</p>
+<p>2、修改进程 PID</p>
+<p>3、修改日志和转储文件</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">port 6380pidfile /var/run/redis_6380.pidlogfile <span class="string">&quot;redis-6380.log&quot;</span>dbfilename dump-6380.rdb</span><br></pre></td></tr></table></figure>
+
+<p>4、测试</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">(redis-server redis-6.0.10/redis80.conf &amp;)(redis-server redis-6.0.10/redis81.conf &amp;)<span class="comment"># ps -ef | grep redisroot     18846     1  0 Feb03 ?        00:04:12 redis-server *:6379root     22738 22375  0 15:55 pts/1    00:00:00 redis-cliroot     25476     1  0 16:13 ?        00:00:00 redis-server *:6380root     25579     1  0 16:14 ?        00:00:00 redis-server *:6381root     25715 23162  0 16:15 pts/2    00:00:00 redis-cli -p 6379root     25757 23417  0 16:16 pts/3    00:00:00 redis-cli -p 6380root     25791 23647  0 16:16 pts/4    00:00:00 redis-cli -p 6381root     26052 25846  0 16:16 pts/5    00:00:00 grep --color=auto redis</span></span><br></pre></td></tr></table></figure>
+
+<p>5、配置从机（找领导）</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">127.0.0.1:6380&gt; slaveof 127.0.0.1 6379OK127.0.0.1:6380&gt; info replication<span class="comment"># Replicationrole:slavemaster_host:127.0.0.1master_port:6379master_link_status:upmaster_last_io_seconds_ago:1master_sync_in_progress:0slave_repl_offset:28slave_priority:100slave_read_only:1connected_slaves:0master_replid:bcb729b30c2165bbffe4f19b2a758559fade937emaster_replid2:0000000000000000000000000000000000000000master_repl_offset:28second_repl_offset:-1repl_backlog_active:1repl_backlog_size:1048576repl_backlog_first_byte_offset:1repl_backlog_histlen:28</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">root@iZbp1dmpxvz04ve468b39aZ:~<span class="comment"># redis-cli -p 6381127.0.0.1:6381&gt; info replication# Replicationrole:masterconnected_slaves:0master_replid:fec89a907b5bfe0c58aaeb13bde8bbdca3670163master_replid2:0000000000000000000000000000000000000000master_repl_offset:0second_repl_offset:-1repl_backlog_active:0repl_backlog_size:1048576repl_backlog_first_byte_offset:0repl_backlog_histlen:0127.0.0.1:6381&gt; slaveof 127.0.0.1 6379OK127.0.0.1:6381&gt; info replication# Replicationrole:slavemaster_host:127.0.0.1master_port:6379master_link_status:upmaster_last_io_seconds_ago:2master_sync_in_progress:0slave_repl_offset:182slave_priority:100slave_read_only:1connected_slaves:0master_replid:bcb729b30c2165bbffe4f19b2a758559fade937emaster_replid2:0000000000000000000000000000000000000000master_repl_offset:182second_repl_offset:-1repl_backlog_active:1repl_backlog_size:1048576repl_backlog_first_byte_offset:183repl_backlog_histlen:0127.0.0.1:6381&gt; </span></span><br></pre></td></tr></table></figure>
+
+<p>6、从主机查看</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">127.0.0.1:6379&gt; info replication<span class="comment"># Replicationrole:masterconnected_slaves:2slave0:ip=127.0.0.1,port=6380,state=online,offset=280,lag=0slave1:ip=127.0.0.1,port=6381,state=online,offset=280,lag=0master_replid:bcb729b30c2165bbffe4f19b2a758559fade937emaster_replid2:0000000000000000000000000000000000000000master_repl_offset:280second_repl_offset:-1repl_backlog_active:1repl_backlog_size:1048576repl_backlog_first_byte_offset:1repl_backlog_histlen:280</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>命令行配置的这种是临时的，一旦宕机就没了。</p>
+<p>想要永久的，在配置文件中配置</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">replicaof &lt;masterip&gt; &lt;masterport&gt;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>细节</p>
+</blockquote>
+<p>主机负责写，从机负责读，不能写</p>
+<p>示例：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">127.0.0.1:6381&gt; <span class="built_in">set</span> k3 v3(error) READONLY You can<span class="string">&#x27;t write against a read only replica.</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>数据是自动同步的</p>
+<h2 id="如果主机断了会发生什么？"><a href="#如果主机断了会发生什么？" class="headerlink" title="如果主机断了会发生什么？"></a>如果主机断了会发生什么？</h2><p>如果没配置哨兵，从机依旧是连接到主机的，但是还是不能写。</p>
+<p>如果主机恢复了，从机还是能读主机的数据</p>
+<p>但是，如果从机断了，并且我们只是命令行配置的，从机再次重启就不再是从机了（除非写到配置文件里面）</p>
+<p>【注意】这就有问题，我们应该让那些没断的从机自己选举出来一个主机，不能让服务停！！</p>
+<p>解决方案一：</p>
+<p>使用 <code>slaveof no one</code> 让某一台成为主机</p>
+<p>解决方案二：</p>
+<p>哨兵模式</p>
+<h2 id="哨兵模式"><a href="#哨兵模式" class="headerlink" title="哨兵模式"></a>哨兵模式</h2><p>Redis 从 2.8 开始正式提供了 Sentinel (哨兵， /ˈsentɪnl/  ）架构。</p>
+<p>能够后台监控主机是否故障，如果故障了根据投票数自动将从库转换为主库。</p>
+<p>哨兵模式是一种特殊的模式，首先 Redis 提供了哨兵的命令，哨兵是一个独立的进程，作为进程，它会独立运行。</p>
+<p>原理：哨兵通过发送命令，等待 Redis 服务器响应，从而监控运行的多个 Redis 实例。</p>
+<p><img src="../images/image-20210205170617837.png" alt="image-20210205170617837"></p>
+<p>哨兵有两个作用</p>
+<p>1、通过发送命令，让Redis服务器返回监控其运行状态，包括主服务器和从服务器。</p>
+<p>2、当哨兵监测到master宕机，会自动将slave切换成master，然后通过发布订阅模式通知其他的从服务器，修改配置文件，让它们切换主机。</p>
+<p>一个哨兵进程对Redis服务器进行监控，可能会出现问题，为此，我们可以使用多个哨兵进行监控。各个哨兵之间还会进行监控，这样就形成了多哨兵模式。</p>
+<p><img src="../images/image-20210205171003249.png" alt="image-20210205171003249"></p>
+<p>假设主服务器宕机，哨兵1先检测到这个结果，系统并不会马上进行 failover 过程，仅仅是哨兵1主观的认为主服务器不可用，这个现象成为<strong>主观下线</strong>。当后面的哨兵也检测到主服务器不可用，并且数量达到一定值时，那么哨兵之间就会进行一次投票，投票的结果由一个哨兵发起，进行 failove r操作。切换成功后，就会通过<strong>发布订阅模式</strong>，让各个哨兵把自己监控的从服务器实现切换主机，这个过程称为<strong>客观下线</strong>。</p>
+<blockquote>
+<p>作者：秃头哥编程<br>链接：<a href="https://www.jianshu.com/p/06ab9daf921d">https://www.jianshu.com/p/06ab9daf921d</a></p>
+</blockquote>
+<h2 id="哨兵模式怎么投票的？"><a href="#哨兵模式怎么投票的？" class="headerlink" title="哨兵模式怎么投票的？"></a>哨兵模式怎么投票的？</h2><h1 id="缓存穿透和雪崩"><a href="#缓存穿透和雪崩" class="headerlink" title="缓存穿透和雪崩"></a>缓存穿透和雪崩</h1><p>服务的高可用问题</p>
+<h2 id="什么是缓存穿透？"><a href="#什么是缓存穿透？" class="headerlink" title="什么是缓存穿透？"></a>什么是缓存穿透？</h2><p>缓存穿透是指在缓存系统中<strong>没有查询到</strong>数据，而不得不将请求打到数据库上查询的情况</p>
+<p><img src="../images/image-20210210173853890.png" alt="image-20210210173853890"></p>
+<p>如果是一般查询，没有什么问题，但是遇到高并发状态，比如秒杀，这会给数据库带来极大的压力。</p>
+<p>解决缓存穿透，目前一般有两种方案：缓存空值和使用布隆过滤器。</p>
+<blockquote>
+<p>布隆过滤器：存在一定的误判，不支持删除</p>
+</blockquote>
+<p>其实就是加一层</p>
+<blockquote>
+<p>1970年布隆提出了一种布隆过滤器的算法，用来判断一个元素是否在一个集合中。布隆过滤器底层是一个超级大的 bit 数组，默认值都是 0 ，一个元素通过多个hash函数映射到这个 bit 数组上，并且将 0 改成 1。</p>
+</blockquote>
+<p>步骤：</p>
+<p><strong>在服务启动的时候先把数据的查询条件，例如数据的 ID 映射到布隆过滤器上，当然如果新增数据时，除了写入到数据库中之外，也需要将数据的ID存入到布隆过滤器中</strong>。</p>
+<p><strong>我们在查询某条数据时，先判断这个查询的 ID 是否存在布隆过滤器中，如果不存在就直接返回空值，而不需要继续查询数据库和缓存，存在布隆过滤器中才继续查询数据库和缓存，这样就解决缓存穿透的问题。</strong></p>
+<img src="../images/image-20210210174149449.png" alt="image-20210210174149449" style="zoom:67%;" />
+
+<blockquote>
+<p>缓存空值</p>
+</blockquote>
+<p>如果我们系统是遇到攻击的话，那么很有可能查询的值是伪造的，必然大概率不存在我们的系统中，这样无论查询多少次，在缓存中一直不存在，这样缓存穿透就一直存在。</p>
+<p>在这种情况下，我们可以在缓存系统中缓存一个空值，防止穿透一直存在，但是因为空值并不是准确的业务数据，并且会占用缓存的空间，所以我们会给这个空值加一个比较短的过期时间，让空值在短时间之内能够快速过期淘汰</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Object nullValue = <span class="keyword">new</span> Object();<span class="keyword">try</span> &#123;  Object valueFromDB = getFromDB(uid);<span class="comment">// 从数据库中查询数据  if (valueFromDB == null) &#123;    cache.set(uid, nullValue, 10);// 如果从数据库中查询到空值，就把空值写入缓存，设置较短的超时时间  &#125;   else &#123;    cache.set(uid, valueFromDB, 1000);  &#125;&#125; catch(Exception e) &#123;  cache.set(uid, nullValue, 10);&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>弊端:</strong></p>
+<p>1、因为在缓存系统中存了大量的空值，浪费缓存的存储空间，如果缓存空间被占满了，还会还会剔除掉一些已经被缓存的用户信息反而会造成缓存命中率的下降。</p>
+<p>2、即使对空值设置了过期时间，还是会存在缓存层和存储层的数据会有一段时间窗口的不一致，这对于需要保持一致性的业务会有影响。</p>
+<h2 id="什么是缓存击穿？"><a href="#什么是缓存击穿？" class="headerlink" title="什么是缓存击穿？"></a>什么是缓存击穿？</h2><p>缓存击穿，是指一个 key 非常热点，在不停的扛着大并发，大并发集中对这一个点进行访问，当这个 key 在失效的瞬间，持续的大并发就穿破缓存，直接请求数据库，就像在一个屏障上凿开了一个洞。</p>
+<p>当某个 key 在过期的瞬间，有大量的请求并发访问，这类数据一般是热点数据，由于缓存过期，会同时访问数据库来查询最新数据，并且回写缓存，会导使数据库瞬间压力过大。</p>
+<p><strong>解决方案</strong></p>
+<p>1、设置热点数据永不过期</p>
+<p>2、加互斥锁</p>
+<p>分布式锁∶使用分布式锁，保证对于每个 key 同时只有一个线程去查询后端服务，其他线程没有获得分布式锁的权限，因此只需要等待即可。这种方式将高并发的压力转移到了分布式锁，因此对分布式锁的考验很大。</p>
+<h2 id="什么是缓存雪崩？"><a href="#什么是缓存雪崩？" class="headerlink" title="什么是缓存雪崩？"></a>什么是缓存雪崩？</h2><p>缓存雪崩是指缓存中数据大批量到过期时间，而查询数据量巨大，引起数据库压力过大</p>
+<p>当然，服务器宕机重启之后也可能发生。</p>
+<p><strong>解决方案</strong></p>
+<p>1、<strong>Redis 高可用</strong></p>
+<p>既然redis有可能挂掉，那我多增设几台redis，这样一台挂掉之后其他的还可以继续工作，其实就是搭建的集群。（异地多活!)</p>
+<p>2、<strong>限流降级</strong></p>
+<p>在缓存失效后，通过加锁或者队列来控制读数据库写缓存的线程数量。比如对某个key只允许一个线程查询数据和写缓存，其他线程等待。</p>
+<p>3、<strong>数据预热</strong></p>
+<p>在正式部署之前，我先把可能的数据先预先访问一遍，这样部分可能大量访问的数据就会加载到缓存中。在即将发生大并发访问前手动触发加载缓存不同的key，设置不同的过期时间，让缓存失效的时间点尽量均匀。</p>
+<blockquote>
+<p>  下面的来自知乎：<a href="https://zhuanlan.zhihu.com/p/81195864">https://zhuanlan.zhihu.com/p/81195864</a></p>
+</blockquote>
+<blockquote>
+<p>  **String **<br>  <strong>Set 集合</strong><br>  <strong>Zset 有序集合</strong><br>  <strong>Hash 散列表</strong><br>  <strong>List 列表</strong></p>
+</blockquote>
+<p><strong>请列举几个用得到Redis的常用使用场景?</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">缓存，毫无疑问这是Redis当今最为人熟知的使用场景。再提升服务器性能方面非常有效；排行榜，在使用传统的关系型数据库（mysql oracle 等）来做这个事儿，非常的麻烦，而利用Redis的SortSet(有序集合)数据结构能够简单的搞定；计算器/限速器，利用Redis中原子性的自增操作，我们可以统计类似用户点赞数、用户访问数等，这类操作如果用MySQL，频繁的读写会带来相当大的压力；限速器比较典型的使用场景是限制某个用户访问某个API的频率，常用的有抢购时，防止用户疯狂点击带来不必要的压力；好友关系，利用集合的一些命令，比如求交集、并集、差集等。可以方便搞定一些共同好友、共同爱好之类的功能；简单消息队列，除了Redis自身的发布/订阅模式，我们也可以利用List来实现一个队列机制，比如：到货通知、邮件发送之类的需求，不需要高可靠，但是会带来非常大的DB压力，完全可以用List来完成异步解耦；Session共享，以PHP为例，默认Session是保存在服务器的文件中，如果是集群服务，同一个用户过来可能落在不同机器上，这就会导致用户频繁登陆；采用Redis保存Session后，无论用户落在那台机器上都能够获取到对应的Session信息。一些频繁被访问的数据，经常被访问的数据如果放在关系型数据库，每次查询的开销都会很大，而放在redis中，因为redis 是放在内存中的可以很高效的访问</span><br></pre></td></tr></table></figure>
+
+<p><strong>简述Redis的数据淘汰机制</strong></p>
+<blockquote>
+<p>  volatile-lru 从已设置过期时间的数据集中挑选最近最少使用的数据淘汰<br>  volatile-ttl 从已设置过期时间的数据集中挑选将要过期的数据淘汰<br>  volatile-random从已设置过期时间的数据集中任意选择数据淘汰<br>  allkeys-lru从所有数据集中挑选最近最少使用的数据淘汰<br>  allkeys-random从所有数据集中任意选择数据进行淘汰<br>  noeviction禁止驱逐数据</p>
+</blockquote>
+<p><strong>Redis怎样防止异常数据不丢失？</strong></p>
+<blockquote>
+<p>  <strong>RDB 持久化</strong><br>  将某个时间点的所有数据都存放到硬盘上。<br>  可以将快照复制到其它服务器从而创建具有相同数据的服务器副本。<br>  如果系统发生故障，将会丢失最后一次创建快照之后的数据。<br>  如果数据量很大，保存快照的时间会很长。<br>  <strong>AOF 持久化</strong><br>  将写命令添加到 AOF 文件（Append Only File）的末尾。<br>  使用 AOF 持久化需要设置同步选项，从而确保写命令同步到磁盘文件上的时机。这是因为对文件进行写入并不会马上将内容同步到磁盘上，而是先存储到缓冲区，然后由操作系统决定什么时候同步到磁盘。有以下同步选项：<br>  选项同步频率always每个写命令都同步everysec每秒同步一次no让操作系统来决定何时同步<br>  <strong>always</strong> 选项会严重减低服务器的性能；<br>  <strong>everysec</strong> 选项比较合适，可以保证系统崩溃时只会丢失一秒左右的数据，并且 Redis 每秒执行一次同步对服务器性能几乎没有任何影响；<br>  <strong>no</strong> 选项并不能给服务器性能带来多大的提升，而且也会增加系统崩溃时数据丢失的数量<br>  随着服务器写请求的增多，AOF 文件会越来越大。Redis 提供了一种将 AOF 重写的特性，能够去除 AOF 文件中的冗余写命令。</p>
+</blockquote>
+<p><strong>讲一讲缓存穿透，缓存雪崩以及缓存击穿吧</strong></p>
+<blockquote>
+<p>  <strong>缓存穿透：就是客户持续向服务器发起对不存在服务器中数据的请求。客户先在Redis中查询，查询不到后去数据库中查询。</strong><br>  <strong>缓存击穿：就是一个很热门的数据，突然失效，大量请求到服务器数据库中</strong><br>  <strong>缓存雪崩：就是大量数据同一时间失效。</strong><br>  <strong>打个比方，你是个很有钱的人，开满了百度云，腾讯视频各种杂七杂八的会员，但是你就是没有netflix的会员，然后你把这些账号和密码发布到一个你自己做的网站上，然后你有一个朋友每过十秒钟就查询你的网站，发现你的网站没有Netflix的会员后打电话向你要。你就相当于是个数据库，网站就是Redis。这就是缓存穿透。</strong><br>  <strong>大家都喜欢看腾讯视频上的《水果传》，但是你的会员突然到期了，大家在你的网站上看不到腾讯视频的账号，纷纷打电话向你询问，这就是缓存击穿</strong><br>  <strong>你的各种会员突然同一时间都失效了，那这就是缓存雪崩了。</strong></p>
+<p>  <strong>放心，肯定有办法解决的。</strong><br>  <strong>缓存穿透：</strong><br>  <strong>1.接口层增加校验，对传参进行个校验，比如说我们的id是从1开始的，那么id&lt;=0的直接拦截；</strong><br>  <strong>2.缓存中取不到的数据，在数据库中也没有取到，这时可以将key-value对写为key-null，这样可以防止攻击用户反复用同一个id暴力攻击</strong><br>  <strong>缓存击穿：</strong><br>  <strong>最好的办法就是设置热点数据永不过期，拿到刚才的比方里，那就是你买腾讯一个永久会员</strong><br>  <strong>缓存雪崩：</strong><br>  <strong>1.缓存数据的过期时间设置随机，防止同一时间大量数据过期现象发生。</strong><br>  <strong>2.如果缓存数据库是分布式部署，将热点数据均匀分布在不同搞得缓存数据库中。</strong></p>
+</blockquote>
+<p><strong>说一下Redis中的Master-Slave模式</strong></p>
+<p>连接过程</p>
 <ol>
-<li><a href="https://www.bilibili.com/video/BV1zJ411w7SV">https://www.bilibili.com/video/BV1zJ411w7SV</a></li>
+<li> 主服务器创建快照文件，发送给从服务器，并在发送期间使用缓冲区记录执行的写命令。快照文件发送完毕之后，开始向从服务器发送存储在缓冲区中的写命令；</li>
+<li> 从服务器丢弃所有旧数据，载入主服务器发来的快照文件，之后从服务器开始接受主服务器发来的写命令；</li>
+<li> 主服务器每执行一次写命令，就向从服务器发送相同的写命令。</li>
 </ol>
+<p>主从链</p>
+<p>随着负载不断上升，主服务器可能无法很快地更新所有从服务器，或者重新连接和重新同步从服务器将导致系统超载。为了解决这个问题，可以创建一个中间层来分担主服务器的复制工作。中间层的服务器是最上层服务器的从服务器，又是最下层服务器的主服务器。</p>
+<p><img src="../images/v2-81034e4168e0b70f60caac6619e48bfb_720w.jpg" alt="img"></p>
+<p><strong>Sentinel</strong>（哨兵）可以监听集群中的服务器，并在主服务器进入下线状态时，自动从从服务器中选举出新的主服务器。</p>
+<p>分片</p>
+<blockquote>
+<p>  分片是将数据划分为多个部分的方法，可以将数据存储到多台机器里面，这种方法在解决某些问题时可以获得线性级别的性能提升。<br>  假设有 4 个 Redis 实例 R0，R1，R2，R3，还有很多表示用户的键 user:1，user:2，… ，有不同的方式来选择一个指定的键存储在哪个实例中。</p>
+<p>  最简单的方式是范围分片，例如用户 id 从 0<del>1000 的存储到实例 R0 中，用户 id 从 1001</del>2000 的存储到实例 R1 中，等等。但是这样需要维护一张映射范围表，维护操作代价很高。<br>  还有一种方式是哈希分片，使用 CRC32 哈希函数将键转换为一个数字，再对实例数量求模就能知道应该存储的实例。</p>
+<p>  根据执行分片的位置，可以分为三种分片方式：<br>  客户端分片：客户端使用一致性哈希等算法决定键应当分布到哪个节点。<br>  代理分片：将客户端请求发送到代理上，由代理转发请求到正确的节点上。<br>  服务器分片：Redis Cluster</p>
 </blockquote>
 ]]></content>
       <categories>
-        <category>Java</category>
-        <category>Nginx</category>
+        <category>数据库</category>
+        <category>Redis</category>
       </categories>
       <tags>
-        <tag>Nginx</tag>
+        <tag>Redis</tag>
       </tags>
   </entry>
 </search>
