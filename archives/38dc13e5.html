@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"tcmyxc.github.io","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="JDK 8 中的新特性">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java8的新特性">
+<meta property="og:url" content="https://tcmyxc.github.io/archives/38dc13e5.html">
+<meta property="og:site_name" content="徐文祥的个人博客">
+<meta property="og:description" content="JDK 8 中的新特性">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-07-07T11:00:25.000Z">
+<meta property="article:modified_time" content="2021-07-07T11:03:40.775Z">
+<meta property="article:author" content="Wenxiang Xu">
+<meta property="article:tag" content="随笔">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://tcmyxc.github.io/archives/38dc13e5.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>Java8的新特性 | 徐文祥的个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">徐文祥的个人博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">27</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">27</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">33</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://tcmyxc.github.io/archives/38dc13e5.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Wenxiang Xu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="徐文祥的个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Java8的新特性
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-07-07 19:00:25 / 修改时间：19:03:40" itemprop="dateCreated datePublished" datetime="2021-07-07T19:00:25+08:00">2021-07-07</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/%E9%9A%8F%E7%AC%94/" itemprop="url" rel="index"><span itemprop="name">随笔</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/archives/38dc13e5.html#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/archives/38dc13e5.html" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="JDK-8-中的新特性"><a href="#JDK-8-中的新特性" class="headerlink" title="JDK 8 中的新特性"></a>JDK 8 中的新特性</h1><span id="more"></span>
+
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.oracle.com/technetwork/java/javase/jdk-relnotes-index-2162236.html?ssSourceSiteId=otncn">JDK 版本说明</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.oracle.com/technetwork/java/javase/documentation/8u-relnotes-2225394.html?ssSourceSiteId=otncn">JDK 8 版本说明</a></li>
+</ul>
+<p>Java Platform, Standard Edition 8 是一个拥有丰富特性的主要版本。本文档总结了 Java SE 8、JDK 8 以及 Oracle 的 Java SE 8 实现中的特性和增强。单击组件名称可获取该组件增强功能更详细的描述。</p>
+<ul>
+<li><h4 id="Java-编程语言"><a href="#Java-编程语言" class="headerlink" title="Java 编程语言"></a><a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/8/docs/technotes/guides/language/enhancements.html#javase8">Java 编程语言</a></h4><ul>
+<li>Lambda 表达式是一个新的语言特性，已经在此版本中引入。该特性让您可以将功能视为方法参数，或者将代码视为数据。使用 Lambda 表达式，您可以更简洁地表示单方法接口（称为功能接口）的实例。</li>
+<li>方法引用为已经具有名称的方法提供了易于理解的 lambda 表达式。</li>
+<li>默认方法允许将新功能添加到库的接口中，并确保与为这些接口的旧版本编写的代码的二进制兼容性。</li>
+<li>重复批注支持对同一个声明或类型的使用多次应用相同的批注类型。</li>
+<li>类型批注支持在使用类型的任何地方应用批注，而不仅限于声明。与可插拔类型系统结合使用时，此特性可改进代码的类型检查。</li>
+<li>改进类型推断。</li>
+<li>方法参数反射。</li>
+</ul>
+</li>
+<li><h4 id="集合"><a href="#集合" class="headerlink" title="集合"></a><a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/8/docs/technotes/guides/collections/changes8.html">集合</a></h4><ul>
+<li>新的<code>java.util.stream</code>包中的类提供了一个 Stream API，支持对元素流进行函数式操作。Stream API 集成在 Collections API 中，可以对集合进行批量操作，例如顺序或并行的 map-reduce 转换。</li>
+<li>针对存在键冲突的 HashMap 的性能改进</li>
+</ul>
+</li>
+<li><p>**<a target="_blank" rel="noopener" href="http://docs.oracle.com/javase/8/docs/technotes/guides/compactprofiles/">紧凑 profile</a>**包含 Java SE 平台的预定义子集，并且支持不需要在小型设备上部署和运行整个平台的应用。</p>
+</li>
+<li><h4 id="安全性"><a href="#安全性" class="headerlink" title="安全性"></a><a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/enhancements-8.html">安全性</a></h4><ul>
+<li>默认启用客户端 TLS 1.2</li>
+<li><code>AccessController.doPrivileged</code> 的新变体支持代码断言其权限的子集，而不会阻止完全遍历堆栈来检查其他权限</li>
+<li>更强大的基于密码的加密算法</li>
+<li>JSSE 服务器端支持 SSL/TLS 服务器名称指示 (SNI) 扩展</li>
+<li>支持 AEAD 算法：SunJCE 提供程序得到了增强，支持 AES/GCM/NoPadding 密码实现以及 GCM 算法参数。而且 SunJSSE 提供程序也得到了增强，支持基于 AEAD 模式的密码套件。请参阅 Oracle 提供程序文档，JEP 115。</li>
+<li>密钥库增强，包括新的域密钥库类型 <code>java.security.DomainLoadStoreParameter</code>, 和为 keytool 实用程序新增的命令选项<code>-importpassword</code></li>
+<li>SHA-224 消息摘要</li>
+<li>增强了对 NSA Suite B 加密的支持</li>
+<li>更好地支持高熵随机数生成</li>
+<li>新增了 <code>java.security.cert.PKIXRevocationChecker</code> 类，用于配置 X.509 证书的撤销检查</li>
+<li>适用于 Windows 的 64 位 PKCS11</li>
+<li>Kerberos 5 重放缓存中新增了 rcache 类型</li>
+<li>支持 Kerberos 5 协议转换和受限委派</li>
+<li>默认禁用 Kerberos 5 弱加密类型</li>
+<li>适用于 GSS-API/Kerberos 5 机制的未绑定 SASL</li>
+<li>针对多个主机名称的 SASL 服务</li>
+<li>JNI 桥接至 Mac OS X 上的原生 JGSS</li>
+<li>SunJSSE 提供程序中支持更强大的临时 DH 密钥</li>
+<li>JSSE 中支持服务器端加密套件首选项自定义</li>
+</ul>
+</li>
+<li><h4 id="JavaFX"><a href="#JavaFX" class="headerlink" title="JavaFX"></a><a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/8/javase-clienttechnologies.htm">JavaFX</a></h4><ul>
+<li><p>本版本中实施了新的 Modena 主题。有关更多信息，请参阅 <a target="_blank" rel="noopener" href="https://fxexperience.com/2013/03/modena-theme-update/">xexperience.com</a>.</p>
+</li>
+<li><p>新的 <code>SwingNode</code> 类允许开发人员将 Swing 内容嵌入到 JavaFX 应用中。请参阅<a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/8/javafx/api/javafx/embed/swing/SwingNode.html">SwingNode</a> javadoc 和 <a target="_blank" rel="noopener" href="http://docs.oracle.com/javase/8/javafx/interoperability-tutorial/embed-swing.htm">将 Swing 内容嵌入 JavaFX 应用中。</a>.</p>
+</li>
+<li><p>新的 UI 控件包括 <a target="_blank" rel="noopener" href="http://docs.oracle.com/javase/8/javafx/api/javafx/scene/control/DatePicker.html"><code>DatePicker</code></a> 和 <a target="_blank" rel="noopener" href="http://docs.oracle.com/javase/8/javafx/api/javafx/scene/control/TreeTableView.html"><code>TreeTableView</code></a> 控件。</p>
+</li>
+<li><p><code>javafx.print</code> 程序包为 JavaFX Printing API 提供了公共类。有关更多信息，请参阅 <a target="_blank" rel="noopener" href="http://docs.oracle.com/javase/8/javafx/api/javafx/print/package-summary.html">javadoc</a></p>
+</li>
+<li><p>3D 图形特性现在包括 3D 形状、摄像头、灯光、子场景、材料、挑选和抗锯齿。JavaFX 3D 图形库中新增了 <code>Shape3D</code> (<code>Box</code>, <code>Cylinder</code>, <code>MeshView</code>和 <code>Sphere</code>子类 ), <code>SubScene</code>, <code>Material</code>, <code>PickResult</code>, <code>LightBase</code> (<code>AmbientLight</code> 和 <code>PointLight</code> 子类) , 和 <code>SceneAntialiasing</code> API 类。此版本中的<code>Camera</code> API 类也已更新。请参阅 <code>javafx.scene.shape.Shape3D</code>, <code>javafx.scene.SubScene</code>, <code>javafx.scene.paint.Material</code>, <code>javafx.scene.input.PickResult</code>和, <code>javafx.scene.SceneAntialiasing</code>, 类的相关 javadoc 以及 <a target="_blank" rel="noopener" href="http://docs.oracle.com/javase/8/javafx/graphics-tutorial/javafx-3d-graphics.htm">JavaFX 3D 图形入门 </a>文档。</p>
+</li>
+<li><p><code>WebView</code> WebView 类包含新特性和改进。有关其他 HTML5 特性（包括 Web 套接字、Web 辅助进程和 Web 字体）的更多信息，请参阅</p>
+</li>
+<li><p>增强了文本支持，包括双向文本、复杂文本脚本（如泰语和印地语控件）以及文本节点中的多行多样式文本。此版本添加了对 Hi-DPI 显示的支持。</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="http://docs.oracle.com/javase/8/javafx/embedded-browser-tutorial/index.html">CSS Styleable* 类已成为公共 API。有关更多信息，请参阅 </a><a target="_blank" rel="noopener" href="http://docs.oracle.com/javase/8/javafx/api/javafx/css/package-frame.html">javafx.css</a> javadoc。</p>
+</li>
+<li><p>新的 <a target="_blank" rel="noopener" href="http://docs.oracle.com/javase/8/javafx/api/javafx/concurrent/ScheduledService.html">ScheduledService</a> 类允许自动重新启动服务。</p>
+</li>
+<li><p>JavaFX 现在可用于 ARM 平台。适用于 ARM 的 JDK 包含 JavaFX 的基础组件、图形组件和控制组件。</p>
+</li>
+</ul>
+</li>
+<li><h4 id="工具"><a href="#工具" class="headerlink" title="工具"></a><a target="_blank" rel="noopener" href="http://docs.oracle.com/javase/8/docs/technotes/tools/enhancements-8.html">工具</a></h4><ul>
+<li>可通过 <code>jjs</code> 命令来调用 Nashorn 引擎。</li>
+<li><code>java</code> 命令用于启动 JavaFX 应用。</li>
+<li>重新编写了 <code>java</code> 手册页。</li>
+<li>可通过 <code>jdeps</code> 命令行工具来分析类文件。</li>
+<li>Java Management Extensions (JMX) 支持远程访问诊断命令。</li>
+<li>The <code>jarsigner</code>工具提供了一个选项用于请求获取时间戳机构 (TSA) 的签名时间戳。</li>
+<li>Javac 工具<ul>
+<li><code>javac</code> 命令的 <code>-parameters</code> 选项可用于存储正式参数名称，并启用反射 API 来检索正式参数名称。</li>
+<li>命令现已正确实施了 Java 语言规范 (JLS) 第 15.21 节中的相等运算符的类型规则。 <code>javac</code></li>
+<li>The <code>javac</code>工具现在支持检查 <code>javadoc</code> 注释的内容，从而避免在运行<code>javadoc</code> 时生成的文件中产生各种问题，例如无效的 HTML 或可访问性问题。可通过新的<code>-Xdoclint</code> 选项来启用此特性。有关更多详细信息，请参阅运行“javac-X”时的输出。此特性也可以在<code>javac -X</code>“. This feature is also available in the <code>javadoc</code>工具中使用，并且默认启用。</li>
+<li><code>javac</code> 工具现在支持根据需要生成原生标头。这样便无需在构建管道中单独运行 <code>javah</code> 工具。可以使用新的 <code>-h</code> 选项在 <code>javac</code> 中启用此特性，该选项用于指定写入头文件的目录。将为任何具有原生方法或者使用 <code>java.lang.annotation.Native</code>类型的新批注的类进行批注的常量字段生成头文件。</li>
+</ul>
+</li>
+<li>Javadoc 工具<ul>
+<li><code>javadoc</code> 工具支持新的 <code>DocTree</code> API，让您可以将 Javadoc 注释作为抽象语法树来进行遍历。</li>
+<li><code>javadoc</code> 工具支持新的 Javadoc Access API，让您可以直接从 Java 应用中调用 Javadoc 工具，而无需执行新的进程。有关更多信息，请参阅<a target="_blank" rel="noopener" href="http://docs.oracle.com/javase/8/docs/technotes/guides/javadoc/whatsnew-8.html"> javadoc 新特性</a> 页面。</li>
+<li><code>javadoc</code>工具现在支持检查<code>javadoc</code> 注释的内容，从而避免在运行 <code>javadoc</code> 时生成的文件中产生各种问题，例如无效的 HTML 或可访问性问题。此特性默认为启用状态，可以通过新的<code>-Xdoclint</code> 选项加以控制。有关更多详细信息，请参阅运行 “<code>javadoc -X</code>“ 时的输出。. <code>javac</code> 工具也支持此特性，但默认情况下并未启用它。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><h4 id="国际化"><a href="#国际化" class="headerlink" title="国际化"></a><a target="_blank" rel="noopener" href="http://docs.oracle.com/javase/8/docs/technotes/guides/intl/enhancements.8.html">国际化</a></h4><ul>
+<li>Unicode 增强，包括对 Unicode 6.2.0 的支持</li>
+<li>采用 Unicode CLDR 数据和 java.locale.providers 系统属性</li>
+<li>新增日历和区域设置 API</li>
+<li>支持将自定义资源包作为扩展进行安装</li>
+</ul>
+</li>
+<li><h4 id="部署"><a href="#部署" class="headerlink" title="部署"></a><a target="_blank" rel="noopener" href="http://docs.oracle.com/javase/8/docs/technotes/guides/jweb/enhancements-8.html">部署</a></h4><ul>
+<li>现在可以使用 <code>URLPermission</code> 允许沙盒小程序和 Java Web Start 应用连接回启动它们的服务器。不再授予 <code>SocketPermission</code> 。</li>
+<li>在所有安全级别，主 JAR 文件的 JAR 文件清单中都需要 Permissions 属性。</li>
+</ul>
+</li>
+<li><p>**<a target="_blank" rel="noopener" href="http://docs.oracle.com/javase/8/docs/technotes/guides/datetime/index.html">Date-Time 程序包 </a>**— 一组新程序包，提供全面的日期-时间模型。</p>
+</li>
+<li><h4 id="脚本编写"><a href="#脚本编写" class="headerlink" title="脚本编写"></a><a target="_blank" rel="noopener" href="http://docs.oracle.com/javase/8/docs/technotes/guides/scripting/enhancements.html#jdk8">脚本编写</a></h4><ul>
+<li>Rhino Javascript 引擎已被替换为 <a target="_blank" rel="noopener" href="http://docs.oracle.com/javase/8/docs/technotes/guides/scripting/nashorn/">Nashorn</a> JavaScript 引擎</li>
+</ul>
+</li>
+<li><h4 id="Pack200"><a href="#Pack200" class="headerlink" title="Pack200"></a><a target="_blank" rel="noopener" href="http://docs.oracle.com/javase/8/docs/technotes/guides/pack200/enhancements.html">Pack200</a></h4><ul>
+<li>Pack200 支持 JSR 292 引入的常量池条目和新字节码</li>
+<li>JDK8 支持 JSR-292、JSR-308 和 JSR-335 指定的类文件更改</li>
+</ul>
+</li>
+<li><h4 id="IO-和-NIO"><a href="#IO-和-NIO" class="headerlink" title="IO 和 NIO"></a><a target="_blank" rel="noopener" href="http://docs.oracle.com/javase/8/docs/technotes/guides/io/enhancements.html#jdk8">IO 和 NIO</a></h4><ul>
+<li>全新的基于 Solaris 事件端口机制的面向 Solaris 的 <code>SelectorProvider</code> 实现。要使用它，请将系统属性<code>java.nio.channels.spi.Selector</code> 的值设置为 <code>sun.nio.ch.EventPortSelectorProvider</code>.</li>
+<li>减小 <code>/jre/lib/charsets.jar</code> 文件的大小</li>
+<li>提高了 <code>java.lang.String(byte[], *)</code> 构造函数和 <code>java.lang.String.getBytes()</code> 方法的性能。</li>
+</ul>
+</li>
+<li><h4 id="java-lang-和-java-util-程序包"><a href="#java-lang-和-java-util-程序包" class="headerlink" title="java.lang 和 java.util 程序包"></a><a target="_blank" rel="noopener" href="http://docs.oracle.com/javase/8/docs/technotes/guides/lang/enhancements.html#jdk8">java.lang 和 java.util 程序包</a></h4><ul>
+<li>并行数组排序</li>
+<li>标准编码和解码 Base64</li>
+<li>无符号算术支持</li>
+</ul>
+</li>
+<li><h4 id="JDBC"><a href="#JDBC" class="headerlink" title="JDBC"></a><a target="_blank" rel="noopener" href="http://docs.oracle.com/javase/8/docs/technotes/guides/jdbc/">JDBC</a></h4><ul>
+<li>删除了 JDBC-ODBC Bridge。</li>
+<li>JDBC 4.2 引入了新特性。</li>
+</ul>
+</li>
+<li><h4 id="Java-DB"><a href="#Java-DB" class="headerlink" title="Java DB"></a>Java DB</h4><ul>
+<li>JDK 8 包含 Java DB 10.10。</li>
+</ul>
+</li>
+<li><h4 id="网络"><a href="#网络" class="headerlink" title="网络"></a><a target="_blank" rel="noopener" href="http://docs.oracle.com/javase/8/docs/technotes/guides/net/enhancements-8.0.html">网络</a></h4><ul>
+<li>已添加 <code>java.net.URLPermission</code> 类。</li>
+<li>在 <code>java.net.HttpURLConnection</code>类中，如果安装了安全管理器，那么请求打开连接的调用需要权限。</li>
+</ul>
+</li>
+<li><h4 id="并发性"><a href="#并发性" class="headerlink" title="并发性"></a><a target="_blank" rel="noopener" href="http://docs.oracle.com/javase/8/docs/technotes/guides/concurrency/changes8.html">并发性</a></h4><ul>
+<li><code>java.util.concurrent</code> 程序包中新增了一些类和接口。</li>
+<li>Methods have been added to the <code>java.util.concurrent.ConcurrentHashMap</code> 类中新增了一些方法，支持基于新增流工具和 lambda 表达式的聚合操作。</li>
+<li><code>java.util.concurrent.atomic</code> 程序包中新增了一些类来支持可扩展、可更新的变量。</li>
+<li><code>java.util.concurrent.ForkJoinPool</code> 类中新增了一些方法来支持通用池。</li>
+<li>新增的 <code>java.util.concurrent.locks.StampedLock</code> 类提供了一个基于能力的锁，可通过三种模式来控制读/写访问。</li>
+</ul>
+</li>
+<li><h4 id="Java-XML-JAXP"><a href="#Java-XML-JAXP" class="headerlink" title="Java XML - JAXP"></a><a target="_blank" rel="noopener" href="http://docs.oracle.com/javase/8/docs/technotes/guides/xml/enhancements.html">Java XML</a> - <a target="_blank" rel="noopener" href="http://docs.oracle.com/javase/8/docs/technotes/guides/xml/jaxp/enhancements-8.html">JAXP</a></h4></li>
+<li><h4 id="HotSpot"><a href="#HotSpot" class="headerlink" title="HotSpot"></a><a target="_blank" rel="noopener" href="http://docs.oracle.com/javase/8/docs/technotes/guides/vm/">HotSpot</a></h4><ul>
+<li><p>新增的硬件内部函数以便使用高级加密标准 (AES)。<code>UseAES</code>和<code>UseAESIntrinsics</code>标志用于为 硬件启用基于硬件的 AES 内部函数。硬件必须是 2010 年或更新的 Westmere 硬件。例如，要启用硬件 AES，请使用以下标志：<code>-XX:+UseAES -XX:+UseAESIntrinsics</code></p>
+<p>要禁用硬件 AES，请使用以下标志： <code>-XX:-UseAES -XX:-UseAESIntrinsics</code></p>
+</li>
+<li><p>删除了 PermGen。</p>
+</li>
+<li><p>方法调用的字节码指令支持 Java 编程语言中的默认方法。</p>
+</li>
+</ul>
+</li>
+<li><h4 id="Java-Mission-Control-5-3-版本说明"><a href="#Java-Mission-Control-5-3-版本说明" class="headerlink" title="Java Mission Control 5.3 版本说明"></a><a target="_blank" rel="noopener" href="http://www.oracle.com/technetwork/java/javase/jmc53-release-notes-2157171.html">Java Mission Control 5.3 版本说明</a></h4><ul>
+<li>JDK 8 包含 Java Mission Control 5.3。</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Wenxiang Xu
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://tcmyxc.github.io/archives/38dc13e5.html" title="Java8的新特性">https://tcmyxc.github.io/archives/38dc13e5.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E9%9A%8F%E7%AC%94/" rel="tag"># 随笔</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/archives/319c21eb.html" rel="prev" title="SpringMVC学习笔记">
+      <i class="fa fa-chevron-left"></i> SpringMVC学习笔记
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/archives/c1de7360.html" rel="next" title="版本号命名规范">
+      版本号命名规范 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#JDK-8-%E4%B8%AD%E7%9A%84%E6%96%B0%E7%89%B9%E6%80%A7"><span class="nav-text">JDK 8 中的新特性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Java-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80"><span class="nav-text">Java 编程语言</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9B%86%E5%90%88"><span class="nav-text">集合</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E6%80%A7"><span class="nav-text">安全性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#JavaFX"><span class="nav-text">JavaFX</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7"><span class="nav-text">工具</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9B%BD%E9%99%85%E5%8C%96"><span class="nav-text">国际化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2"><span class="nav-text">部署</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%84%9A%E6%9C%AC%E7%BC%96%E5%86%99"><span class="nav-text">脚本编写</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Pack200"><span class="nav-text">Pack200</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#IO-%E5%92%8C-NIO"><span class="nav-text">IO 和 NIO</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#java-lang-%E5%92%8C-java-util-%E7%A8%8B%E5%BA%8F%E5%8C%85"><span class="nav-text">java.lang 和 java.util 程序包</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#JDBC"><span class="nav-text">JDBC</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Java-DB"><span class="nav-text">Java DB</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C"><span class="nav-text">网络</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B9%B6%E5%8F%91%E6%80%A7"><span class="nav-text">并发性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Java-XML-JAXP"><span class="nav-text">Java XML - JAXP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#HotSpot"><span class="nav-text">HotSpot</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Java-Mission-Control-5-3-%E7%89%88%E6%9C%AC%E8%AF%B4%E6%98%8E"><span class="nav-text">Java Mission Control 5.3 版本说明</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Wenxiang Xu"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Wenxiang Xu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tcmyxc" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tcmyxc" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wenxiang Xu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v5.4.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.2
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+  <script src="//cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js"></script>
+  <script>
+      window.addEventListener('load', () => {
+      quicklink({
+        timeout : 3000,
+        priority: true,
+        ignores : [uri => uri.includes('#'),uri => uri == 'https://tcmyxc.github.io/archives/38dc13e5.html',]
+      });
+      });
+  </script>
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'llo5vulMWXkianf3iqrIdKvx-gzGzoHsz',
+      appKey     : 'stLwOmlODc9xnz35mN59voAs',
+      placeholder: "欢迎留下你的评论",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
