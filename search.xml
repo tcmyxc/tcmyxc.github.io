@@ -5653,4 +5653,104 @@
         <tag>Redis</tag>
       </tags>
   </entry>
+  <entry>
+    <title>JVM和Java体系结构(尚硅谷版)</title>
+    <url>/archives/d52a7e56.html</url>
+    <content><![CDATA[<h1 id="JVM和Java体系结构"><a href="#JVM和Java体系结构" class="headerlink" title="JVM和Java体系结构"></a>JVM和Java体系结构</h1><p>练好内功</p>
+<p><img src="../images/image-20210707223229867.png" alt="image-20210707223229867"></p>
+<span id="more"></span>
+
+<h2 id="Java生态圈"><a href="#Java生态圈" class="headerlink" title="Java生态圈"></a>Java生态圈</h2><p>Java是目前应用最为广泛的软件开发平台之一。随着Java以及Java社区的不断壮大Java 也早已不再是简简单单的一门计算机语言了，它更是一个平台、一种文化、一个社区。</p>
+<ul>
+<li>作为一个平台，Java虚拟机扮演着举足轻重的作用<ul>
+<li>Groovy、Scala、JRuby、Kotlin等都是Java平台的一部分</li>
+</ul>
+</li>
+<li>作为灯种文化，Java几乎成为了“开源”的代名词。<ul>
+<li>第三方开源软件和框架。如Tomcat、Struts，MyBatis，Spring等。</li>
+<li>就连JDK和JVM自身也有不少开源的实现，如openJDK、Harmony。</li>
+</ul>
+</li>
+</ul>
+<p>每个语言都需要转换成字节码文件，最后转换的字节码文件都能通过Java虚拟机进行运行和处理</p>
+<p><img src="../images/image-20200704152052489.png" alt="image-20200704152052489"></p>
+<p>随着Java7的正式发布，Java虚拟机的设计者们通过JSR-292规范基本实现在Java虚拟机平台上运行非Java语言编写的程序。</p>
+<p>Java虚拟机根本不关心运行在其内部的程序到底是使用何种编程语言编写的，它只关心“字节码”文件。也就是说Java虚拟机拥有语言无关性，并不会单纯地与Java语言“终身绑定”，只要其他编程语言的编译结果满足并包含Java虚拟机的内部指令集、符号表以及其他的辅助信息，它就是一个有效的字节码文件，就能够被虚拟机所识别并装载运行。</p>
+<h2 id="字节码"><a href="#字节码" class="headerlink" title="字节码"></a>字节码</h2><p>我们平时说的java字节码，指的是用java语言编译成的字节码。准确的说任何能在jvm平台上执行的字节码格式都是一样的。所以应该统称为：jvm字节码。</p>
+<p>不同的编译器，可以编译出相同的字节码文件，字节码文件也可以在不同的JVM上运行。</p>
+<p>Java虚拟机与Java语言并没有必然的联系，它只与特定的二进制文件格式—Class文件格式所关联，Class文件中包含了Java虚拟机指令集（或者称为字节码、Bytecodes）和符号表，还有一些其他辅助信息。</p>
+<h2 id="Java虚拟机"><a href="#Java虚拟机" class="headerlink" title="Java虚拟机"></a>Java虚拟机</h2><p>Java虚拟机是一台执行Java字节码的虚拟计算机，它拥有独立的运行机制，其运行的Java字节码也未必由Java语言编译而成。</p>
+<p>JVM平台的各种语言可以共享Java虚拟机带来的跨平台性、优秀的垃圾回器，以及可靠的即时编译器。</p>
+<p>Java技术的核心就是Java虚拟机（JVM，Java Virtual Machine），因为所有的Java程序都运行在Java虚拟机内部。</p>
+<p>Java虚拟机就是二进制字节码的运行环境，负责装载字节码到其内部，解释/编译为对应平台上的机器指令执行。每一条Java指令，Java虚拟机规范中都有详细定义，如怎么取操作数，怎么处理操作数，处理结果放在哪里。</p>
+<p>特点：</p>
+<ul>
+<li>一次编译，到处运行</li>
+<li>自动内存管理</li>
+<li>自动垃圾回收功能</li>
+</ul>
+<h2 id="JVM整体结构"><a href="#JVM整体结构" class="headerlink" title="JVM整体结构"></a>JVM整体结构</h2><ul>
+<li>HotSpot VM是目前市面上高性能虚拟机的代表作之一。</li>
+<li>它采用解释器与即时编译器并存的架构。</li>
+<li>在今天，Java程序的运行性能早已脱胎换骨，已经达到了可以和C/C++程序一较高下的地步。</li>
+</ul>
+<p><img src="../images/image-20200704183436495.png" alt="image-20200704183436495"></p>
+<p>执行引擎包含三部分：解释器，及时编译器，垃圾回收器</p>
+<h2 id="Java代码执行流程"><a href="#Java代码执行流程" class="headerlink" title="Java代码执行流程"></a>Java代码执行流程</h2><p><img src="../images/image-20200704210429535.png" alt="image-20200704210429535"></p>
+<p>只是能生成被Java虚拟机所能解释的字节码文件，那么理论上就可以自己设计一套代码了</p>
+<h2 id="JVM的架构模型"><a href="#JVM的架构模型" class="headerlink" title="JVM的架构模型"></a>JVM的架构模型</h2><p>Java编译器输入的指令流基本上是一种基于栈的指令集架构，另外一种指令集架构则是基于寄存器的指令集架构。具体来说：这两种架构之间的区别：</p>
+<p>基于栈式架构的特点</p>
+<ul>
+<li>设计和实现更简单，适用于资源受限的系统；</li>
+<li>避开了寄存器的分配难题：使用零地址指令方式分配。</li>
+<li>指令流中的指令大部分是零地址指令，其执行过程依赖于操作栈。指令集更小，编译器容易实现。</li>
+<li>不需要硬件支持，可移植性更好，更好实现跨平台</li>
+</ul>
+<p>基于寄存器架构的特点</p>
+<ul>
+<li>典型的应用是x86的二进制指令集：比如传统的PC以及Android的Davlik虚拟机。</li>
+<li>指令集架构则完全依赖硬件，可移植性差</li>
+<li>性能优秀和执行更高效</li>
+<li>花费更少的指令去完成一项操作。</li>
+<li>在大部分情况下，基于寄存器架构的指令集往往都以一地址指令、二地址指令和三地址指令为主，而基于栈式架构的指令集却是以零地址指令为主方水洋</li>
+</ul>
+<h3 id="测试用例"><a href="#测试用例" class="headerlink" title="测试用例"></a>测试用例</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.tcmyxc;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StackSturTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> i = <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">int</span> j = <span class="number">3</span>;</span><br><span class="line">        <span class="keyword">int</span> k = i + j;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>反编译</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">javap -v StackSturTest.class</span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight tex"><table><tr><td class="code"><pre><span class="line">public static void main(java.lang.String[]);</span><br><span class="line">    descriptor: ([Ljava/lang/String;)V</span><br><span class="line">    flags: ACC<span class="built_in">_</span>PUBLIC, ACC<span class="built_in">_</span>STATIC</span><br><span class="line">    Code:</span><br><span class="line">      stack=2, locals=4, args<span class="built_in">_</span>size=1</span><br><span class="line">         0: iconst<span class="built_in">_</span>2</span><br><span class="line">         1: istore<span class="built_in">_</span>1</span><br><span class="line">         2: iconst<span class="built_in">_</span>3</span><br><span class="line">         3: istore<span class="built_in">_</span>2</span><br><span class="line">         4: iload<span class="built_in">_</span>1</span><br><span class="line">         5: iload<span class="built_in">_</span>2</span><br><span class="line">         6: iadd</span><br><span class="line">         7: istore<span class="built_in">_</span>3</span><br><span class="line">         8: return</span><br><span class="line">      LineNumberTable:</span><br><span class="line">        line 6: 0</span><br><span class="line">        line 7: 2</span><br><span class="line">        line 8: 4</span><br><span class="line">        line 9: 8</span><br><span class="line">      LocalVariableTable:</span><br><span class="line">        Start  Length  Slot  Name   Signature</span><br><span class="line">            0       9     0  args   [Ljava/lang/String;</span><br><span class="line">            2       7     1     i   I</span><br><span class="line">            4       5     2     j   I</span><br><span class="line">            8       1     3     k   I</span><br></pre></td></tr></table></figure>
+
+
+
+<p>由于跨平台性的设计，Java的指令都是根据栈来设计的。不同平台CPU架构不同，所以不能设计为基于寄存器的。优点是跨平台，指令集小，编译器容易实现，缺点是性能下降，实现同样的功能需要更多的指令。</p>
+<h2 id="JVM生命周期"><a href="#JVM生命周期" class="headerlink" title="JVM生命周期"></a>JVM生命周期</h2><h3 id="虚拟机的启动"><a href="#虚拟机的启动" class="headerlink" title="虚拟机的启动"></a>虚拟机的启动</h3><p>Java虚拟机的启动是通过引导类加载器（bootstrap class loader）创建一个初始类（initial class）来完成的，这个类是由虚拟机的具体实现指定的。</p>
+<h3 id="虚拟机的执行"><a href="#虚拟机的执行" class="headerlink" title="虚拟机的执行"></a>虚拟机的执行</h3><ul>
+<li>一个运行中的Java虚拟机有着一个清晰的任务：执行Java程序。</li>
+<li>程序开始执行时他才运行，程序结束时他就停止。</li>
+<li>执行一个所谓的Java程序的时候，真真正正在执行的是一个叫做Java虚拟机的进程。</li>
+</ul>
+<h3 id="虚拟机的退出"><a href="#虚拟机的退出" class="headerlink" title="虚拟机的退出"></a>虚拟机的退出</h3><p>有如下的几种情况：</p>
+<ul>
+<li>程序正常执行结束</li>
+<li>程序在执行过程中遇到了异常或错误而异常终止</li>
+<li>由于操作系统用现错误而导致Java虚拟机进程终止</li>
+<li>某线程调用Runtime类或system类的exit方法，或Runtime类的halt方法，并且Java安全管理器也允许这次exit或halt操作。</li>
+<li>除此之外，JNI（Java Native Interface）规范描述了用JNI Invocation API来加载或卸载 Java虚拟机时，Java虚拟机的退出情况。</li>
+</ul>
+<h2 id="Hotspot"><a href="#Hotspot" class="headerlink" title="Hotspot"></a>Hotspot</h2><p>热点代码探测技术</p>
+<ul>
+<li>通过计数器找到最具编译价值的代码，从而触发即时编译或者栈上替换</li>
+<li>通过编译器和解释器协同工作，在最优的程序响应时间和最佳的执行性能中取得平衡</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Java</category>
+        <category>JVM</category>
+      </categories>
+      <tags>
+        <tag>JVM</tag>
+      </tags>
+  </entry>
 </search>
