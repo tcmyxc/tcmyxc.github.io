@@ -192,6 +192,270 @@
       </tags>
   </entry>
   <entry>
+    <title>JVM和Java体系结构(尚硅谷版)</title>
+    <url>/archives/d52a7e56.html</url>
+    <content><![CDATA[<h1 id="JVM和Java体系结构"><a href="#JVM和Java体系结构" class="headerlink" title="JVM和Java体系结构"></a>JVM和Java体系结构</h1><p>练好内功</p>
+<p><img src="../images/image-20210707223229867.png" alt="image-20210707223229867"></p>
+<span id="more"></span>
+
+<h2 id="Java生态圈"><a href="#Java生态圈" class="headerlink" title="Java生态圈"></a>Java生态圈</h2><p>Java是目前应用最为广泛的软件开发平台之一。随着Java以及Java社区的不断壮大Java 也早已不再是简简单单的一门计算机语言了，它更是一个平台、一种文化、一个社区。</p>
+<ul>
+<li>作为一个平台，Java虚拟机扮演着举足轻重的作用<ul>
+<li>Groovy、Scala、JRuby、Kotlin等都是Java平台的一部分</li>
+</ul>
+</li>
+<li>作为灯种文化，Java几乎成为了“开源”的代名词。<ul>
+<li>第三方开源软件和框架。如Tomcat、Struts，MyBatis，Spring等。</li>
+<li>就连JDK和JVM自身也有不少开源的实现，如openJDK、Harmony。</li>
+</ul>
+</li>
+</ul>
+<p>每个语言都需要转换成字节码文件，最后转换的字节码文件都能通过Java虚拟机进行运行和处理</p>
+<p><img src="../images/image-20200704152052489.png" alt="image-20200704152052489"></p>
+<p>随着Java7的正式发布，Java虚拟机的设计者们通过JSR-292规范基本实现在Java虚拟机平台上运行非Java语言编写的程序。</p>
+<p>Java虚拟机根本不关心运行在其内部的程序到底是使用何种编程语言编写的，它只关心“字节码”文件。也就是说Java虚拟机拥有语言无关性，并不会单纯地与Java语言“终身绑定”，只要其他编程语言的编译结果满足并包含Java虚拟机的内部指令集、符号表以及其他的辅助信息，它就是一个有效的字节码文件，就能够被虚拟机所识别并装载运行。</p>
+<h2 id="字节码"><a href="#字节码" class="headerlink" title="字节码"></a>字节码</h2><p>我们平时说的java字节码，指的是用java语言编译成的字节码。准确的说任何能在jvm平台上执行的字节码格式都是一样的。所以应该统称为：jvm字节码。</p>
+<p>不同的编译器，可以编译出相同的字节码文件，字节码文件也可以在不同的JVM上运行。</p>
+<p>Java虚拟机与Java语言并没有必然的联系，它只与特定的二进制文件格式—Class文件格式所关联，Class文件中包含了Java虚拟机指令集（或者称为字节码、Bytecodes）和符号表，还有一些其他辅助信息。</p>
+<h2 id="Java虚拟机"><a href="#Java虚拟机" class="headerlink" title="Java虚拟机"></a>Java虚拟机</h2><p>Java虚拟机是一台执行Java字节码的虚拟计算机，它拥有独立的运行机制，其运行的Java字节码也未必由Java语言编译而成。</p>
+<p>JVM平台的各种语言可以共享Java虚拟机带来的跨平台性、优秀的垃圾回器，以及可靠的即时编译器。</p>
+<p>Java技术的核心就是Java虚拟机（JVM，Java Virtual Machine），因为所有的Java程序都运行在Java虚拟机内部。</p>
+<p>Java虚拟机就是二进制字节码的运行环境，负责装载字节码到其内部，解释/编译为对应平台上的机器指令执行。每一条Java指令，Java虚拟机规范中都有详细定义，如怎么取操作数，怎么处理操作数，处理结果放在哪里。</p>
+<p>特点：</p>
+<ul>
+<li>一次编译，到处运行</li>
+<li>自动内存管理</li>
+<li>自动垃圾回收功能</li>
+</ul>
+<h2 id="JVM整体结构"><a href="#JVM整体结构" class="headerlink" title="JVM整体结构"></a>JVM整体结构</h2><ul>
+<li>HotSpot VM是目前市面上高性能虚拟机的代表作之一。</li>
+<li>它采用解释器与即时编译器并存的架构。</li>
+<li>在今天，Java程序的运行性能早已脱胎换骨，已经达到了可以和C/C++程序一较高下的地步。</li>
+</ul>
+<p><img src="../images/image-20200704183436495.png" alt="image-20200704183436495"></p>
+<p>执行引擎包含三部分：解释器，及时编译器，垃圾回收器</p>
+<h2 id="Java代码执行流程"><a href="#Java代码执行流程" class="headerlink" title="Java代码执行流程"></a>Java代码执行流程</h2><p><img src="../images/image-20200704210429535.png" alt="image-20200704210429535"></p>
+<p>只是能生成被Java虚拟机所能解释的字节码文件，那么理论上就可以自己设计一套代码了</p>
+<h2 id="JVM的架构模型"><a href="#JVM的架构模型" class="headerlink" title="JVM的架构模型"></a>JVM的架构模型</h2><p>Java编译器输入的指令流基本上是一种基于栈的指令集架构，另外一种指令集架构则是基于寄存器的指令集架构。具体来说：这两种架构之间的区别：</p>
+<p>基于栈式架构的特点</p>
+<ul>
+<li>设计和实现更简单，适用于资源受限的系统；</li>
+<li>避开了寄存器的分配难题：使用零地址指令方式分配。</li>
+<li>指令流中的指令大部分是零地址指令，其执行过程依赖于操作栈。指令集更小，编译器容易实现。</li>
+<li>不需要硬件支持，可移植性更好，更好实现跨平台</li>
+</ul>
+<p>基于寄存器架构的特点</p>
+<ul>
+<li>典型的应用是x86的二进制指令集：比如传统的PC以及Android的Davlik虚拟机。</li>
+<li>指令集架构则完全依赖硬件，可移植性差</li>
+<li>性能优秀和执行更高效</li>
+<li>花费更少的指令去完成一项操作。</li>
+<li>在大部分情况下，基于寄存器架构的指令集往往都以一地址指令、二地址指令和三地址指令为主，而基于栈式架构的指令集却是以零地址指令为主方水洋</li>
+</ul>
+<h3 id="测试用例"><a href="#测试用例" class="headerlink" title="测试用例"></a>测试用例</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.tcmyxc;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StackSturTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> i = <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">int</span> j = <span class="number">3</span>;</span><br><span class="line">        <span class="keyword">int</span> k = i + j;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>反编译</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">javap -v StackSturTest.class</span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight tex"><table><tr><td class="code"><pre><span class="line">public static void main(java.lang.String[]);</span><br><span class="line">    descriptor: ([Ljava/lang/String;)V</span><br><span class="line">    flags: ACC<span class="built_in">_</span>PUBLIC, ACC<span class="built_in">_</span>STATIC</span><br><span class="line">    Code:</span><br><span class="line">      stack=2, locals=4, args<span class="built_in">_</span>size=1</span><br><span class="line">         0: iconst<span class="built_in">_</span>2</span><br><span class="line">         1: istore<span class="built_in">_</span>1</span><br><span class="line">         2: iconst<span class="built_in">_</span>3</span><br><span class="line">         3: istore<span class="built_in">_</span>2</span><br><span class="line">         4: iload<span class="built_in">_</span>1</span><br><span class="line">         5: iload<span class="built_in">_</span>2</span><br><span class="line">         6: iadd</span><br><span class="line">         7: istore<span class="built_in">_</span>3</span><br><span class="line">         8: return</span><br><span class="line">      LineNumberTable:</span><br><span class="line">        line 6: 0</span><br><span class="line">        line 7: 2</span><br><span class="line">        line 8: 4</span><br><span class="line">        line 9: 8</span><br><span class="line">      LocalVariableTable:</span><br><span class="line">        Start  Length  Slot  Name   Signature</span><br><span class="line">            0       9     0  args   [Ljava/lang/String;</span><br><span class="line">            2       7     1     i   I</span><br><span class="line">            4       5     2     j   I</span><br><span class="line">            8       1     3     k   I</span><br></pre></td></tr></table></figure>
+
+
+
+<p>由于跨平台性的设计，Java的指令都是根据栈来设计的。不同平台CPU架构不同，所以不能设计为基于寄存器的。优点是跨平台，指令集小，编译器容易实现，缺点是性能下降，实现同样的功能需要更多的指令。</p>
+<h2 id="JVM生命周期"><a href="#JVM生命周期" class="headerlink" title="JVM生命周期"></a>JVM生命周期</h2><h3 id="虚拟机的启动"><a href="#虚拟机的启动" class="headerlink" title="虚拟机的启动"></a>虚拟机的启动</h3><p>Java虚拟机的启动是通过引导类加载器（bootstrap class loader）创建一个初始类（initial class）来完成的，这个类是由虚拟机的具体实现指定的。</p>
+<h3 id="虚拟机的执行"><a href="#虚拟机的执行" class="headerlink" title="虚拟机的执行"></a>虚拟机的执行</h3><ul>
+<li>一个运行中的Java虚拟机有着一个清晰的任务：执行Java程序。</li>
+<li>程序开始执行时他才运行，程序结束时他就停止。</li>
+<li>执行一个所谓的Java程序的时候，真真正正在执行的是一个叫做Java虚拟机的进程。</li>
+</ul>
+<h3 id="虚拟机的退出"><a href="#虚拟机的退出" class="headerlink" title="虚拟机的退出"></a>虚拟机的退出</h3><p>有如下的几种情况：</p>
+<ul>
+<li>程序正常执行结束</li>
+<li>程序在执行过程中遇到了异常或错误而异常终止</li>
+<li>由于操作系统用现错误而导致Java虚拟机进程终止</li>
+<li>某线程调用Runtime类或system类的exit方法，或Runtime类的halt方法，并且Java安全管理器也允许这次exit或halt操作。</li>
+<li>除此之外，JNI（Java Native Interface）规范描述了用JNI Invocation API来加载或卸载 Java虚拟机时，Java虚拟机的退出情况。</li>
+</ul>
+<h2 id="Hotspot"><a href="#Hotspot" class="headerlink" title="Hotspot"></a>Hotspot</h2><p>热点代码探测技术</p>
+<ul>
+<li>通过计数器找到最具编译价值的代码，从而触发即时编译或者栈上替换</li>
+<li>通过编译器和解释器协同工作，在最优的程序响应时间和最佳的执行性能中取得平衡</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Java</category>
+        <category>JVM</category>
+      </categories>
+      <tags>
+        <tag>JVM</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>类加载子系统</title>
+    <url>/archives/13cb3a0e.html</url>
+    <content><![CDATA[<p>如果自己手写一个JVM，主要考虑那些结构？</p>
+<p>类加载器和执行引擎</p>
+<h2 id="类加载器与加载过程"><a href="#类加载器与加载过程" class="headerlink" title="类加载器与加载过程"></a>类加载器与加载过程</h2><p><img src="../images/image-20210708163350879.png" alt="image-20210708163350879"></p>
+<span id="more"></span>
+
+<h3 id="类加载器的作用"><a href="#类加载器的作用" class="headerlink" title="类加载器的作用"></a>类加载器的作用</h3><ul>
+<li>加载 Class 文件（来源可以是文件系统或者网络），Class 文件开头有特定的文件标识</li>
+<li>只负责加载，不负责执行（执行引擎负责执行）</li>
+<li>加载的类信息放在方法区。<ul>
+<li>方法区放：类信息，运行时常量池信息，字符串字面量和数字常量（这部分是 Class 文件中常量池部分的内存映射）</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>运行时常量池：常量池加载到内存里面就是 运行时常量池</p>
+</blockquote>
+<p><img src="../images/image-20210708163646085.png" alt="image-20210708163646085"></p>
+<h3 id="加载过程"><a href="#加载过程" class="headerlink" title="加载过程"></a>加载过程</h3><p><img src="../images/image-20210708164146742.png" alt="image-20210708164146742"></p>
+<h4 id="加载"><a href="#加载" class="headerlink" title="加载"></a>加载</h4><ul>
+<li>通过类的全限定名获取定义该类的二进制字节流</li>
+<li>将字节流代表的静态存储结构转化为方法区的运行时数据结构</li>
+<li>在内存中生成这个类对应的 Class 对象，作为方法区这个类的各种数据的访问入口</li>
+</ul>
+<p>补充：加载 <code>.class</code> 文件的方式</p>
+<ul>
+<li>本地系统加载</li>
+<li>通过网络获取（Web Applet）</li>
+<li>从 zip 压缩包中获取（jar，war 格式的基础）</li>
+<li>运行时计算生成，比如动态代理技术</li>
+<li>从其他文件生成，如 JSP 应用</li>
+<li>从专有的数据库提取</li>
+<li>从加密文件中提取（防止被反编译）</li>
+</ul>
+<h3 id="链接过程"><a href="#链接过程" class="headerlink" title="链接过程"></a>链接过程</h3><p><strong>验证(Verify)</strong></p>
+<ul>
+<li>确保class文件的字节流中包含信息符合当前虚拟机要求，保证被加载类的正确性，不会危害虚拟机自身安全</li>
+<li>主要包括四种验证，文件格式验证，元数据验证，字节码验证，符号引用验证。</li>
+</ul>
+<p><strong>准备(Prepare)</strong> </p>
+<p>为类变量分配内存并且设置该类变量的默认初始值，即零值。</p>
+<p>这里不包含用final修饰的static变量，因为final在编译的时候就会分配了，准备阶段会显式初始化;</p>
+<p>这里不会为实例变量分配初始化，类变量会分配在方法区中，而实例变量是会随着对象一起分配到Java堆中。</p>
+<p><strong>解析(Resolve) :</strong></p>
+<p>将常量池内的符号引用转换为直接引用的过程。</p>
+<p>事实上，解析操作往往会伴随着JVM在执行完初始化之后再执行。</p>
+<p>符号引用就是一组符号来描述所引用的目标。符号引用的字面量形式明确定义在《java虚拟机规范》的class文件格式中。直接引用就是直接指向目标的指针、相对偏移量或一个间接定位到目标的句柄。</p>
+<p>解析动作主要针对类或接口、字段、类方法、接口方法、方法类型等。对应常量池中的 CONSTANT class info、CONSTANT_Fieldref_info、CONSTANT_Methodref_info等。</p>
+<h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><ul>
+<li>就是执行类构造器方法 <code>&lt;clinit&gt;()</code> 的过程</li>
+<li>此方法不需定义，是javac编译器自动收集类中的所有类变量的赋值动作和静态代码块中的语句合并而来</li>
+<li>构造器方法中指令按语句在源文件中出现的顺序执行。</li>
+<li><code>&lt;clinit&gt; ()</code>不同于类的构造器。(关联：构造器是虚拟机视角下的<code>&lt;init&gt;()</code> )</li>
+<li>若该类具有父类，JVM会保证子类的<code>&lt;clinit&gt;()</code>执行前，父类的<code>&lt;clinit&gt;()</code>已经执行完毕。</li>
+<li>虚拟机必须保证一个类的<code>&lt;clinit&gt; ()</code>方法在多线程下被同步加锁（一个类只能被加载一次）</li>
+</ul>
+<blockquote>
+<p>类变量也称为静态变量，在类中以 static 关键字声明，但必须在方法之外</p>
+</blockquote>
+<p>注意：如果没有类变量和静态代码块，就不会生成 <code>&lt;clinit&gt;()</code> 方法</p>
+<p>验证的例子：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 没有静态变量和静态代码块</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ClinitTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> a = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> b = <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Class 文件截图（使用 <code>jclasslib bytecode viewer</code> 软件查看）</p>
+<p><img src="../images/image-20210708181034123.png" alt="image-20210708181034123"></p>
+<p>如果加上一个静态变量</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> c = <span class="number">2</span>;</span><br></pre></td></tr></table></figure>
+
+<p>再次查看：</p>
+<p><img src="../images/image-20210708180924638.png" alt="image-20210708180924638"></p>
+<h2 id="类加载器的分类"><a href="#类加载器的分类" class="headerlink" title="类加载器的分类"></a>类加载器的分类</h2><p><img src="../images/image-20210708182410905.png" alt="image-20210708182410905"></p>
+<p>四者是包含关系，不是上层下层，也不是父子类的继承关系</p>
+<h3 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h3><p>一共有两类：</p>
+<ul>
+<li>引导类加载器（使用 C 语言编写的）</li>
+<li>自定义类加载器（所有派生于抽象类 <code>ClassLoader</code> 的类加载器都是自定义的）</li>
+</ul>
+<h4 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ClassLoaderTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 获取系统类加载器</span></span><br><span class="line">        ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();</span><br><span class="line">        System.out.println(systemClassLoader);<span class="comment">// sun.misc.Launcher$AppClassLoader@18b4aac2</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 获取其上层：拓展类加载器</span></span><br><span class="line">        ClassLoader extClassLoader = systemClassLoader.getParent();</span><br><span class="line">        System.out.println(extClassLoader);<span class="comment">// sun.misc.Launcher$ExtClassLoader@1b6d3586</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 试图获取上层：获取不到</span></span><br><span class="line">        ClassLoader bootstrapClassLoader = extClassLoader.getParent();</span><br><span class="line">        System.out.println(bootstrapClassLoader);<span class="comment">// null</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 用户自定义类：默认使用系统类加载器进行加载</span></span><br><span class="line">        ClassLoader classLoader = ClassLoaderTest.class.getClassLoader();</span><br><span class="line">        System.out.println(classLoader);<span class="comment">// sun.misc.Launcher$AppClassLoader@18b4aac2</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// String 类：使用 引导类加载器 加载的  ---&gt; Java 核心类库都是 引导类加载器 加载的</span></span><br><span class="line">        ClassLoader stringClassLoader = String.class.getClassLoader();</span><br><span class="line">        System.out.println(stringClassLoader);<span class="comment">// null</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="引导类加载器"><a href="#引导类加载器" class="headerlink" title="引导类加载器"></a>引导类加载器</h3><ul>
+<li><p> C 语言实现，嵌套在JVM内部</p>
+</li>
+<li><p>用来加载Java的核心库（JAVA_HOME/jre/ lib/rt.jar、resources.jar或sun.boot.class.path路径下的内容），用于提供JVM自身需要的类</p>
+</li>
+<li><p>并不继承自<code>java.lang.ClassLoader</code>，没有父加载器。</p>
+</li>
+<li><p>加载扩展类和应用程序类加载器，并指定为他们的父类加载器。</p>
+</li>
+<li><p>出于安全考虑，Bootstrap启动类加载器只加载包名为java、javax、sun 开头的类</p>
+</li>
+</ul>
+<h3 id="拓展类加载器"><a href="#拓展类加载器" class="headerlink" title="拓展类加载器"></a>拓展类加载器</h3><ul>
+<li>Java语言编写，由<code>sun.misc.Launcher$ExtClassLoader</code> 实现（内部类）</li>
+<li>派生于 ClassLoader 类</li>
+<li>父加载器是引导类加载器</li>
+<li>从java.ext.dirs系统属性所指定的目录中加载类库，或从JDK的安装目录的jre/lib/ext子目录（扩展目录）下加载类库。如果用户创建的JAR放在此目录下，也会自动由扩展类加载器加载。</li>
+</ul>
+<h3 id="应用程序类（系统类）加载器"><a href="#应用程序类（系统类）加载器" class="headerlink" title="应用程序类（系统类）加载器"></a>应用程序类（系统类）加载器</h3><ul>
+<li>Java编写，由<code>sun.misc.Launcher$AppClassLoader</code>实现</li>
+<li>派生于 ClassLoader 类</li>
+<li>父加载器是拓展类加载器</li>
+<li>加载环境变量 <code>classpath</code>或系统属性<code>java.class.path</code>指定路径下的类库</li>
+<li>程序中默认的类加载器，一般来说，Java应用的类都是由它来完成加载</li>
+<li>通过<code>ClassLoader#getSystemClassLoader()</code>方法可以获取到该类加载器</li>
+</ul>
+<h3 id="用户自定义类加载器"><a href="#用户自定义类加载器" class="headerlink" title="用户自定义类加载器"></a>用户自定义类加载器</h3><p>一般来说上面三个够用了</p>
+<h4 id="什么时候自己定义呢？"><a href="#什么时候自己定义呢？" class="headerlink" title="什么时候自己定义呢？"></a>什么时候自己定义呢？</h4><ul>
+<li>隔离加载类</li>
+<li>修改类加载的方式</li>
+<li>拓展加载源</li>
+<li>防止源码泄露</li>
+</ul>
+<h4 id="实现步骤"><a href="#实现步骤" class="headerlink" title="实现步骤"></a>实现步骤</h4><p>1、可以继承抽象类java.lang.classLoader，实现自己的类加载器</p>
+<p>2、在JDK1.2之前，在自定义类加载器时，总会去继承classLoader类并重写loadClass ()方法，从而实现自定义的类加载类，但是在JDK1.2之后已不再建议用户去覆盖loadclass ()方法，而是建议把自定义的类加载逻辑写在findclass ()方法中</p>
+<p>3、在编写自定义类加载器时，如果没有太过于复杂的需求，可以直接继承URLClassLoader类，这样就可以避免自己去编写findclass ()方法及其获取字节码流的方式，使自定义类加载器编写更加简洁。</p>
+<h3 id="ClassLoader抽象类"><a href="#ClassLoader抽象类" class="headerlink" title="ClassLoader抽象类"></a>ClassLoader抽象类</h3><p><img src="../images/image-20210711134112840.png" alt="image-20210711134112840"></p>
+<h3 id="获取加载器的方式"><a href="#获取加载器的方式" class="headerlink" title="获取加载器的方式"></a>获取加载器的方式</h3><p><img src="../images/image-20210711134348092.png" alt="image-20210711134348092"></p>
+<h2 id="双亲委派机制（面试常问）"><a href="#双亲委派机制（面试常问）" class="headerlink" title="双亲委派机制（面试常问）"></a>双亲委派机制（面试常问）</h2><p>class 字节码文件是按需加载的</p>
+<h3 id="工作原理"><a href="#工作原理" class="headerlink" title="工作原理"></a>工作原理</h3><p>（1）如果一个类加载器收到了类加载请求，它并不会自己先去加载，而是把这个请求委托给父类的加载器去执行;</p>
+<p>（2）如果父类加载器还存在其父类加载器，则进一步向上委托，依次递归，请求最终将到达顶层的启动类加载器;</p>
+<p>（3）如果父类加载器可以完成类加载任务，就成功返回，倘若父类加载器无法完成此加载任务，子加载器才会尝试自己去加载，这就是双亲委派模式。</p>
+<p><img src="../images/image-20210711134949125.png" alt="image-20210711134949125"></p>
+<h3 id="优势"><a href="#优势" class="headerlink" title="优势"></a>优势</h3><ul>
+<li>避免类的重复加载</li>
+<li>保护程序安全，防止核心 API 被篡改<ul>
+<li>比如你自己定义一个 <code>java.lang.String</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="沙箱安全机制"><a href="#沙箱安全机制" class="headerlink" title="沙箱安全机制"></a>沙箱安全机制</h3><p>自定义string类，但是在加载自定义string类的时候会率先使用引导类加载器加载，而引导类加载器在加载的过程中会先加载jdk自带的文件(rt.jar包中<code>java\lang \String.class</code>)，报错信息说没有main方法就是因为加载的是rt.jar包中的string类。这样可以保证对java核心源代码的保护，这就是沙箱安全机制。</p>
+<h2 id="补充内容"><a href="#补充内容" class="headerlink" title="补充内容"></a>补充内容</h2><h3 id="两个class对象是否为同一个类"><a href="#两个class对象是否为同一个类" class="headerlink" title="两个class对象是否为同一个类"></a>两个class对象是否为同一个类</h3><p>在JVM中表示两个class对象是否为同一个类存在两个必要条件:</p>
+<ul>
+<li>类的完整类名必须一致，包括包名。</li>
+<li>加载这个类的classLoader(指classLoader实例对象)必须相同。</li>
+</ul>
+<p>换句话说，在JVM中，即使这两个类对象(class对象)来源同一个class文件，被同一个虚拟机所加载，但只要加载它们的classLoader实例对象不同，那么这两个类对象也是不相等的。</p>
+<h3 id="对类加载器的引用"><a href="#对类加载器的引用" class="headerlink" title="对类加载器的引用"></a>对类加载器的引用</h3><p>JVM必须知道一个类型是由启动加载器加载的还是由用户类加载器加载的。</p>
+<p>如果一个类型是由用户类加载器加载的，那么JVM会将这个类加载器的一个引用作为类型信息的一部分保存在方法区中。当解沂一个类型到另一个类型的引用的时候，JVM需要保证这两个类型的类加载器是相同的。</p>
+<h3 id="类的主动和被动使用"><a href="#类的主动和被动使用" class="headerlink" title="类的主动和被动使用"></a>类的主动和被动使用</h3><p>主动使用，又分为七种情况:</p>
+<p>（1）创建类的实例</p>
+<p>（2）访问某个类或接口的静态变量，或者对该静态变量赋值</p>
+<p>（3）调用类的静态方法</p>
+<p>（4）反射（比如:Class.forName ( “com.atguigu . Test” ) )</p>
+<p>（5）初始化一个类的子类</p>
+<p>（6）Java虚拟机启动时被标明为启动类的类</p>
+<p>（7）JDK 7 开始提供的动态语言支持</p>
+<ul>
+<li>java . lang. invoke.MethodHandle实例的解析结果</li>
+<li>REF_getstatic、REF_putstatic、REF_invokestatic句柄对应的类没有初始化，则初始化</li>
+</ul>
+<p>除了以上七种情况，其他使用Java类的方式都被看作是对类的被动使用，都<strong>不会</strong>导致类的初始化。</p>
+]]></content>
+      <categories>
+        <category>Java</category>
+        <category>JVM</category>
+      </categories>
+      <tags>
+        <tag>JVM</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Java8的新特性</title>
     <url>/archives/38dc13e5.html</url>
     <content><![CDATA[<h1 id="JDK-8-中的新特性"><a href="#JDK-8-中的新特性" class="headerlink" title="JDK 8 中的新特性"></a>JDK 8 中的新特性</h1><span id="more"></span>
@@ -382,6 +646,73 @@
       </tags>
   </entry>
   <entry>
+    <title>Java反射</title>
+    <url>/archives/adc18de0.html</url>
+    <content><![CDATA[<h1 id="Java反射"><a href="#Java反射" class="headerlink" title="Java反射"></a>Java反射</h1><h2 id="反射定义"><a href="#反射定义" class="headerlink" title="反射定义"></a>反射定义</h2><p>JAVA反射机制是在运行状态中，对于任意一个类，都能够知道这个类的所有属性和方法；对于任意一个对象，都能够调用它的任意方法和属性；这种动态获取信息以及动态调用对象方法的功能称为java语言的反射机制。</p>
+<span id="more"></span>
+
+<h2 id="反射的作用"><a href="#反射的作用" class="headerlink" title="反射的作用"></a>反射的作用</h2><ul>
+<li>  运行时分析类</li>
+<li>  运行时查看对象</li>
+<li>  编写泛型数组代码</li>
+<li>利用<code>Method</code>对象的<code>invoke</code>方法调用任意方法<ul>
+<li>  <code>Method</code>对象是你想要的调用的方法的对象</li>
+<li>  <code>invoke</code>方法调用包装在当前<code>Method</code>对象中的方法</li>
+</ul>
+</li>
+</ul>
+<h2 id="反射相关类"><a href="#反射相关类" class="headerlink" title="反射相关类"></a>反射相关类</h2><h3 id="Class类"><a href="#Class类" class="headerlink" title="Class类"></a><code>Class</code>类</h3><ul>
+<li><p>  <strong>所有反射 API 的入口点</strong></p>
+</li>
+<li><p>  保存类的所有信息</p>
+</li>
+<li><p>  没有 public 类型的构造器。</p>
+</li>
+<li><p>  每个类都有一个 Class 类型的对象，当类被加载时，由 Java 虚拟机调用类加载器的 defineClass 方法构造</p>
+</li>
+<li><p>  一个 Class 对象实际上表示的是一个类型，而这个类型不一定是类，比如 int 等基本类型不是类，但是 int.class 是一个 Class 类型的对象</p>
+</li>
+</ul>
+<h4 id="获取-Class类对象的三种方法"><a href="#获取-Class类对象的三种方法" class="headerlink" title="获取 Class类对象的三种方法"></a>获取 Class类对象的三种方法</h4><p>1、 <code>对象名.getClass()</code></p>
+<p>2、<code>Class.forName(className)</code>：调用 Class 类的 forName 静态方法</p>
+<p>3、<code>T.class</code>：T 是任意的 Java 类型或 void 关键字</p>
+<p>Class类常用方法</p>
+<ul>
+<li><p>  <code>getName()</code>：返回类的全限定名</p>
+</li>
+<li><p>静态方法 <code>forName(className)</code>：获取类名对应的 Class 对象</p>
+<ul>
+<li>  className 必须是类名或者接口名，而且必须是全限定名</li>
+</ul>
+</li>
+<li><p>  <code>newInstance()</code>：创建一个类的实例，调用的是无参构造函数，如果没有无参构造，会抛异常</p>
+</li>
+<li><p>  <code>getFields</code>、<code>getMethods</code>、<code>getConstructors</code>：返回类的 publis 域，方法和构造器数组，包括父类的</p>
+</li>
+<li><p>  <code>getDeclareFields</code>、<code>getDeclareMethods</code>、<code>getDeclareConstructors</code>：返回类的全部域，方法和构造器数组，但是不包括父类的</p>
+</li>
+</ul>
+<h3 id="Field、Method、Constructor类"><a href="#Field、Method、Constructor类" class="headerlink" title="Field、Method、Constructor类"></a><code>Field</code>、<code>Method</code>、<code>Constructor</code>类</h3><p>查看对象域的关键方法是 <code>Field</code>类的各种 get 方法</p>
+<p>设置域的值是<code>Field</code>类各种 set 方法，最常用的是<code>set(obj, value)</code></p>
+<p><strong>几个共有的方法：</strong></p>
+<p><code>getName()</code> 方法：返回项目的名称</p>
+<p><code>getModifier()</code>：返回一个整数值，代表不同的修饰符，结合<code>Modifier</code>类的静态方法<code>isPublic</code>等可以判断修饰符类型</p>
+<p><code>setAccessible()</code>：只需在括号里给个 true，就可以为所以为，想拿到哪个属性就拿哪个 </p>
+<h3 id="Modifier类"><a href="#Modifier类" class="headerlink" title="Modifier类"></a><code>Modifier</code>类</h3><p>有检测各种修饰符的方法，如<code>isPublic</code>等</p>
+<h2 id="使用反射编写泛型数组代码（扩展任意类型的数组）"><a href="#使用反射编写泛型数组代码（扩展任意类型的数组）" class="headerlink" title="使用反射编写泛型数组代码（扩展任意类型的数组）"></a>使用反射编写泛型数组代码（扩展任意类型的数组）</h2><p>1、获取数组的类对象</p>
+<p>2、确认它是个数组</p>
+<p>3、确定数组类型和长度</p>
+<p>4、复制数组</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Object <span class="title">goodArrayCopyOf</span><span class="params">(Object a, <span class="keyword">int</span> newLength)</span></span>&#123;</span><br><span class="line">    Class cl = a.getClass();</span><br><span class="line">    <span class="keyword">if</span>(!cl.isArray())  <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    Class componentType = cl.getComponentType();</span><br><span class="line">    <span class="keyword">int</span> length = Array.getLength(a);</span><br><span class="line">    Object newArray = Array.newInstance(componentType, newLength);</span><br><span class="line">    System.arraycopy(a, <span class="number">0</span>, newArray, <span class="number">0</span>, Math.min(length, newLength));</span><br><span class="line">    <span class="keyword">return</span> newArray;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Java</category>
+        <category>反射</category>
+      </categories>
+      <tags>
+        <tag>Java反射</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Java代理断言和日志</title>
     <url>/archives/51911571.html</url>
     <content><![CDATA[<h1 id="代理（Proxy）"><a href="#代理（Proxy）" class="headerlink" title="代理（Proxy）"></a>代理（Proxy）</h1><p>作用：运行时创建一个实现了一个给定接口的新类</p>
@@ -496,73 +827,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Java反射</title>
-    <url>/archives/adc18de0.html</url>
-    <content><![CDATA[<h1 id="Java反射"><a href="#Java反射" class="headerlink" title="Java反射"></a>Java反射</h1><h2 id="反射定义"><a href="#反射定义" class="headerlink" title="反射定义"></a>反射定义</h2><p>JAVA反射机制是在运行状态中，对于任意一个类，都能够知道这个类的所有属性和方法；对于任意一个对象，都能够调用它的任意方法和属性；这种动态获取信息以及动态调用对象方法的功能称为java语言的反射机制。</p>
-<span id="more"></span>
-
-<h2 id="反射的作用"><a href="#反射的作用" class="headerlink" title="反射的作用"></a>反射的作用</h2><ul>
-<li>  运行时分析类</li>
-<li>  运行时查看对象</li>
-<li>  编写泛型数组代码</li>
-<li>利用<code>Method</code>对象的<code>invoke</code>方法调用任意方法<ul>
-<li>  <code>Method</code>对象是你想要的调用的方法的对象</li>
-<li>  <code>invoke</code>方法调用包装在当前<code>Method</code>对象中的方法</li>
-</ul>
-</li>
-</ul>
-<h2 id="反射相关类"><a href="#反射相关类" class="headerlink" title="反射相关类"></a>反射相关类</h2><h3 id="Class类"><a href="#Class类" class="headerlink" title="Class类"></a><code>Class</code>类</h3><ul>
-<li><p>  <strong>所有反射 API 的入口点</strong></p>
-</li>
-<li><p>  保存类的所有信息</p>
-</li>
-<li><p>  没有 public 类型的构造器。</p>
-</li>
-<li><p>  每个类都有一个 Class 类型的对象，当类被加载时，由 Java 虚拟机调用类加载器的 defineClass 方法构造</p>
-</li>
-<li><p>  一个 Class 对象实际上表示的是一个类型，而这个类型不一定是类，比如 int 等基本类型不是类，但是 int.class 是一个 Class 类型的对象</p>
-</li>
-</ul>
-<h4 id="获取-Class类对象的三种方法"><a href="#获取-Class类对象的三种方法" class="headerlink" title="获取 Class类对象的三种方法"></a>获取 Class类对象的三种方法</h4><p>1、 <code>对象名.getClass()</code></p>
-<p>2、<code>Class.forName(className)</code>：调用 Class 类的 forName 静态方法</p>
-<p>3、<code>T.class</code>：T 是任意的 Java 类型或 void 关键字</p>
-<p>Class类常用方法</p>
-<ul>
-<li><p>  <code>getName()</code>：返回类的全限定名</p>
-</li>
-<li><p>静态方法 <code>forName(className)</code>：获取类名对应的 Class 对象</p>
-<ul>
-<li>  className 必须是类名或者接口名，而且必须是全限定名</li>
-</ul>
-</li>
-<li><p>  <code>newInstance()</code>：创建一个类的实例，调用的是无参构造函数，如果没有无参构造，会抛异常</p>
-</li>
-<li><p>  <code>getFields</code>、<code>getMethods</code>、<code>getConstructors</code>：返回类的 publis 域，方法和构造器数组，包括父类的</p>
-</li>
-<li><p>  <code>getDeclareFields</code>、<code>getDeclareMethods</code>、<code>getDeclareConstructors</code>：返回类的全部域，方法和构造器数组，但是不包括父类的</p>
-</li>
-</ul>
-<h3 id="Field、Method、Constructor类"><a href="#Field、Method、Constructor类" class="headerlink" title="Field、Method、Constructor类"></a><code>Field</code>、<code>Method</code>、<code>Constructor</code>类</h3><p>查看对象域的关键方法是 <code>Field</code>类的各种 get 方法</p>
-<p>设置域的值是<code>Field</code>类各种 set 方法，最常用的是<code>set(obj, value)</code></p>
-<p><strong>几个共有的方法：</strong></p>
-<p><code>getName()</code> 方法：返回项目的名称</p>
-<p><code>getModifier()</code>：返回一个整数值，代表不同的修饰符，结合<code>Modifier</code>类的静态方法<code>isPublic</code>等可以判断修饰符类型</p>
-<p><code>setAccessible()</code>：只需在括号里给个 true，就可以为所以为，想拿到哪个属性就拿哪个 </p>
-<h3 id="Modifier类"><a href="#Modifier类" class="headerlink" title="Modifier类"></a><code>Modifier</code>类</h3><p>有检测各种修饰符的方法，如<code>isPublic</code>等</p>
-<h2 id="使用反射编写泛型数组代码（扩展任意类型的数组）"><a href="#使用反射编写泛型数组代码（扩展任意类型的数组）" class="headerlink" title="使用反射编写泛型数组代码（扩展任意类型的数组）"></a>使用反射编写泛型数组代码（扩展任意类型的数组）</h2><p>1、获取数组的类对象</p>
-<p>2、确认它是个数组</p>
-<p>3、确定数组类型和长度</p>
-<p>4、复制数组</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Object <span class="title">goodArrayCopyOf</span><span class="params">(Object a, <span class="keyword">int</span> newLength)</span></span>&#123;</span><br><span class="line">    Class cl = a.getClass();</span><br><span class="line">    <span class="keyword">if</span>(!cl.isArray())  <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    Class componentType = cl.getComponentType();</span><br><span class="line">    <span class="keyword">int</span> length = Array.getLength(a);</span><br><span class="line">    Object newArray = Array.newInstance(componentType, newLength);</span><br><span class="line">    System.arraycopy(a, <span class="number">0</span>, newArray, <span class="number">0</span>, Math.min(length, newLength));</span><br><span class="line">    <span class="keyword">return</span> newArray;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>Java</category>
-        <category>反射</category>
-      </categories>
-      <tags>
-        <tag>Java反射</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Lua 编译</title>
     <url>/archives/41ff62c0.html</url>
     <content><![CDATA[<h1 id="一、环境以及安装包"><a href="#一、环境以及安装包" class="headerlink" title="一、环境以及安装包"></a>一、环境以及安装包</h1><h2 id="1-1-环境以及安装包"><a href="#1-1-环境以及安装包" class="headerlink" title="1.1 环境以及安装包"></a>1.1 环境以及安装包</h2><ul>
@@ -605,6 +869,130 @@
       </categories>
       <tags>
         <tag>Lua编译</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Lucene学习笔记</title>
+    <url>/archives/132e2ea8.html</url>
+    <content><![CDATA[<h2 id="什么是Lucene？"><a href="#什么是Lucene？" class="headerlink" title="什么是Lucene？"></a>什么是Lucene？</h2><p>是全文检索引擎工具，是一个工具包，让程序员可以自己构建搜索引擎或者是在自己的程序中加上全文搜索功能。</p>
+<span id="more"></span>
+
+<p><img src="../images/image-20201229233840353.png" alt="image-20201229233840353"></p>
+<h2 id="什么是全文检索？"><a href="#什么是全文检索？" class="headerlink" title="什么是全文检索？"></a>什么是全文检索？</h2><p>扫描文章中的每一个词，对每一个词建立一个索引，指明该词在文章中出现的次数和位置，当用户查询时，就根据事先建立的索引进行查找，并将查找的结果反馈给用户的检索方式</p>
+<h2 id="1、索引"><a href="#1、索引" class="headerlink" title="1、索引"></a>1、索引</h2><h3 id="1-1-倒排索引"><a href="#1-1-倒排索引" class="headerlink" title="1.1 倒排索引"></a>1.1 倒排索引</h3><p><strong>倒排索引，顾名思义，它相反于一篇文章包含了哪些词，它从词出发，记载了这个词在哪些文档中出现过，由两部分组成——词典和倒排表。</strong></p>
+<ul>
+<li>倒排表（很像使用拉链法的hash表）<ul>
+<li>表头是单词(term)，后面是文档编号，出现的位置，出现的次数</li>
+<li>存储的时候可以对编号进行压缩（第一个不用修改，第二个改为第二个减第一个的值，依次类推）</li>
+</ul>
+</li>
+<li>构建索引的时候较为耗时且维护成本较高，但是搜索耗时短</li>
+</ul>
+<p><img src="../images/image-20201229232706950.png" alt="image-20201229232706950"></p>
+<h3 id="1-2-正排索引"><a href="#1-2-正排索引" class="headerlink" title="1.2 正排索引"></a>1.2 正排索引</h3><p>基本结构：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">“文档1”的ID &gt; 单词1：出现次数，出现位置列表；单词2：出现次数，出现位置列表；…………。</span><br><span class="line">“文档2”的ID &gt; 此文档出现的关键词列表。</span><br></pre></td></tr></table></figure>
+
+<p><img src="../images/image-20201229232633286.png" alt="image-20201229232633286"></p>
+<h3 id="1-3-分块索引"><a href="#1-3-分块索引" class="headerlink" title="1.3 分块索引"></a>1.3 分块索引</h3><ul>
+<li>块内无序，块间有序（后面一块关键字的最小值大于前面一块的最大值）</li>
+</ul>
+<h2 id="2、底层数据结构"><a href="#2、底层数据结构" class="headerlink" title="2、底层数据结构"></a>2、底层数据结构</h2><p>Lucene3.0之前使用的也是跳跃表结构（结构简单、跳跃间隔、级数可控，模糊查询不好），后换成了FST（Finite State Transducer，有限状态转移机）。</p>
+<p>FST有两个优点：</p>
+<ul>
+<li>空间占用小。通过对词典中单词前缀和后缀的重复利用，压缩了存储空间；</li>
+<li>查询速度快。</li>
+</ul>
+<p><img src="../images/image-20201229234128205.png" alt="image-20201229234128205"></p>
+<h2 id="3、为什么Elasticsearch-Lucene检索可以比mysql快？"><a href="#3、为什么Elasticsearch-Lucene检索可以比mysql快？" class="headerlink" title="3、为什么Elasticsearch/Lucene检索可以比mysql快？"></a>3、为什么Elasticsearch/Lucene检索可以比mysql快？</h2><p>Mysql只有term dictionary这一层，是以b-tree排序的方式存储在磁盘上的。检索一个term需要若干次的random access的磁盘操作。</p>
+<p>而Lucene在term dictionary的基础上添加了term index来加速检索，term index以树的形式缓存在内存中。从term index查到对应的term dictionary的block位置之后，再去磁盘上找term，大大减少了磁盘的random access次数。</p>
+<h2 id="4、那么什么是term-dictionary-和-term-index？"><a href="#4、那么什么是term-dictionary-和-term-index？" class="headerlink" title="4、那么什么是term dictionary 和 term index？"></a>4、那么什么是term dictionary 和 term index？</h2><p>假设我们有很多个term，比如：</p>
+<p>Carla,Sara,Elin,Ada,Patty,Kate,Selena</p>
+<p>如果按照这样的顺序排列，找出某个特定的term一定很慢，因为term没有排序，需要全部过滤一遍才能找出特定的term。排序之后就变成了：</p>
+<p>Ada,Carla,Elin,Kate,Patty,Sara,Selena</p>
+<p>这样我们可以用二分查找的方式，比全遍历更快地找出目标的term。这个就是 term dictionary。有了term dictionary之后，可以用 logN 次磁盘查找得到目标。但是磁盘的随机读操作仍然是非常昂贵的（一次random access大概需要10ms的时间）。所以尽量少的读磁盘，有必要把一些数据缓存到内存里。但是整个term dictionary本身又太大了，无法完整地放到内存里。于是就有了term index。term index有点像一本字典的大的章节表。比如：</p>
+<p>A开头的term ……………. Xxx页</p>
+<p>C开头的term ……………. Xxx页</p>
+<p>E开头的term ……………. Xxx页</p>
+<h2 id="5、为什么大数据量搜索快？"><a href="#5、为什么大数据量搜索快？" class="headerlink" title="5、为什么大数据量搜索快？"></a>5、为什么大数据量搜索快？</h2><ul>
+<li>使用了索引</li>
+<li>索引结构（倒排索引）比较优秀</li>
+</ul>
+<h2 id="6、优化"><a href="#6、优化" class="headerlink" title="6、优化"></a>6、优化</h2><h3 id="6-1-解决大量磁盘IO"><a href="#6-1-解决大量磁盘IO" class="headerlink" title="6.1. 解决大量磁盘IO"></a>6.1. 解决大量磁盘IO</h3><ul>
+<li><p>config.setMaxBufferedDocs(100000); 控制写入一个新的segment前内存中保存的document的数目，设置较大的数目可以加快建索引速度。</p>
+<p><strong>数值越大索引速度越快, 但是会消耗更多的内存</strong></p>
+</li>
+<li><p>indexWriter.forceMerge(文档数量); 设置N个文档合并为一个段<br><strong>数值越大索引速度越快, 搜索速度越慢; 值越小索引速度越慢, 搜索速度越快</strong><br>更高的值意味着索引期间更低的段合并开销，但同时也意味着更慢的搜索速度，因为此时的索引通常会包含更多的段。如果该值设置的过高，能获得更高的索引性能。但若在最后进行索引优化，那么较低的值会带来更快的搜索速度，因为在索引操作期间程序会利用并发机制完成段合并操作。故建议对程序分别进行高低多种值的测试，利用计算机的实际性能来告诉你最优值。</p>
+</li>
+</ul>
+<h3 id="6-2-选择合适的分词器"><a href="#6-2-选择合适的分词器" class="headerlink" title="6.2. 选择合适的分词器"></a>6.2. 选择合适的分词器</h3><p>不同的分词器分词效果不同, 所用时间也不同</p>
+<p>虽然StandardAnalyzer切分词速度快过IKAnalyzer, 但是由于StandardAnalyzer对中文支持不好, 所以为了追求好的分词效果, 为了追求查询时的准确率, 也只能用IKAnalyzer分词器, IKAnalyzer支持停用词典和扩展词典, 可以通过调整两个词典中的内容, 来提升查询匹配的精度</p>
+<h3 id="6-3-选择合适的位置存放索引库"><a href="#6-3-选择合适的位置存放索引库" class="headerlink" title="6.3.选择合适的位置存放索引库"></a>6.3.选择合适的位置存放索引库</h3><table>
+<thead>
+<tr>
+<th>类</th>
+<th>写操作</th>
+<th>读操作</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SimpleFSDirectory</td>
+<td>java.io.RandomAccessFile</td>
+<td>java.io.RandomAccessFile</td>
+<td>简单实现，并发能力差</td>
+</tr>
+<tr>
+<td>NIOFSDirectory</td>
+<td>java.nio.FileChannel</td>
+<td>FSDirectory.FSIndexOutput</td>
+<td>并发能力强,windows平台下有重大bug</td>
+</tr>
+<tr>
+<td>MMapDirectory</td>
+<td>内存映射</td>
+<td>FSDirectory.FSIndexOutput</td>
+<td>读取操作基于内存</td>
+</tr>
+</tbody></table>
+<h2 id="7、人为影响相关度"><a href="#7、人为影响相关度" class="headerlink" title="7、人为影响相关度"></a>7、人为影响相关度</h2><p>Lucene对查询关键字和索引文档的相关度进行打分，得分高的就排在前边。</p>
+<p>Lucene是在用户进行检索时实时根据搜索的关键字计算出来的，分两步：</p>
+<ul>
+<li><p>计算出词（Term）的权重</p>
+</li>
+<li><p>根据词的权重值，计算文档相关度得分。</p>
+</li>
+</ul>
+<p>明确索引的最小单位是一个Term(索引词典中的一个词)，搜索也是要从Term中搜索，再根据Term找到文档，Term对文档的重要性称为权重，影响Term权重有两个因素：</p>
+<ul>
+<li>Term Frequency (tf)： 指此Term在此文档中出现了多少次。tf 越大说明越重要。 词(Term)在文档中出现的次数越多，说明此词(Term)对该文档越重要，如“Lucene”这个词，在文档中出现的次数很多，说明该文档主要就是讲Lucene技术的。</li>
+<li>Document Frequency (df)： 指有多少文档包含次Term。df 越大说明越不重要。 比如，在一篇英语文档中，this出现的次数更多，就说明越重要吗？不是的，有越多的文档包含此词(Term), 说明此词(Term)太普通，不足以区分这些文档，因而重要性越低。</li>
+</ul>
+<p><strong>boost</strong>是一个加权值（默认加权值为1.0f），它可以影响权重的计算。</p>
+<ul>
+<li>在索引时对某个文档中的field设置加权值高，在搜索时匹配到这个文档就可能排在前边。</li>
+<li>在搜索时对某个域进行加权，在进行组合域查询时，匹配到加权值高的域最后计算的相关度得分就高。</li>
+</ul>
+<p>设置boost是给域（field）或者Document设置的。</p>
+]]></content>
+      <categories>
+        <category>Java</category>
+        <category>Lucene</category>
+      </categories>
+      <tags>
+        <tag>Lucene</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>MYSQL on和where的区别</title>
+    <url>/archives/13ea1464.html</url>
+    <content><![CDATA[<p>在多表查询时，ON和where都表示筛选条件，on先执行，where后执行。<br>区别：<br>外连接时，on条件是在生成临时表时使用的条件，它不管on中的条件是否为真，都会返回左边表中的记录。而where条件是在临时表生成好后，再对临时表进行过滤的条件。</p>
+]]></content>
+      <categories>
+        <category>数据库</category>
+        <category>MySQL</category>
+      </categories>
+      <tags>
+        <tag>MySQL</tag>
       </tags>
   </entry>
   <entry>
@@ -765,130 +1153,6 @@
       </categories>
       <tags>
         <tag>Maven</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Lucene学习笔记</title>
-    <url>/archives/132e2ea8.html</url>
-    <content><![CDATA[<h2 id="什么是Lucene？"><a href="#什么是Lucene？" class="headerlink" title="什么是Lucene？"></a>什么是Lucene？</h2><p>是全文检索引擎工具，是一个工具包，让程序员可以自己构建搜索引擎或者是在自己的程序中加上全文搜索功能。</p>
-<span id="more"></span>
-
-<p><img src="../images/image-20201229233840353.png" alt="image-20201229233840353"></p>
-<h2 id="什么是全文检索？"><a href="#什么是全文检索？" class="headerlink" title="什么是全文检索？"></a>什么是全文检索？</h2><p>扫描文章中的每一个词，对每一个词建立一个索引，指明该词在文章中出现的次数和位置，当用户查询时，就根据事先建立的索引进行查找，并将查找的结果反馈给用户的检索方式</p>
-<h2 id="1、索引"><a href="#1、索引" class="headerlink" title="1、索引"></a>1、索引</h2><h3 id="1-1-倒排索引"><a href="#1-1-倒排索引" class="headerlink" title="1.1 倒排索引"></a>1.1 倒排索引</h3><p><strong>倒排索引，顾名思义，它相反于一篇文章包含了哪些词，它从词出发，记载了这个词在哪些文档中出现过，由两部分组成——词典和倒排表。</strong></p>
-<ul>
-<li>倒排表（很像使用拉链法的hash表）<ul>
-<li>表头是单词(term)，后面是文档编号，出现的位置，出现的次数</li>
-<li>存储的时候可以对编号进行压缩（第一个不用修改，第二个改为第二个减第一个的值，依次类推）</li>
-</ul>
-</li>
-<li>构建索引的时候较为耗时且维护成本较高，但是搜索耗时短</li>
-</ul>
-<p><img src="../images/image-20201229232706950.png" alt="image-20201229232706950"></p>
-<h3 id="1-2-正排索引"><a href="#1-2-正排索引" class="headerlink" title="1.2 正排索引"></a>1.2 正排索引</h3><p>基本结构：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">“文档1”的ID &gt; 单词1：出现次数，出现位置列表；单词2：出现次数，出现位置列表；…………。</span><br><span class="line">“文档2”的ID &gt; 此文档出现的关键词列表。</span><br></pre></td></tr></table></figure>
-
-<p><img src="../images/image-20201229232633286.png" alt="image-20201229232633286"></p>
-<h3 id="1-3-分块索引"><a href="#1-3-分块索引" class="headerlink" title="1.3 分块索引"></a>1.3 分块索引</h3><ul>
-<li>块内无序，块间有序（后面一块关键字的最小值大于前面一块的最大值）</li>
-</ul>
-<h2 id="2、底层数据结构"><a href="#2、底层数据结构" class="headerlink" title="2、底层数据结构"></a>2、底层数据结构</h2><p>Lucene3.0之前使用的也是跳跃表结构（结构简单、跳跃间隔、级数可控，模糊查询不好），后换成了FST（Finite State Transducer，有限状态转移机）。</p>
-<p>FST有两个优点：</p>
-<ul>
-<li>空间占用小。通过对词典中单词前缀和后缀的重复利用，压缩了存储空间；</li>
-<li>查询速度快。</li>
-</ul>
-<p><img src="../images/image-20201229234128205.png" alt="image-20201229234128205"></p>
-<h2 id="3、为什么Elasticsearch-Lucene检索可以比mysql快？"><a href="#3、为什么Elasticsearch-Lucene检索可以比mysql快？" class="headerlink" title="3、为什么Elasticsearch/Lucene检索可以比mysql快？"></a>3、为什么Elasticsearch/Lucene检索可以比mysql快？</h2><p>Mysql只有term dictionary这一层，是以b-tree排序的方式存储在磁盘上的。检索一个term需要若干次的random access的磁盘操作。</p>
-<p>而Lucene在term dictionary的基础上添加了term index来加速检索，term index以树的形式缓存在内存中。从term index查到对应的term dictionary的block位置之后，再去磁盘上找term，大大减少了磁盘的random access次数。</p>
-<h2 id="4、那么什么是term-dictionary-和-term-index？"><a href="#4、那么什么是term-dictionary-和-term-index？" class="headerlink" title="4、那么什么是term dictionary 和 term index？"></a>4、那么什么是term dictionary 和 term index？</h2><p>假设我们有很多个term，比如：</p>
-<p>Carla,Sara,Elin,Ada,Patty,Kate,Selena</p>
-<p>如果按照这样的顺序排列，找出某个特定的term一定很慢，因为term没有排序，需要全部过滤一遍才能找出特定的term。排序之后就变成了：</p>
-<p>Ada,Carla,Elin,Kate,Patty,Sara,Selena</p>
-<p>这样我们可以用二分查找的方式，比全遍历更快地找出目标的term。这个就是 term dictionary。有了term dictionary之后，可以用 logN 次磁盘查找得到目标。但是磁盘的随机读操作仍然是非常昂贵的（一次random access大概需要10ms的时间）。所以尽量少的读磁盘，有必要把一些数据缓存到内存里。但是整个term dictionary本身又太大了，无法完整地放到内存里。于是就有了term index。term index有点像一本字典的大的章节表。比如：</p>
-<p>A开头的term ……………. Xxx页</p>
-<p>C开头的term ……………. Xxx页</p>
-<p>E开头的term ……………. Xxx页</p>
-<h2 id="5、为什么大数据量搜索快？"><a href="#5、为什么大数据量搜索快？" class="headerlink" title="5、为什么大数据量搜索快？"></a>5、为什么大数据量搜索快？</h2><ul>
-<li>使用了索引</li>
-<li>索引结构（倒排索引）比较优秀</li>
-</ul>
-<h2 id="6、优化"><a href="#6、优化" class="headerlink" title="6、优化"></a>6、优化</h2><h3 id="6-1-解决大量磁盘IO"><a href="#6-1-解决大量磁盘IO" class="headerlink" title="6.1. 解决大量磁盘IO"></a>6.1. 解决大量磁盘IO</h3><ul>
-<li><p>config.setMaxBufferedDocs(100000); 控制写入一个新的segment前内存中保存的document的数目，设置较大的数目可以加快建索引速度。</p>
-<p><strong>数值越大索引速度越快, 但是会消耗更多的内存</strong></p>
-</li>
-<li><p>indexWriter.forceMerge(文档数量); 设置N个文档合并为一个段<br><strong>数值越大索引速度越快, 搜索速度越慢; 值越小索引速度越慢, 搜索速度越快</strong><br>更高的值意味着索引期间更低的段合并开销，但同时也意味着更慢的搜索速度，因为此时的索引通常会包含更多的段。如果该值设置的过高，能获得更高的索引性能。但若在最后进行索引优化，那么较低的值会带来更快的搜索速度，因为在索引操作期间程序会利用并发机制完成段合并操作。故建议对程序分别进行高低多种值的测试，利用计算机的实际性能来告诉你最优值。</p>
-</li>
-</ul>
-<h3 id="6-2-选择合适的分词器"><a href="#6-2-选择合适的分词器" class="headerlink" title="6.2. 选择合适的分词器"></a>6.2. 选择合适的分词器</h3><p>不同的分词器分词效果不同, 所用时间也不同</p>
-<p>虽然StandardAnalyzer切分词速度快过IKAnalyzer, 但是由于StandardAnalyzer对中文支持不好, 所以为了追求好的分词效果, 为了追求查询时的准确率, 也只能用IKAnalyzer分词器, IKAnalyzer支持停用词典和扩展词典, 可以通过调整两个词典中的内容, 来提升查询匹配的精度</p>
-<h3 id="6-3-选择合适的位置存放索引库"><a href="#6-3-选择合适的位置存放索引库" class="headerlink" title="6.3.选择合适的位置存放索引库"></a>6.3.选择合适的位置存放索引库</h3><table>
-<thead>
-<tr>
-<th>类</th>
-<th>写操作</th>
-<th>读操作</th>
-<th>特点</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>SimpleFSDirectory</td>
-<td>java.io.RandomAccessFile</td>
-<td>java.io.RandomAccessFile</td>
-<td>简单实现，并发能力差</td>
-</tr>
-<tr>
-<td>NIOFSDirectory</td>
-<td>java.nio.FileChannel</td>
-<td>FSDirectory.FSIndexOutput</td>
-<td>并发能力强,windows平台下有重大bug</td>
-</tr>
-<tr>
-<td>MMapDirectory</td>
-<td>内存映射</td>
-<td>FSDirectory.FSIndexOutput</td>
-<td>读取操作基于内存</td>
-</tr>
-</tbody></table>
-<h2 id="7、人为影响相关度"><a href="#7、人为影响相关度" class="headerlink" title="7、人为影响相关度"></a>7、人为影响相关度</h2><p>Lucene对查询关键字和索引文档的相关度进行打分，得分高的就排在前边。</p>
-<p>Lucene是在用户进行检索时实时根据搜索的关键字计算出来的，分两步：</p>
-<ul>
-<li><p>计算出词（Term）的权重</p>
-</li>
-<li><p>根据词的权重值，计算文档相关度得分。</p>
-</li>
-</ul>
-<p>明确索引的最小单位是一个Term(索引词典中的一个词)，搜索也是要从Term中搜索，再根据Term找到文档，Term对文档的重要性称为权重，影响Term权重有两个因素：</p>
-<ul>
-<li>Term Frequency (tf)： 指此Term在此文档中出现了多少次。tf 越大说明越重要。 词(Term)在文档中出现的次数越多，说明此词(Term)对该文档越重要，如“Lucene”这个词，在文档中出现的次数很多，说明该文档主要就是讲Lucene技术的。</li>
-<li>Document Frequency (df)： 指有多少文档包含次Term。df 越大说明越不重要。 比如，在一篇英语文档中，this出现的次数更多，就说明越重要吗？不是的，有越多的文档包含此词(Term), 说明此词(Term)太普通，不足以区分这些文档，因而重要性越低。</li>
-</ul>
-<p><strong>boost</strong>是一个加权值（默认加权值为1.0f），它可以影响权重的计算。</p>
-<ul>
-<li>在索引时对某个文档中的field设置加权值高，在搜索时匹配到这个文档就可能排在前边。</li>
-<li>在搜索时对某个域进行加权，在进行组合域查询时，匹配到加权值高的域最后计算的相关度得分就高。</li>
-</ul>
-<p>设置boost是给域（field）或者Document设置的。</p>
-]]></content>
-      <categories>
-        <category>Java</category>
-        <category>Lucene</category>
-      </categories>
-      <tags>
-        <tag>Lucene</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>MYSQL on和where的区别</title>
-    <url>/archives/13ea1464.html</url>
-    <content><![CDATA[<p>在多表查询时，ON和where都表示筛选条件，on先执行，where后执行。<br>区别：<br>外连接时，on条件是在生成临时表时使用的条件，它不管on中的条件是否为真，都会返回左边表中的记录。而where条件是在临时表生成好后，再对临时表进行过滤的条件。</p>
-]]></content>
-      <categories>
-        <category>数据库</category>
-        <category>MySQL</category>
-      </categories>
-      <tags>
-        <tag>MySQL</tag>
       </tags>
   </entry>
   <entry>
@@ -3391,305 +3655,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Java集合</title>
-    <url>/archives/4509351.html</url>
-    <content><![CDATA[<h1 id="Java集合"><a href="#Java集合" class="headerlink" title="Java集合"></a>Java集合</h1><blockquote>
-<p>  这篇文章我只是个搬运工，虽然自己也总结了，但是感觉人家写的更好。</p>
-<p>  原文链接：<a href="https://github.com/liguigui/CyC2018-CS-Notes">https://github.com/liguigui/CyC2018-CS-Notes</a></p>
-</blockquote>
-<span id="more"></span>
-
-<h1 id="一、概览"><a href="#一、概览" class="headerlink" title="一、概览"></a>一、概览</h1><p>容器主要包括 Collection 和 Map 两种，Collection 存储着对象的集合，而 Map 存储着键值对（两个对象）的映射表。</p>
-<h2 id="Collection"><a href="#Collection" class="headerlink" title="Collection"></a>Collection</h2><p><a href="https://camo.githubusercontent.com/d1efb1abc3173aa2a607316dda79bea560fe333f/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f696d6167652d32303139313230383232303934383038342e706e67"><img src="../images/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f696d6167652d32303139313230383232303934383038342e706e67" alt="img"></a></p>
-<h3 id="1-Set"><a href="#1-Set" class="headerlink" title="1. Set"></a>1. Set</h3><ul>
-<li>TreeSet：基于红黑树实现，支持有序性操作，例如根据一个范围查找元素的操作。但是查找效率不如 HashSet，HashSet 查找的时间复杂度为 O(1)，TreeSet 则为 O(logN)。</li>
-<li>HashSet：基于哈希表实现，支持快速查找，但不支持有序性操作。并且失去了元素的插入顺序信息，也就是说使用 Iterator 遍历 HashSet 得到的结果是不确定的。</li>
-<li>LinkedHashSet：具有 HashSet 的查找效率，并且内部使用双向链表维护元素的插入顺序。</li>
-</ul>
-<h3 id="2-List"><a href="#2-List" class="headerlink" title="2. List"></a>2. List</h3><ul>
-<li>ArrayList：基于动态数组实现，支持随机访问。</li>
-<li>Vector：和 ArrayList 类似，但它是线程安全的。</li>
-<li>LinkedList：基于双向链表实现，只能顺序访问，但是可以快速地在链表中间插入和删除元素。不仅如此，LinkedList 还可以用作栈、队列和双向队列。</li>
-</ul>
-<h3 id="3-Queue"><a href="#3-Queue" class="headerlink" title="3. Queue"></a>3. Queue</h3><ul>
-<li>LinkedList：可以用它来实现双向队列。</li>
-<li>PriorityQueue：基于堆结构实现，可以用它来实现优先队列。</li>
-</ul>
-<h2 id="Map"><a href="#Map" class="headerlink" title="Map"></a>Map</h2><p><a href="https://camo.githubusercontent.com/cd126ae7572489beead8b33f3a26a5a0bb1f288e/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f696d6167652d32303139313230383232343735373835352e706e67"><img src="../images/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f696d6167652d32303139313230383232343735373835352e706e67" alt="img"></a></p>
-<ul>
-<li>TreeMap：基于红黑树实现。</li>
-<li>HashMap：基于哈希表实现。</li>
-<li>HashTable：和 HashMap 类似，但它是线程安全的，这意味着同一时刻多个线程同时写入 HashTable 不会导致数据不一致。它是遗留类，不应该去使用它，而是使用 ConcurrentHashMap 来支持线程安全，ConcurrentHashMap 的效率会更高，因为 ConcurrentHashMap 引入了分段锁。</li>
-<li>LinkedHashMap：使用双向链表来维护元素的顺序，顺序为插入顺序或者最近最少使用（LRU）顺序。</li>
-</ul>
-<h1 id="二、容器中的设计模式"><a href="#二、容器中的设计模式" class="headerlink" title="二、容器中的设计模式"></a>二、容器中的设计模式</h1><h2 id="迭代器模式"><a href="#迭代器模式" class="headerlink" title="迭代器模式"></a>迭代器模式</h2><p><a href="https://camo.githubusercontent.com/6ee13e3fa6717189ef266359ec74ed8a8fb88d62/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f696d6167652d32303139313230383232353330313937332e706e67"><img src="../images/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f696d6167652d32303139313230383232353330313937332e706e67" alt="img"></a></p>
-<p>Collection 继承了 Iterable 接口，其中的 iterator() 方法能够产生一个 Iterator 对象，通过这个对象就可以迭代遍历 Collection 中的元素。</p>
-<p>从 JDK 1.5 之后可以使用 foreach 方法来遍历实现了 Iterable 接口的聚合对象。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">List&lt;String&gt; list = new ArrayList&lt;&gt;();</span><br><span class="line">list.add(&quot;a&quot;);</span><br><span class="line">list.add(&quot;b&quot;);</span><br><span class="line">for (String item : list) &#123;</span><br><span class="line">    System.out.println(item);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="适配器模式"><a href="#适配器模式" class="headerlink" title="适配器模式"></a>适配器模式</h2><p>java.util.Arrays#asList() 可以把数组类型转换为 List 类型。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">@SafeVarargs</span><br><span class="line">public static &lt;T&gt; List&lt;T&gt; asList(T... a)</span><br></pre></td></tr></table></figure>
-
-<p>应该注意的是 asList() 的参数为泛型的变长参数，不能使用基本类型数组作为参数，只能使用相应的包装类型数组。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Integer[] arr = &#123;1, 2, 3&#125;;</span><br><span class="line">List list = Arrays.asList(arr);</span><br></pre></td></tr></table></figure>
-
-<p>也可以使用以下方式调用 asList()：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">List list = Arrays.asList(1, 2, 3);</span><br></pre></td></tr></table></figure>
-
-<h1 id="三、源码分析"><a href="#三、源码分析" class="headerlink" title="三、源码分析"></a>三、源码分析</h1><p>如果没有特别说明，以下源码分析基于 JDK 1.8。</p>
-<p>在 IDEA 中 double shift 调出 Search EveryWhere，查找源码文件，找到之后就可以阅读源码。</p>
-<h2 id="ArrayList"><a href="#ArrayList" class="headerlink" title="ArrayList"></a>ArrayList</h2><h3 id="1-概览"><a href="#1-概览" class="headerlink" title="1. 概览"></a>1. 概览</h3><p>因为 ArrayList 是基于数组实现的，所以支持快速随机访问。RandomAccess 接口标识着该类支持快速随机访问。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public class ArrayList&lt;E&gt; extends AbstractList&lt;E&gt;</span><br><span class="line">        implements List&lt;E&gt;, RandomAccess, Cloneable, java.io.Serializable</span><br></pre></td></tr></table></figure>
-
-<p>数组的默认大小为 10。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">private static final int DEFAULT_CAPACITY = 10;</span><br></pre></td></tr></table></figure>
-
-<p><a href="https://camo.githubusercontent.com/d1e665d0dfc95837e4ba243d2b26eccf2148f7f1/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f696d6167652d32303139313230383233323232313236352e706e67"><img src="../images/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f696d6167652d32303139313230383233323232313236352e706e67" alt="img"></a></p>
-<h3 id="2-扩容"><a href="#2-扩容" class="headerlink" title="2. 扩容"></a>2. 扩容</h3><p>添加元素时使用 ensureCapacityInternal() 方法来保证容量足够，如果不够时，需要使用 grow() 方法进行扩容，新容量的大小为 <code>oldCapacity + (oldCapacity &gt;&gt; 1)</code>，也就是旧容量的 1.5 倍。</p>
-<p>扩容操作需要调用 <code>Arrays.copyOf()</code> 把原数组整个复制到新数组中，这个操作代价很高，因此最好在创建 ArrayList 对象时就指定大概的容量大小，减少扩容操作的次数。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public boolean add(E e) &#123;</span><br><span class="line">    ensureCapacityInternal(size + 1);  // Increments modCount!!</span><br><span class="line">    elementData[size++] = e;</span><br><span class="line">    return true;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private void ensureCapacityInternal(int minCapacity) &#123;</span><br><span class="line">    if (elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA) &#123;</span><br><span class="line">        minCapacity = Math.max(DEFAULT_CAPACITY, minCapacity);</span><br><span class="line">    &#125;</span><br><span class="line">    ensureExplicitCapacity(minCapacity);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private void ensureExplicitCapacity(int minCapacity) &#123;</span><br><span class="line">    modCount++;</span><br><span class="line">    // overflow-conscious code</span><br><span class="line">    if (minCapacity - elementData.length &gt; 0)</span><br><span class="line">        grow(minCapacity);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private void grow(int minCapacity) &#123;</span><br><span class="line">    // overflow-conscious code</span><br><span class="line">    int oldCapacity = elementData.length;</span><br><span class="line">    int newCapacity = oldCapacity + (oldCapacity &gt;&gt; 1);</span><br><span class="line">    if (newCapacity - minCapacity &lt; 0)</span><br><span class="line">        newCapacity = minCapacity;</span><br><span class="line">    if (newCapacity - MAX_ARRAY_SIZE &gt; 0)</span><br><span class="line">        newCapacity = hugeCapacity(minCapacity);</span><br><span class="line">    // minCapacity is usually close to size, so this is a win:</span><br><span class="line">    elementData = Arrays.copyOf(elementData, newCapacity);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="3-删除元素"><a href="#3-删除元素" class="headerlink" title="3. 删除元素"></a>3. 删除元素</h3><p>需要调用 System.arraycopy() 将 index+1 后面的元素都复制到 index 位置上，该操作的时间复杂度为 O(N)，可以看到 ArrayList 删除元素的代价是非常高的。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public E remove(int index) &#123;</span><br><span class="line">    rangeCheck(index);</span><br><span class="line">    modCount++;</span><br><span class="line">    E oldValue = elementData(index);</span><br><span class="line">    int numMoved = size - index - 1;</span><br><span class="line">    if (numMoved &gt; 0)</span><br><span class="line">        System.arraycopy(elementData, index+1, elementData, index, numMoved);</span><br><span class="line">    elementData[--size] = null; // clear to let GC do its work</span><br><span class="line">    return oldValue;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="4-序列化"><a href="#4-序列化" class="headerlink" title="4. 序列化"></a>4. 序列化</h3><p>ArrayList 基于数组实现，并且具有动态扩容特性，因此保存元素的数组不一定都会被使用，那么就没必要全部进行序列化。</p>
-<p>保存元素的数组 elementData 使用 transient 修饰，该关键字声明数组默认不会被序列化。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">transient Object[] elementData; // non-private to simplify nested class access</span><br></pre></td></tr></table></figure>
-
-<p>ArrayList 实现了 writeObject() 和 readObject() 来控制只序列化数组中有元素填充那部分内容。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">private void readObject(java.io.ObjectInputStream s)    throws java.io.IOException, ClassNotFoundException &#123;    elementData = EMPTY_ELEMENTDATA;    // Read in size, and any hidden stuff    s.defaultReadObject();    // Read in capacity    s.readInt(); // ignored    if (size &gt; 0) &#123;        // be like clone(), allocate array based upon size not capacity        ensureCapacityInternal(size);        Object[] a = elementData;        // Read in all elements in the proper order.        for (int i=0; i&lt;size; i++) &#123;            a[i] = s.readObject();        &#125;    &#125;&#125;private void writeObject(java.io.ObjectOutputStream s)    throws java.io.IOException&#123;    // Write out element count, and any hidden stuff    int expectedModCount = modCount;    s.defaultWriteObject();    // Write out size as capacity for behavioural compatibility with clone()    s.writeInt(size);    // Write out all elements in the proper order.    for (int i=0; i&lt;size; i++) &#123;        s.writeObject(elementData[i]);    &#125;    if (modCount != expectedModCount) &#123;        throw new ConcurrentModificationException();    &#125;&#125;</span><br></pre></td></tr></table></figure>
-
-<p>序列化时需要使用 ObjectOutputStream 的 writeObject() 将对象转换为字节流并输出。而 writeObject() 方法在传入的对象存在 writeObject() 的时候会去反射调用该对象的 writeObject() 来实现序列化。反序列化使用的是 ObjectInputStream 的 readObject() 方法，原理类似。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ArrayList list = new ArrayList();ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file));oos.writeObject(list);</span><br></pre></td></tr></table></figure>
-
-<h3 id="5-Fail-Fast"><a href="#5-Fail-Fast" class="headerlink" title="5. Fail-Fast"></a>5. Fail-Fast</h3><p>modCount 用来记录 ArrayList 结构发生变化的次数。结构发生变化是指添加或者删除至少一个元素的所有操作，或者是调整内部数组的大小，仅仅只是设置元素的值不算结构发生变化。</p>
-<p>在进行序列化或者迭代等操作时，需要比较操作前后 modCount 是否改变，如果改变了需要抛出 ConcurrentModificationException。代码参考上节序列化中的 writeObject() 方法。</p>
-<h2 id="Vector"><a href="#Vector" class="headerlink" title="Vector"></a>Vector</h2><h3 id="1-同步"><a href="#1-同步" class="headerlink" title="1. 同步"></a>1. 同步</h3><p>它的实现与 ArrayList 类似，但是使用了 synchronized 进行同步。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public synchronized boolean add(E e) &#123;    modCount++;    ensureCapacityHelper(elementCount + 1);    elementData[elementCount++] = e;    return true;&#125;public synchronized E get(int index) &#123;    if (index &gt;= elementCount)        throw new ArrayIndexOutOfBoundsException(index);    return elementData(index);&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="2-扩容-1"><a href="#2-扩容-1" class="headerlink" title="2. 扩容"></a>2. 扩容</h3><p>Vector 的构造函数可以传入 capacityIncrement 参数，它的作用是在扩容时使容量 capacity 增长 capacityIncrement。如果这个参数的值小于等于 0，扩容时每次都令 capacity 为原来的两倍。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public Vector(int initialCapacity, int capacityIncrement) &#123;    super();    if (initialCapacity &lt; 0)        throw new IllegalArgumentException(&quot;Illegal Capacity: &quot;+                                           initialCapacity);    this.elementData = new Object[initialCapacity];    this.capacityIncrement = capacityIncrement;&#125;private void grow(int minCapacity) &#123;    // overflow-conscious code    int oldCapacity = elementData.length;    int newCapacity = oldCapacity + ((capacityIncrement &gt; 0) ?                                     capacityIncrement : oldCapacity);    if (newCapacity - minCapacity &lt; 0)        newCapacity = minCapacity;    if (newCapacity - MAX_ARRAY_SIZE &gt; 0)        newCapacity = hugeCapacity(minCapacity);    elementData = Arrays.copyOf(elementData, newCapacity);&#125;</span><br></pre></td></tr></table></figure>
-
-<p>调用没有 capacityIncrement 的构造函数时，capacityIncrement 值被设置为 0，也就是说默认情况下 Vector 每次扩容时容量都会翻倍。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public Vector(int initialCapacity) &#123;    this(initialCapacity, 0);&#125;public Vector() &#123;    this(10);&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="3-与-ArrayList-的比较"><a href="#3-与-ArrayList-的比较" class="headerlink" title="3. 与 ArrayList 的比较"></a>3. 与 ArrayList 的比较</h3><ul>
-<li>Vector 是同步的，因此开销就比 ArrayList 要大，访问速度更慢。最好使用 ArrayList 而不是 Vector，因为同步操作完全可以由程序员自己来控制；</li>
-<li>Vector 每次扩容请求其大小的 2 倍（也可以通过构造函数设置增长的容量），而 ArrayList 是 1.5 倍。</li>
-</ul>
-<h3 id="4-替代方案"><a href="#4-替代方案" class="headerlink" title="4. 替代方案"></a>4. 替代方案</h3><p>可以使用 <code>Collections.synchronizedList();</code> 得到一个线程安全的 ArrayList。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">List&lt;String&gt; list = new ArrayList&lt;&gt;();List&lt;String&gt; synList = Collections.synchronizedList(list);</span><br></pre></td></tr></table></figure>
-
-<p>也可以使用 concurrent 并发包下的 CopyOnWriteArrayList 类。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">List&lt;String&gt; list = new CopyOnWriteArrayList&lt;&gt;();</span><br></pre></td></tr></table></figure>
-
-<h2 id="CopyOnWriteArrayList"><a href="#CopyOnWriteArrayList" class="headerlink" title="CopyOnWriteArrayList"></a>CopyOnWriteArrayList</h2><h3 id="1-读写分离"><a href="#1-读写分离" class="headerlink" title="1. 读写分离"></a>1. 读写分离</h3><p>写操作在一个复制的数组上进行，读操作还是在原始数组中进行，读写分离，互不影响。</p>
-<p>写操作需要加锁，防止并发写入时导致写入数据丢失。</p>
-<p>写操作结束之后需要把原始数组指向新的复制数组。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public boolean add(E e) &#123;    final ReentrantLock lock = this.lock;    lock.lock();    try &#123;        Object[] elements = getArray();        int len = elements.length;        Object[] newElements = Arrays.copyOf(elements, len + 1);        newElements[len] = e;        setArray(newElements);        return true;    &#125; finally &#123;        lock.unlock();    &#125;&#125;final void setArray(Object[] a) &#123;    array = a;&#125;@SuppressWarnings(&quot;unchecked&quot;)private E get(Object[] a, int index) &#123;    return (E) a[index];&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="2-适用场景"><a href="#2-适用场景" class="headerlink" title="2. 适用场景"></a>2. 适用场景</h3><p>CopyOnWriteArrayList 在写操作的同时允许读操作，大大提高了读操作的性能，因此很适合读多写少的应用场景。</p>
-<p>但是 CopyOnWriteArrayList 有其缺陷：</p>
-<ul>
-<li>内存占用：在写操作时需要复制一个新的数组，使得内存占用为原来的两倍左右；</li>
-<li>数据不一致：读操作不能读取实时性的数据，因为部分写操作的数据还未同步到读数组中。</li>
-</ul>
-<p>所以 CopyOnWriteArrayList 不适合内存敏感以及对实时性要求很高的场景。</p>
-<h2 id="LinkedList"><a href="#LinkedList" class="headerlink" title="LinkedList"></a>LinkedList</h2><h3 id="1-概览-1"><a href="#1-概览-1" class="headerlink" title="1. 概览"></a>1. 概览</h3><p>基于双向链表实现，使用 Node 存储链表节点信息。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">private static class Node&lt;E&gt; &#123;    E item;    Node&lt;E&gt; next;    Node&lt;E&gt; prev;&#125;</span><br></pre></td></tr></table></figure>
-
-<p>每个链表存储了 first 和 last 指针：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">transient Node&lt;E&gt; first;transient Node&lt;E&gt; last;</span><br></pre></td></tr></table></figure>
-
-<p><a href="https://camo.githubusercontent.com/333ccf04b7d4667fbc7c4f1a217e7e5526c400fe/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f696d6167652d32303139313230383233333934303036362e706e67"><img src="../images/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f696d6167652d32303139313230383233333934303036362e706e67" alt="img"></a></p>
-<h3 id="2-与-ArrayList-的比较"><a href="#2-与-ArrayList-的比较" class="headerlink" title="2. 与 ArrayList 的比较"></a>2. 与 ArrayList 的比较</h3><p>ArrayList 基于动态数组实现，LinkedList 基于双向链表实现。ArrayList 和 LinkedList 的区别可以归结为数组和链表的区别：</p>
-<ul>
-<li>数组支持随机访问，但插入删除的代价很高，需要移动大量元素；</li>
-<li>链表不支持随机访问，但插入删除只需要改变指针。</li>
-</ul>
-<h2 id="HashMap"><a href="#HashMap" class="headerlink" title="HashMap"></a>HashMap</h2><p>为了便于理解，以下源码分析以 JDK 1.7 为主。</p>
-<h3 id="1-存储结构"><a href="#1-存储结构" class="headerlink" title="1. 存储结构"></a>1. 存储结构</h3><p>内部包含了一个 Entry 类型的数组 table。Entry 存储着键值对。它包含了四个字段，从 next 字段我们可以看出 Entry 是一个链表。即数组中的每个位置被当成一个桶，一个桶存放一个链表。HashMap 使用拉链法来解决冲突，同一个链表中存放哈希值和散列桶取模运算结果相同的 Entry。</p>
-<p><a href="https://camo.githubusercontent.com/5d81dca069e6bd97466ee40c53ea963696cfc1ef/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f696d6167652d32303139313230383233343934383230352e706e67"><img src="../images/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f696d6167652d32303139313230383233343934383230352e706e67" alt="img"></a></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">transient Entry[] table;static class Entry&lt;K,V&gt; implements Map.Entry&lt;K,V&gt; &#123;    final K key;    V value;    Entry&lt;K,V&gt; next;    int hash;    Entry(int h, K k, V v, Entry&lt;K,V&gt; n) &#123;        value = v;        next = n;        key = k;        hash = h;    &#125;    public final K getKey() &#123;        return key;    &#125;    public final V getValue() &#123;        return value;    &#125;    public final V setValue(V newValue) &#123;        V oldValue = value;        value = newValue;        return oldValue;    &#125;    public final boolean equals(Object o) &#123;        if (!(o instanceof Map.Entry))            return false;        Map.Entry e = (Map.Entry)o;        Object k1 = getKey();        Object k2 = e.getKey();        if (k1 == k2 || (k1 != null &amp;&amp; k1.equals(k2))) &#123;            Object v1 = getValue();            Object v2 = e.getValue();            if (v1 == v2 || (v1 != null &amp;&amp; v1.equals(v2)))                return true;        &#125;        return false;    &#125;    public final int hashCode() &#123;        return Objects.hashCode(getKey()) ^ Objects.hashCode(getValue());    &#125;    public final String toString() &#123;        return getKey() + &quot;=&quot; + getValue();    &#125;&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="2-拉链法的工作原理"><a href="#2-拉链法的工作原理" class="headerlink" title="2. 拉链法的工作原理"></a>2. 拉链法的工作原理</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">HashMap&lt;String, String&gt; map = new HashMap&lt;&gt;();map.put(&quot;K1&quot;, &quot;V1&quot;);map.put(&quot;K2&quot;, &quot;V2&quot;);map.put(&quot;K3&quot;, &quot;V3&quot;);</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>新建一个 HashMap，默认大小为 16；</li>
-<li>插入 &lt;K1,V1&gt; 键值对，先计算 K1 的 hashCode 为 115，使用除留余数法得到所在的桶下标 115%16=3。</li>
-<li>插入 &lt;K2,V2&gt; 键值对，先计算 K2 的 hashCode 为 118，使用除留余数法得到所在的桶下标 118%16=6。</li>
-<li>插入 &lt;K3,V3&gt; 键值对，先计算 K3 的 hashCode 为 118，使用除留余数法得到所在的桶下标 118%16=6，插在 &lt;K2,V2&gt; 前面。</li>
-</ul>
-<p>应该注意到链表的插入是以头插法方式进行的，例如上面的 &lt;K3,V3&gt; 不是插在 &lt;K2,V2&gt; 后面，而是插入在链表头部。</p>
-<p>查找需要分成两步进行：</p>
-<ul>
-<li>计算键值对所在的桶；</li>
-<li>在链表上顺序查找，时间复杂度显然和链表的长度成正比。</li>
-</ul>
-<p><a href="https://camo.githubusercontent.com/a7761ef5ade932ba3513693653ee65bedfa0f5db/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f696d6167652d32303139313230383233353235383634332e706e67"><img src="../images/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f696d6167652d32303139313230383233353235383634332e706e67" alt="img"></a></p>
-<h3 id="3-put-操作"><a href="#3-put-操作" class="headerlink" title="3. put 操作"></a>3. put 操作</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public V put(K key, V value) &#123;    if (table == EMPTY_TABLE) &#123;        inflateTable(threshold);    &#125;    // 键为 null 单独处理    if (key == null)        return putForNullKey(value);    int hash = hash(key);    // 确定桶下标    int i = indexFor(hash, table.length);    // 先找出是否已经存在键为 key 的键值对，如果存在的话就更新这个键值对的值为 value    for (Entry&lt;K,V&gt; e = table[i]; e != null; e = e.next) &#123;        Object k;        if (e.hash == hash &amp;&amp; ((k = e.key) == key || key.equals(k))) &#123;            V oldValue = e.value;            e.value = value;            e.recordAccess(this);            return oldValue;        &#125;    &#125;    modCount++;    // 插入新键值对    addEntry(hash, key, value, i);    return null;&#125;</span><br></pre></td></tr></table></figure>
-
-<p>HashMap 允许插入键为 null 的键值对。但是因为无法调用 null 的 hashCode() 方法，也就无法确定该键值对的桶下标，只能通过强制指定一个桶下标来存放。HashMap 使用第 0 个桶存放键为 null 的键值对。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">private V putForNullKey(V value) &#123;    for (Entry&lt;K,V&gt; e = table[0]; e != null; e = e.next) &#123;        if (e.key == null) &#123;            V oldValue = e.value;            e.value = value;            e.recordAccess(this);            return oldValue;        &#125;    &#125;    modCount++;    addEntry(0, null, value, 0);    return null;&#125;</span><br></pre></td></tr></table></figure>
-
-<p>使用链表的头插法，也就是新的键值对插在链表的头部，而不是链表的尾部。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">void addEntry(int hash, K key, V value, int bucketIndex) &#123;    if ((size &gt;= threshold) &amp;&amp; (null != table[bucketIndex])) &#123;        resize(2 * table.length);        hash = (null != key) ? hash(key) : 0;        bucketIndex = indexFor(hash, table.length);    &#125;    createEntry(hash, key, value, bucketIndex);&#125;void createEntry(int hash, K key, V value, int bucketIndex) &#123;    Entry&lt;K,V&gt; e = table[bucketIndex];    // 头插法，链表头部指向新的键值对    table[bucketIndex] = new Entry&lt;&gt;(hash, key, value, e);    size++;&#125;Entry(int h, K k, V v, Entry&lt;K,V&gt; n) &#123;    value = v;    next = n;    key = k;    hash = h;&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="4-确定桶下标"><a href="#4-确定桶下标" class="headerlink" title="4. 确定桶下标"></a>4. 确定桶下标</h3><p>很多操作都需要先确定一个键值对所在的桶下标。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">int hash = hash(key);int i = indexFor(hash, table.length);</span><br></pre></td></tr></table></figure>
-
-<p><strong>4.1 计算 hash 值</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">final int hash(Object k) &#123;    int h = hashSeed;    if (0 != h &amp;&amp; k instanceof String) &#123;        return sun.misc.Hashing.stringHash32((String) k);    &#125;    h ^= k.hashCode();    // This function ensures that hashCodes that differ only by    // constant multiples at each bit position have a bounded    // number of collisions (approximately 8 at default load factor).    h ^= (h &gt;&gt;&gt; 20) ^ (h &gt;&gt;&gt; 12);    return h ^ (h &gt;&gt;&gt; 7) ^ (h &gt;&gt;&gt; 4);&#125;public final int hashCode() &#123;    return Objects.hashCode(key) ^ Objects.hashCode(value);&#125;</span><br></pre></td></tr></table></figure>
-
-<p><strong>4.2 取模</strong></p>
-<p>令 x = 1&lt;&lt;4，即 x 为 2 的 4 次方，它具有以下性质：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">x   : 00010000x-1 : 00001111</span><br></pre></td></tr></table></figure>
-
-<p>令一个数 y 与 x-1 做与运算，可以去除 y 位级表示的第 4 位以上数：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">y       : 10110010x-1     : 00001111y&amp;(x-1) : 00000010</span><br></pre></td></tr></table></figure>
-
-<p>这个性质和 y 对 x 取模效果是一样的：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">y   : 10110010x   : 00010000y%x : 00000010</span><br></pre></td></tr></table></figure>
-
-<p>我们知道，位运算的代价比求模运算小的多，因此在进行这种计算时用位运算的话能带来更高的性能。</p>
-<p>确定桶下标的最后一步是将 key 的 hash 值对桶个数取模：hash%capacity，如果能保证 capacity 为 2 的 n 次方，那么就可以将这个操作转换为位运算。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">static int indexFor(int h, int length) &#123;    return h &amp; (length-1);&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="5-扩容-基本原理"><a href="#5-扩容-基本原理" class="headerlink" title="5. 扩容-基本原理"></a>5. 扩容-基本原理</h3><p>设 HashMap 的 table 长度为 M，需要存储的键值对数量为 N，如果哈希函数满足均匀性的要求，那么每条链表的长度大约为 N/M，因此查找的复杂度为 O(N/M)。</p>
-<p>为了让查找的成本降低，应该使 N/M 尽可能小，因此需要保证 M 尽可能大，也就是说 table 要尽可能大。HashMap 采用动态扩容来根据当前的 N 值来调整 M 值，使得空间效率和时间效率都能得到保证。</p>
-<p>和扩容相关的参数主要有：capacity、size、threshold 和 load_factor。</p>
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>含义</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>capacity</td>
-<td>table 的容量大小，默认为 16。需要注意的是 capacity 必须保证为 2 的 n 次方。</td>
-</tr>
-<tr>
-<td>size</td>
-<td>键值对数量。</td>
-</tr>
-<tr>
-<td>threshold</td>
-<td>size 的临界值，当 size 大于等于 threshold 就必须进行扩容操作。</td>
-</tr>
-<tr>
-<td>loadFactor</td>
-<td>装载因子，table 能够使用的比例，threshold = (int)(capacity* loadFactor)。</td>
-</tr>
-</tbody></table>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">static final int DEFAULT_INITIAL_CAPACITY = 16;static final int MAXIMUM_CAPACITY = 1 &lt;&lt; 30;static final float DEFAULT_LOAD_FACTOR = 0.75f;transient Entry[] table;transient int size;int threshold;final float loadFactor;transient int modCount;</span><br></pre></td></tr></table></figure>
-
-<p>从下面的添加元素代码中可以看出，当需要扩容时，令 capacity 为原来的两倍。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">void addEntry(int hash, K key, V value, int bucketIndex) &#123;    Entry&lt;K,V&gt; e = table[bucketIndex];    table[bucketIndex] = new Entry&lt;&gt;(hash, key, value, e);    if (size++ &gt;= threshold)        resize(2 * table.length);&#125;</span><br></pre></td></tr></table></figure>
-
-<p>扩容使用 resize() 实现，需要注意的是，扩容操作同样需要把 oldTable 的所有键值对重新插入 newTable 中，因此这一步是很费时的。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">void resize(int newCapacity) &#123;    Entry[] oldTable = table;    int oldCapacity = oldTable.length;    if (oldCapacity == MAXIMUM_CAPACITY) &#123;        threshold = Integer.MAX_VALUE;        return;    &#125;    Entry[] newTable = new Entry[newCapacity];    transfer(newTable);    table = newTable;    threshold = (int)(newCapacity * loadFactor);&#125;void transfer(Entry[] newTable) &#123;    Entry[] src = table;    int newCapacity = newTable.length;    for (int j = 0; j &lt; src.length; j++) &#123;        Entry&lt;K,V&gt; e = src[j];        if (e != null) &#123;            src[j] = null;            do &#123;                Entry&lt;K,V&gt; next = e.next;                int i = indexFor(e.hash, newCapacity);                e.next = newTable[i];                newTable[i] = e;                e = next;            &#125; while (e != null);        &#125;    &#125;&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="6-扩容-重新计算桶下标"><a href="#6-扩容-重新计算桶下标" class="headerlink" title="6. 扩容-重新计算桶下标"></a>6. 扩容-重新计算桶下标</h3><p>在进行扩容时，需要把键值对重新计算桶下标，从而放到对应的桶上。在前面提到，HashMap 使用 hash%capacity 来确定桶下标。HashMap capacity 为 2 的 n 次方这一特点能够极大降低重新计算桶下标操作的复杂度。</p>
-<p>假设原数组长度 capacity 为 16，扩容之后 new capacity 为 32：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">capacity     : 00010000new capacity : 00100000</span><br></pre></td></tr></table></figure>
-
-<p>对于一个 Key，它的哈希值 hash 在第 5 位：</p>
-<ul>
-<li>为 0，那么 hash%00010000 = hash%00100000，桶位置和原来一致；</li>
-<li>为 1，hash%00010000 = hash%00100000 + 16，桶位置是原位置 + 16。</li>
-</ul>
-<h3 id="7-计算数组容量"><a href="#7-计算数组容量" class="headerlink" title="7. 计算数组容量"></a>7. 计算数组容量</h3><p>HashMap 构造函数允许用户传入的容量不是 2 的 n 次方，因为它可以自动地将传入的容量转换为 2 的 n 次方。</p>
-<p>先考虑如何求一个数的掩码，对于 10010000，它的掩码为 11111111，可以使用以下方法得到：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mask |= mask &gt;&gt; 1    11011000mask |= mask &gt;&gt; 2    11111110mask |= mask &gt;&gt; 4    11111111</span><br></pre></td></tr></table></figure>
-
-<p>mask+1 是大于原始数字的最小的 2 的 n 次方。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">num     10010000mask+1 100000000</span><br></pre></td></tr></table></figure>
-
-<p>以下是 HashMap 中计算数组容量的代码：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">static final int tableSizeFor(int cap) &#123;    int n = cap - 1;    n |= n &gt;&gt;&gt; 1;    n |= n &gt;&gt;&gt; 2;    n |= n &gt;&gt;&gt; 4;    n |= n &gt;&gt;&gt; 8;    n |= n &gt;&gt;&gt; 16;    return (n &lt; 0) ? 1 : (n &gt;= MAXIMUM_CAPACITY) ? MAXIMUM_CAPACITY : n + 1;&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="8-链表转红黑树"><a href="#8-链表转红黑树" class="headerlink" title="8. 链表转红黑树"></a>8. 链表转红黑树</h3><p>从 JDK 1.8 开始，一个桶存储的链表长度大于等于 8 时会将链表转换为红黑树。</p>
-<h3 id="9-与-Hashtable-的比较"><a href="#9-与-Hashtable-的比较" class="headerlink" title="9. 与 Hashtable 的比较"></a>9. 与 Hashtable 的比较</h3><ul>
-<li>Hashtable 使用 synchronized 来进行同步。</li>
-<li>HashMap 可以插入键为 null 的 Entry。</li>
-<li>HashMap 的迭代器是 fail-fast 迭代器。</li>
-<li>HashMap 不能保证随着时间的推移 Map 中的元素次序是不变的。</li>
-</ul>
-<h2 id="ConcurrentHashMap"><a href="#ConcurrentHashMap" class="headerlink" title="ConcurrentHashMap"></a>ConcurrentHashMap</h2><h3 id="1-存储结构-1"><a href="#1-存储结构-1" class="headerlink" title="1. 存储结构"></a>1. 存储结构</h3><p><a href="https://camo.githubusercontent.com/f701cb7c0c3f8cc5b5da3db85d01c57d3095fa77/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f696d6167652d32303139313230393030313033383032342e706e67"><img src="../images/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f696d6167652d32303139313230393030313033383032342e706e67" alt="img"></a></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">static final class HashEntry&lt;K,V&gt; &#123;    final int hash;    final K key;    volatile V value;    volatile HashEntry&lt;K,V&gt; next;&#125;</span><br></pre></td></tr></table></figure>
-
-<p>ConcurrentHashMap 和 HashMap 实现上类似，最主要的差别是 ConcurrentHashMap 采用了分段锁（Segment），每个分段锁维护着几个桶（HashEntry），多个线程可以同时访问不同分段锁上的桶，从而使其并发度更高（并发度就是 Segment 的个数）。</p>
-<p>Segment 继承自 ReentrantLock。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">static final class Segment&lt;K,V&gt; extends ReentrantLock implements Serializable &#123;    private static final long serialVersionUID = 2249069246763182397L;    static final int MAX_SCAN_RETRIES =        Runtime.getRuntime().availableProcessors() &gt; 1 ? 64 : 1;    transient volatile HashEntry&lt;K,V&gt;[] table;    transient int count;    transient int modCount;    transient int threshold;    final float loadFactor;&#125;final Segment&lt;K,V&gt;[] segments;</span><br></pre></td></tr></table></figure>
-
-<p>默认的并发级别为 16，也就是说默认创建 16 个 Segment。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">static final int DEFAULT_CONCURRENCY_LEVEL = 16;</span><br></pre></td></tr></table></figure>
-
-<h3 id="2-size-操作"><a href="#2-size-操作" class="headerlink" title="2. size 操作"></a>2. size 操作</h3><p>每个 Segment 维护了一个 count 变量来统计该 Segment 中的键值对个数。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/** * The number of elements. Accessed only either within locks * or among other volatile reads that maintain visibility. */transient int count;</span><br></pre></td></tr></table></figure>
-
-<p>在执行 size 操作时，需要遍历所有 Segment 然后把 count 累计起来。</p>
-<p>ConcurrentHashMap 在执行 size 操作时先尝试不加锁，如果连续两次不加锁操作得到的结果一致，那么可以认为这个结果是正确的。</p>
-<p>尝试次数使用 RETRIES_BEFORE_LOCK 定义，该值为 2，retries 初始值为 -1，因此尝试次数为 3。</p>
-<p>如果尝试的次数超过 3 次，就需要对每个 Segment 加锁。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/** * Number of unsynchronized retries in size and containsValue * methods before resorting to locking. This is used to avoid * unbounded retries if tables undergo continuous modification * which would make it impossible to obtain an accurate result. */static final int RETRIES_BEFORE_LOCK = 2;public int size() &#123;    // Try a few times to get accurate count. On failure due to    // continuous async changes in table, resort to locking.    final Segment&lt;K,V&gt;[] segments = this.segments;    int size;    boolean overflow; // true if size overflows 32 bits    long sum;         // sum of modCounts    long last = 0L;   // previous sum    int retries = -1; // first iteration isn&#x27;t retry    try &#123;        for (;;) &#123;            // 超过尝试次数，则对每个 Segment 加锁            if (retries++ == RETRIES_BEFORE_LOCK) &#123;                for (int j = 0; j &lt; segments.length; ++j)                    ensureSegment(j).lock(); // force creation            &#125;            sum = 0L;            size = 0;            overflow = false;            for (int j = 0; j &lt; segments.length; ++j) &#123;                Segment&lt;K,V&gt; seg = segmentAt(segments, j);                if (seg != null) &#123;                    sum += seg.modCount;                    int c = seg.count;                    if (c &lt; 0 || (size += c) &lt; 0)                        overflow = true;                &#125;            &#125;            // 连续两次得到的结果一致，则认为这个结果是正确的            if (sum == last)                break;            last = sum;        &#125;    &#125; finally &#123;        if (retries &gt; RETRIES_BEFORE_LOCK) &#123;            for (int j = 0; j &lt; segments.length; ++j)                segmentAt(segments, j).unlock();        &#125;    &#125;    return overflow ? Integer.MAX_VALUE : size;&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="3-JDK-1-8-的改动"><a href="#3-JDK-1-8-的改动" class="headerlink" title="3. JDK 1.8 的改动"></a>3. JDK 1.8 的改动</h3><p>JDK 1.7 使用分段锁机制来实现并发更新操作，核心类为 Segment，它继承自重入锁 ReentrantLock，并发度与 Segment 数量相等。</p>
-<p>JDK 1.8 使用了 CAS 操作来支持更高的并发度，在 CAS 操作失败时使用内置锁 synchronized。</p>
-<p>并且 JDK 1.8 的实现也在链表过长时会转换为红黑树。</p>
-<h2 id="LinkedHashMap"><a href="#LinkedHashMap" class="headerlink" title="LinkedHashMap"></a>LinkedHashMap</h2><h3 id="存储结构"><a href="#存储结构" class="headerlink" title="存储结构"></a>存储结构</h3><p>继承自 HashMap，因此具有和 HashMap 一样的快速查找特性。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public class LinkedHashMap&lt;K,V&gt; extends HashMap&lt;K,V&gt; implements Map&lt;K,V&gt;</span><br></pre></td></tr></table></figure>
-
-<p>内部维护了一个双向链表，用来维护插入顺序或者 LRU 顺序。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/** * The head (eldest) of the doubly linked list. */transient LinkedHashMap.Entry&lt;K,V&gt; head;/** * The tail (youngest) of the doubly linked list. */transient LinkedHashMap.Entry&lt;K,V&gt; tail;</span><br></pre></td></tr></table></figure>
-
-<p>accessOrder 决定了顺序，默认为 false，此时维护的是插入顺序。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">final boolean accessOrder;</span><br></pre></td></tr></table></figure>
-
-<p>LinkedHashMap 最重要的是以下用于维护顺序的函数，它们会在 put、get 等方法中调用。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">void afterNodeAccess(Node&lt;K,V&gt; p) &#123; &#125;void afterNodeInsertion(boolean evict) &#123; &#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="afterNodeAccess"><a href="#afterNodeAccess" class="headerlink" title="afterNodeAccess()"></a>afterNodeAccess()</h3><p>当一个节点被访问时，如果 accessOrder 为 true，则会将该节点移到链表尾部。也就是说指定为 LRU 顺序之后，在每次访问一个节点时，会将这个节点移到链表尾部，保证链表尾部是最近访问的节点，那么链表首部就是最近最久未使用的节点。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">void afterNodeAccess(Node&lt;K,V&gt; e) &#123; // move node to last    LinkedHashMap.Entry&lt;K,V&gt; last;    if (accessOrder &amp;&amp; (last = tail) != e) &#123;        LinkedHashMap.Entry&lt;K,V&gt; p =            (LinkedHashMap.Entry&lt;K,V&gt;)e, b = p.before, a = p.after;        p.after = null;        if (b == null)            head = a;        else            b.after = a;        if (a != null)            a.before = b;        else            last = b;        if (last == null)            head = p;        else &#123;            p.before = last;            last.after = p;        &#125;        tail = p;        ++modCount;    &#125;&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="afterNodeInsertion"><a href="#afterNodeInsertion" class="headerlink" title="afterNodeInsertion()"></a>afterNodeInsertion()</h3><p>在 put 等操作之后执行，当 removeEldestEntry() 方法返回 true 时会移除最晚的节点，也就是链表首部节点 first。</p>
-<p>evict 只有在构建 Map 的时候才为 false，在这里为 true。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">void afterNodeInsertion(boolean evict) &#123; // possibly remove eldest    LinkedHashMap.Entry&lt;K,V&gt; first;    if (evict &amp;&amp; (first = head) != null &amp;&amp; removeEldestEntry(first)) &#123;        K key = first.key;        removeNode(hash(key), key, null, false, true);    &#125;&#125;</span><br></pre></td></tr></table></figure>
-
-<p>removeEldestEntry() 默认为 false，如果需要让它为 true，需要继承 LinkedHashMap 并且覆盖这个方法的实现，这在实现 LRU 的缓存中特别有用，通过移除最近最久未使用的节点，从而保证缓存空间足够，并且缓存的数据都是热点数据。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">protected boolean removeEldestEntry(Map.Entry&lt;K,V&gt; eldest) &#123;    return false;&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="LRU-缓存"><a href="#LRU-缓存" class="headerlink" title="LRU 缓存"></a>LRU 缓存</h3><p>以下是使用 LinkedHashMap 实现的一个 LRU 缓存：</p>
-<ul>
-<li>设定最大缓存空间 MAX_ENTRIES 为 3；</li>
-<li>使用 LinkedHashMap 的构造函数将 accessOrder 设置为 true，开启 LRU 顺序；</li>
-<li>覆盖 removeEldestEntry() 方法实现，在节点多于 MAX_ENTRIES 就会将最近最久未使用的数据移除。</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">class LRUCache&lt;K, V&gt; extends LinkedHashMap&lt;K, V&gt; &#123;    private static final int MAX_ENTRIES = 3;    protected boolean removeEldestEntry(Map.Entry eldest) &#123;        return size() &gt; MAX_ENTRIES;    &#125;    LRUCache() &#123;        super(MAX_ENTRIES, 0.75f, true);    &#125;&#125;public static void main(String[] args) &#123;    LRUCache&lt;Integer, String&gt; cache = new LRUCache&lt;&gt;();    cache.put(1, &quot;a&quot;);    cache.put(2, &quot;b&quot;);    cache.put(3, &quot;c&quot;);    cache.get(1);    cache.put(4, &quot;d&quot;);    System.out.println(cache.keySet());&#125;[3, 1, 4]</span><br></pre></td></tr></table></figure>
-
-<h2 id="WeakHashMap"><a href="#WeakHashMap" class="headerlink" title="WeakHashMap"></a>WeakHashMap</h2><h3 id="存储结构-1"><a href="#存储结构-1" class="headerlink" title="存储结构"></a>存储结构</h3><p>WeakHashMap 的 Entry 继承自 WeakReference，被 WeakReference 关联的对象在下一次垃圾回收时会被回收。</p>
-<p>WeakHashMap 主要用来实现缓存，通过使用 WeakHashMap 来引用缓存对象，由 JVM 对这部分缓存进行回收。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">private static class Entry&lt;K,V&gt; extends WeakReference&lt;Object&gt; implements Map.Entry&lt;K,V&gt;</span><br></pre></td></tr></table></figure>
-
-<h3 id="ConcurrentCache"><a href="#ConcurrentCache" class="headerlink" title="ConcurrentCache"></a>ConcurrentCache</h3><p>Tomcat 中的 ConcurrentCache 使用了 WeakHashMap 来实现缓存功能。</p>
-<p>ConcurrentCache 采取的是分代缓存：</p>
-<ul>
-<li>经常使用的对象放入 eden 中，eden 使用 ConcurrentHashMap 实现，不用担心会被回收（伊甸园）；</li>
-<li>不常用的对象放入 longterm，longterm 使用 WeakHashMap 实现，这些老对象会被垃圾收集器回收。</li>
-<li>当调用 get() 方法时，会先从 eden 区获取，如果没有找到的话再到 longterm 获取，当从 longterm 获取到就把对象放入 eden 中，从而保证经常被访问的节点不容易被回收。</li>
-<li>当调用 put() 方法时，如果 eden 的大小超过了 size，那么就将 eden 中的所有对象都放入 longterm 中，利用虚拟机回收掉一部分不经常使用的对象。</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public final class ConcurrentCache&lt;K, V&gt; &#123;    private final int size;    private final Map&lt;K, V&gt; eden;    private final Map&lt;K, V&gt; longterm;    public ConcurrentCache(int size) &#123;        this.size = size;        this.eden = new ConcurrentHashMap&lt;&gt;(size);        this.longterm = new WeakHashMap&lt;&gt;(size);    &#125;    public V get(K k) &#123;        V v = this.eden.get(k);        if (v == null) &#123;            v = this.longterm.get(k);            if (v != null)                this.eden.put(k, v);        &#125;        return v;    &#125;    public void put(K k, V v) &#123;        if (this.eden.size() &gt;= size) &#123;            this.longterm.putAll(this.eden);            this.eden.clear();        &#125;        this.eden.put(k, v);    &#125;&#125;</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>Java</category>
-        <category>Java集合</category>
-      </categories>
-      <tags>
-        <tag>Java集合</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>MyBatis学习笔记</title>
     <url>/archives/7fd48667.html</url>
     <content><![CDATA[<p><img src="../images/mybatis-logo.png" alt="MyBatis logo"></p>
@@ -4133,6 +4098,305 @@
       </categories>
       <tags>
         <tag>MyBatis</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Java集合</title>
+    <url>/archives/4509351.html</url>
+    <content><![CDATA[<h1 id="Java集合"><a href="#Java集合" class="headerlink" title="Java集合"></a>Java集合</h1><blockquote>
+<p>  这篇文章我只是个搬运工，虽然自己也总结了，但是感觉人家写的更好。</p>
+<p>  原文链接：<a href="https://github.com/liguigui/CyC2018-CS-Notes">https://github.com/liguigui/CyC2018-CS-Notes</a></p>
+</blockquote>
+<span id="more"></span>
+
+<h1 id="一、概览"><a href="#一、概览" class="headerlink" title="一、概览"></a>一、概览</h1><p>容器主要包括 Collection 和 Map 两种，Collection 存储着对象的集合，而 Map 存储着键值对（两个对象）的映射表。</p>
+<h2 id="Collection"><a href="#Collection" class="headerlink" title="Collection"></a>Collection</h2><p><a href="https://camo.githubusercontent.com/d1efb1abc3173aa2a607316dda79bea560fe333f/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f696d6167652d32303139313230383232303934383038342e706e67"><img src="../images/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f696d6167652d32303139313230383232303934383038342e706e67" alt="img"></a></p>
+<h3 id="1-Set"><a href="#1-Set" class="headerlink" title="1. Set"></a>1. Set</h3><ul>
+<li>TreeSet：基于红黑树实现，支持有序性操作，例如根据一个范围查找元素的操作。但是查找效率不如 HashSet，HashSet 查找的时间复杂度为 O(1)，TreeSet 则为 O(logN)。</li>
+<li>HashSet：基于哈希表实现，支持快速查找，但不支持有序性操作。并且失去了元素的插入顺序信息，也就是说使用 Iterator 遍历 HashSet 得到的结果是不确定的。</li>
+<li>LinkedHashSet：具有 HashSet 的查找效率，并且内部使用双向链表维护元素的插入顺序。</li>
+</ul>
+<h3 id="2-List"><a href="#2-List" class="headerlink" title="2. List"></a>2. List</h3><ul>
+<li>ArrayList：基于动态数组实现，支持随机访问。</li>
+<li>Vector：和 ArrayList 类似，但它是线程安全的。</li>
+<li>LinkedList：基于双向链表实现，只能顺序访问，但是可以快速地在链表中间插入和删除元素。不仅如此，LinkedList 还可以用作栈、队列和双向队列。</li>
+</ul>
+<h3 id="3-Queue"><a href="#3-Queue" class="headerlink" title="3. Queue"></a>3. Queue</h3><ul>
+<li>LinkedList：可以用它来实现双向队列。</li>
+<li>PriorityQueue：基于堆结构实现，可以用它来实现优先队列。</li>
+</ul>
+<h2 id="Map"><a href="#Map" class="headerlink" title="Map"></a>Map</h2><p><a href="https://camo.githubusercontent.com/cd126ae7572489beead8b33f3a26a5a0bb1f288e/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f696d6167652d32303139313230383232343735373835352e706e67"><img src="../images/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f696d6167652d32303139313230383232343735373835352e706e67" alt="img"></a></p>
+<ul>
+<li>TreeMap：基于红黑树实现。</li>
+<li>HashMap：基于哈希表实现。</li>
+<li>HashTable：和 HashMap 类似，但它是线程安全的，这意味着同一时刻多个线程同时写入 HashTable 不会导致数据不一致。它是遗留类，不应该去使用它，而是使用 ConcurrentHashMap 来支持线程安全，ConcurrentHashMap 的效率会更高，因为 ConcurrentHashMap 引入了分段锁。</li>
+<li>LinkedHashMap：使用双向链表来维护元素的顺序，顺序为插入顺序或者最近最少使用（LRU）顺序。</li>
+</ul>
+<h1 id="二、容器中的设计模式"><a href="#二、容器中的设计模式" class="headerlink" title="二、容器中的设计模式"></a>二、容器中的设计模式</h1><h2 id="迭代器模式"><a href="#迭代器模式" class="headerlink" title="迭代器模式"></a>迭代器模式</h2><p><a href="https://camo.githubusercontent.com/6ee13e3fa6717189ef266359ec74ed8a8fb88d62/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f696d6167652d32303139313230383232353330313937332e706e67"><img src="../images/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f696d6167652d32303139313230383232353330313937332e706e67" alt="img"></a></p>
+<p>Collection 继承了 Iterable 接口，其中的 iterator() 方法能够产生一个 Iterator 对象，通过这个对象就可以迭代遍历 Collection 中的元素。</p>
+<p>从 JDK 1.5 之后可以使用 foreach 方法来遍历实现了 Iterable 接口的聚合对象。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">List&lt;String&gt; list = new ArrayList&lt;&gt;();</span><br><span class="line">list.add(&quot;a&quot;);</span><br><span class="line">list.add(&quot;b&quot;);</span><br><span class="line">for (String item : list) &#123;</span><br><span class="line">    System.out.println(item);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="适配器模式"><a href="#适配器模式" class="headerlink" title="适配器模式"></a>适配器模式</h2><p>java.util.Arrays#asList() 可以把数组类型转换为 List 类型。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">@SafeVarargs</span><br><span class="line">public static &lt;T&gt; List&lt;T&gt; asList(T... a)</span><br></pre></td></tr></table></figure>
+
+<p>应该注意的是 asList() 的参数为泛型的变长参数，不能使用基本类型数组作为参数，只能使用相应的包装类型数组。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Integer[] arr = &#123;1, 2, 3&#125;;</span><br><span class="line">List list = Arrays.asList(arr);</span><br></pre></td></tr></table></figure>
+
+<p>也可以使用以下方式调用 asList()：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">List list = Arrays.asList(1, 2, 3);</span><br></pre></td></tr></table></figure>
+
+<h1 id="三、源码分析"><a href="#三、源码分析" class="headerlink" title="三、源码分析"></a>三、源码分析</h1><p>如果没有特别说明，以下源码分析基于 JDK 1.8。</p>
+<p>在 IDEA 中 double shift 调出 Search EveryWhere，查找源码文件，找到之后就可以阅读源码。</p>
+<h2 id="ArrayList"><a href="#ArrayList" class="headerlink" title="ArrayList"></a>ArrayList</h2><h3 id="1-概览"><a href="#1-概览" class="headerlink" title="1. 概览"></a>1. 概览</h3><p>因为 ArrayList 是基于数组实现的，所以支持快速随机访问。RandomAccess 接口标识着该类支持快速随机访问。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public class ArrayList&lt;E&gt; extends AbstractList&lt;E&gt;</span><br><span class="line">        implements List&lt;E&gt;, RandomAccess, Cloneable, java.io.Serializable</span><br></pre></td></tr></table></figure>
+
+<p>数组的默认大小为 10。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">private static final int DEFAULT_CAPACITY = 10;</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://camo.githubusercontent.com/d1e665d0dfc95837e4ba243d2b26eccf2148f7f1/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f696d6167652d32303139313230383233323232313236352e706e67"><img src="../images/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f696d6167652d32303139313230383233323232313236352e706e67" alt="img"></a></p>
+<h3 id="2-扩容"><a href="#2-扩容" class="headerlink" title="2. 扩容"></a>2. 扩容</h3><p>添加元素时使用 ensureCapacityInternal() 方法来保证容量足够，如果不够时，需要使用 grow() 方法进行扩容，新容量的大小为 <code>oldCapacity + (oldCapacity &gt;&gt; 1)</code>，也就是旧容量的 1.5 倍。</p>
+<p>扩容操作需要调用 <code>Arrays.copyOf()</code> 把原数组整个复制到新数组中，这个操作代价很高，因此最好在创建 ArrayList 对象时就指定大概的容量大小，减少扩容操作的次数。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public boolean add(E e) &#123;</span><br><span class="line">    ensureCapacityInternal(size + 1);  // Increments modCount!!</span><br><span class="line">    elementData[size++] = e;</span><br><span class="line">    return true;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private void ensureCapacityInternal(int minCapacity) &#123;</span><br><span class="line">    if (elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA) &#123;</span><br><span class="line">        minCapacity = Math.max(DEFAULT_CAPACITY, minCapacity);</span><br><span class="line">    &#125;</span><br><span class="line">    ensureExplicitCapacity(minCapacity);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private void ensureExplicitCapacity(int minCapacity) &#123;</span><br><span class="line">    modCount++;</span><br><span class="line">    // overflow-conscious code</span><br><span class="line">    if (minCapacity - elementData.length &gt; 0)</span><br><span class="line">        grow(minCapacity);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private void grow(int minCapacity) &#123;</span><br><span class="line">    // overflow-conscious code</span><br><span class="line">    int oldCapacity = elementData.length;</span><br><span class="line">    int newCapacity = oldCapacity + (oldCapacity &gt;&gt; 1);</span><br><span class="line">    if (newCapacity - minCapacity &lt; 0)</span><br><span class="line">        newCapacity = minCapacity;</span><br><span class="line">    if (newCapacity - MAX_ARRAY_SIZE &gt; 0)</span><br><span class="line">        newCapacity = hugeCapacity(minCapacity);</span><br><span class="line">    // minCapacity is usually close to size, so this is a win:</span><br><span class="line">    elementData = Arrays.copyOf(elementData, newCapacity);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-删除元素"><a href="#3-删除元素" class="headerlink" title="3. 删除元素"></a>3. 删除元素</h3><p>需要调用 System.arraycopy() 将 index+1 后面的元素都复制到 index 位置上，该操作的时间复杂度为 O(N)，可以看到 ArrayList 删除元素的代价是非常高的。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public E remove(int index) &#123;</span><br><span class="line">    rangeCheck(index);</span><br><span class="line">    modCount++;</span><br><span class="line">    E oldValue = elementData(index);</span><br><span class="line">    int numMoved = size - index - 1;</span><br><span class="line">    if (numMoved &gt; 0)</span><br><span class="line">        System.arraycopy(elementData, index+1, elementData, index, numMoved);</span><br><span class="line">    elementData[--size] = null; // clear to let GC do its work</span><br><span class="line">    return oldValue;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-序列化"><a href="#4-序列化" class="headerlink" title="4. 序列化"></a>4. 序列化</h3><p>ArrayList 基于数组实现，并且具有动态扩容特性，因此保存元素的数组不一定都会被使用，那么就没必要全部进行序列化。</p>
+<p>保存元素的数组 elementData 使用 transient 修饰，该关键字声明数组默认不会被序列化。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">transient Object[] elementData; // non-private to simplify nested class access</span><br></pre></td></tr></table></figure>
+
+<p>ArrayList 实现了 writeObject() 和 readObject() 来控制只序列化数组中有元素填充那部分内容。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">private void readObject(java.io.ObjectInputStream s)    throws java.io.IOException, ClassNotFoundException &#123;    elementData = EMPTY_ELEMENTDATA;    // Read in size, and any hidden stuff    s.defaultReadObject();    // Read in capacity    s.readInt(); // ignored    if (size &gt; 0) &#123;        // be like clone(), allocate array based upon size not capacity        ensureCapacityInternal(size);        Object[] a = elementData;        // Read in all elements in the proper order.        for (int i=0; i&lt;size; i++) &#123;            a[i] = s.readObject();        &#125;    &#125;&#125;private void writeObject(java.io.ObjectOutputStream s)    throws java.io.IOException&#123;    // Write out element count, and any hidden stuff    int expectedModCount = modCount;    s.defaultWriteObject();    // Write out size as capacity for behavioural compatibility with clone()    s.writeInt(size);    // Write out all elements in the proper order.    for (int i=0; i&lt;size; i++) &#123;        s.writeObject(elementData[i]);    &#125;    if (modCount != expectedModCount) &#123;        throw new ConcurrentModificationException();    &#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>序列化时需要使用 ObjectOutputStream 的 writeObject() 将对象转换为字节流并输出。而 writeObject() 方法在传入的对象存在 writeObject() 的时候会去反射调用该对象的 writeObject() 来实现序列化。反序列化使用的是 ObjectInputStream 的 readObject() 方法，原理类似。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ArrayList list = new ArrayList();ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file));oos.writeObject(list);</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-Fail-Fast"><a href="#5-Fail-Fast" class="headerlink" title="5. Fail-Fast"></a>5. Fail-Fast</h3><p>modCount 用来记录 ArrayList 结构发生变化的次数。结构发生变化是指添加或者删除至少一个元素的所有操作，或者是调整内部数组的大小，仅仅只是设置元素的值不算结构发生变化。</p>
+<p>在进行序列化或者迭代等操作时，需要比较操作前后 modCount 是否改变，如果改变了需要抛出 ConcurrentModificationException。代码参考上节序列化中的 writeObject() 方法。</p>
+<h2 id="Vector"><a href="#Vector" class="headerlink" title="Vector"></a>Vector</h2><h3 id="1-同步"><a href="#1-同步" class="headerlink" title="1. 同步"></a>1. 同步</h3><p>它的实现与 ArrayList 类似，但是使用了 synchronized 进行同步。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public synchronized boolean add(E e) &#123;    modCount++;    ensureCapacityHelper(elementCount + 1);    elementData[elementCount++] = e;    return true;&#125;public synchronized E get(int index) &#123;    if (index &gt;= elementCount)        throw new ArrayIndexOutOfBoundsException(index);    return elementData(index);&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-扩容-1"><a href="#2-扩容-1" class="headerlink" title="2. 扩容"></a>2. 扩容</h3><p>Vector 的构造函数可以传入 capacityIncrement 参数，它的作用是在扩容时使容量 capacity 增长 capacityIncrement。如果这个参数的值小于等于 0，扩容时每次都令 capacity 为原来的两倍。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public Vector(int initialCapacity, int capacityIncrement) &#123;    super();    if (initialCapacity &lt; 0)        throw new IllegalArgumentException(&quot;Illegal Capacity: &quot;+                                           initialCapacity);    this.elementData = new Object[initialCapacity];    this.capacityIncrement = capacityIncrement;&#125;private void grow(int minCapacity) &#123;    // overflow-conscious code    int oldCapacity = elementData.length;    int newCapacity = oldCapacity + ((capacityIncrement &gt; 0) ?                                     capacityIncrement : oldCapacity);    if (newCapacity - minCapacity &lt; 0)        newCapacity = minCapacity;    if (newCapacity - MAX_ARRAY_SIZE &gt; 0)        newCapacity = hugeCapacity(minCapacity);    elementData = Arrays.copyOf(elementData, newCapacity);&#125;</span><br></pre></td></tr></table></figure>
+
+<p>调用没有 capacityIncrement 的构造函数时，capacityIncrement 值被设置为 0，也就是说默认情况下 Vector 每次扩容时容量都会翻倍。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public Vector(int initialCapacity) &#123;    this(initialCapacity, 0);&#125;public Vector() &#123;    this(10);&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-与-ArrayList-的比较"><a href="#3-与-ArrayList-的比较" class="headerlink" title="3. 与 ArrayList 的比较"></a>3. 与 ArrayList 的比较</h3><ul>
+<li>Vector 是同步的，因此开销就比 ArrayList 要大，访问速度更慢。最好使用 ArrayList 而不是 Vector，因为同步操作完全可以由程序员自己来控制；</li>
+<li>Vector 每次扩容请求其大小的 2 倍（也可以通过构造函数设置增长的容量），而 ArrayList 是 1.5 倍。</li>
+</ul>
+<h3 id="4-替代方案"><a href="#4-替代方案" class="headerlink" title="4. 替代方案"></a>4. 替代方案</h3><p>可以使用 <code>Collections.synchronizedList();</code> 得到一个线程安全的 ArrayList。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">List&lt;String&gt; list = new ArrayList&lt;&gt;();List&lt;String&gt; synList = Collections.synchronizedList(list);</span><br></pre></td></tr></table></figure>
+
+<p>也可以使用 concurrent 并发包下的 CopyOnWriteArrayList 类。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">List&lt;String&gt; list = new CopyOnWriteArrayList&lt;&gt;();</span><br></pre></td></tr></table></figure>
+
+<h2 id="CopyOnWriteArrayList"><a href="#CopyOnWriteArrayList" class="headerlink" title="CopyOnWriteArrayList"></a>CopyOnWriteArrayList</h2><h3 id="1-读写分离"><a href="#1-读写分离" class="headerlink" title="1. 读写分离"></a>1. 读写分离</h3><p>写操作在一个复制的数组上进行，读操作还是在原始数组中进行，读写分离，互不影响。</p>
+<p>写操作需要加锁，防止并发写入时导致写入数据丢失。</p>
+<p>写操作结束之后需要把原始数组指向新的复制数组。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public boolean add(E e) &#123;    final ReentrantLock lock = this.lock;    lock.lock();    try &#123;        Object[] elements = getArray();        int len = elements.length;        Object[] newElements = Arrays.copyOf(elements, len + 1);        newElements[len] = e;        setArray(newElements);        return true;    &#125; finally &#123;        lock.unlock();    &#125;&#125;final void setArray(Object[] a) &#123;    array = a;&#125;@SuppressWarnings(&quot;unchecked&quot;)private E get(Object[] a, int index) &#123;    return (E) a[index];&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-适用场景"><a href="#2-适用场景" class="headerlink" title="2. 适用场景"></a>2. 适用场景</h3><p>CopyOnWriteArrayList 在写操作的同时允许读操作，大大提高了读操作的性能，因此很适合读多写少的应用场景。</p>
+<p>但是 CopyOnWriteArrayList 有其缺陷：</p>
+<ul>
+<li>内存占用：在写操作时需要复制一个新的数组，使得内存占用为原来的两倍左右；</li>
+<li>数据不一致：读操作不能读取实时性的数据，因为部分写操作的数据还未同步到读数组中。</li>
+</ul>
+<p>所以 CopyOnWriteArrayList 不适合内存敏感以及对实时性要求很高的场景。</p>
+<h2 id="LinkedList"><a href="#LinkedList" class="headerlink" title="LinkedList"></a>LinkedList</h2><h3 id="1-概览-1"><a href="#1-概览-1" class="headerlink" title="1. 概览"></a>1. 概览</h3><p>基于双向链表实现，使用 Node 存储链表节点信息。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">private static class Node&lt;E&gt; &#123;    E item;    Node&lt;E&gt; next;    Node&lt;E&gt; prev;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>每个链表存储了 first 和 last 指针：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">transient Node&lt;E&gt; first;transient Node&lt;E&gt; last;</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://camo.githubusercontent.com/333ccf04b7d4667fbc7c4f1a217e7e5526c400fe/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f696d6167652d32303139313230383233333934303036362e706e67"><img src="../images/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f696d6167652d32303139313230383233333934303036362e706e67" alt="img"></a></p>
+<h3 id="2-与-ArrayList-的比较"><a href="#2-与-ArrayList-的比较" class="headerlink" title="2. 与 ArrayList 的比较"></a>2. 与 ArrayList 的比较</h3><p>ArrayList 基于动态数组实现，LinkedList 基于双向链表实现。ArrayList 和 LinkedList 的区别可以归结为数组和链表的区别：</p>
+<ul>
+<li>数组支持随机访问，但插入删除的代价很高，需要移动大量元素；</li>
+<li>链表不支持随机访问，但插入删除只需要改变指针。</li>
+</ul>
+<h2 id="HashMap"><a href="#HashMap" class="headerlink" title="HashMap"></a>HashMap</h2><p>为了便于理解，以下源码分析以 JDK 1.7 为主。</p>
+<h3 id="1-存储结构"><a href="#1-存储结构" class="headerlink" title="1. 存储结构"></a>1. 存储结构</h3><p>内部包含了一个 Entry 类型的数组 table。Entry 存储着键值对。它包含了四个字段，从 next 字段我们可以看出 Entry 是一个链表。即数组中的每个位置被当成一个桶，一个桶存放一个链表。HashMap 使用拉链法来解决冲突，同一个链表中存放哈希值和散列桶取模运算结果相同的 Entry。</p>
+<p><a href="https://camo.githubusercontent.com/5d81dca069e6bd97466ee40c53ea963696cfc1ef/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f696d6167652d32303139313230383233343934383230352e706e67"><img src="../images/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f696d6167652d32303139313230383233343934383230352e706e67" alt="img"></a></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">transient Entry[] table;static class Entry&lt;K,V&gt; implements Map.Entry&lt;K,V&gt; &#123;    final K key;    V value;    Entry&lt;K,V&gt; next;    int hash;    Entry(int h, K k, V v, Entry&lt;K,V&gt; n) &#123;        value = v;        next = n;        key = k;        hash = h;    &#125;    public final K getKey() &#123;        return key;    &#125;    public final V getValue() &#123;        return value;    &#125;    public final V setValue(V newValue) &#123;        V oldValue = value;        value = newValue;        return oldValue;    &#125;    public final boolean equals(Object o) &#123;        if (!(o instanceof Map.Entry))            return false;        Map.Entry e = (Map.Entry)o;        Object k1 = getKey();        Object k2 = e.getKey();        if (k1 == k2 || (k1 != null &amp;&amp; k1.equals(k2))) &#123;            Object v1 = getValue();            Object v2 = e.getValue();            if (v1 == v2 || (v1 != null &amp;&amp; v1.equals(v2)))                return true;        &#125;        return false;    &#125;    public final int hashCode() &#123;        return Objects.hashCode(getKey()) ^ Objects.hashCode(getValue());    &#125;    public final String toString() &#123;        return getKey() + &quot;=&quot; + getValue();    &#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-拉链法的工作原理"><a href="#2-拉链法的工作原理" class="headerlink" title="2. 拉链法的工作原理"></a>2. 拉链法的工作原理</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">HashMap&lt;String, String&gt; map = new HashMap&lt;&gt;();map.put(&quot;K1&quot;, &quot;V1&quot;);map.put(&quot;K2&quot;, &quot;V2&quot;);map.put(&quot;K3&quot;, &quot;V3&quot;);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>新建一个 HashMap，默认大小为 16；</li>
+<li>插入 &lt;K1,V1&gt; 键值对，先计算 K1 的 hashCode 为 115，使用除留余数法得到所在的桶下标 115%16=3。</li>
+<li>插入 &lt;K2,V2&gt; 键值对，先计算 K2 的 hashCode 为 118，使用除留余数法得到所在的桶下标 118%16=6。</li>
+<li>插入 &lt;K3,V3&gt; 键值对，先计算 K3 的 hashCode 为 118，使用除留余数法得到所在的桶下标 118%16=6，插在 &lt;K2,V2&gt; 前面。</li>
+</ul>
+<p>应该注意到链表的插入是以头插法方式进行的，例如上面的 &lt;K3,V3&gt; 不是插在 &lt;K2,V2&gt; 后面，而是插入在链表头部。</p>
+<p>查找需要分成两步进行：</p>
+<ul>
+<li>计算键值对所在的桶；</li>
+<li>在链表上顺序查找，时间复杂度显然和链表的长度成正比。</li>
+</ul>
+<p><a href="https://camo.githubusercontent.com/a7761ef5ade932ba3513693653ee65bedfa0f5db/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f696d6167652d32303139313230383233353235383634332e706e67"><img src="../images/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f696d6167652d32303139313230383233353235383634332e706e67" alt="img"></a></p>
+<h3 id="3-put-操作"><a href="#3-put-操作" class="headerlink" title="3. put 操作"></a>3. put 操作</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public V put(K key, V value) &#123;    if (table == EMPTY_TABLE) &#123;        inflateTable(threshold);    &#125;    // 键为 null 单独处理    if (key == null)        return putForNullKey(value);    int hash = hash(key);    // 确定桶下标    int i = indexFor(hash, table.length);    // 先找出是否已经存在键为 key 的键值对，如果存在的话就更新这个键值对的值为 value    for (Entry&lt;K,V&gt; e = table[i]; e != null; e = e.next) &#123;        Object k;        if (e.hash == hash &amp;&amp; ((k = e.key) == key || key.equals(k))) &#123;            V oldValue = e.value;            e.value = value;            e.recordAccess(this);            return oldValue;        &#125;    &#125;    modCount++;    // 插入新键值对    addEntry(hash, key, value, i);    return null;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>HashMap 允许插入键为 null 的键值对。但是因为无法调用 null 的 hashCode() 方法，也就无法确定该键值对的桶下标，只能通过强制指定一个桶下标来存放。HashMap 使用第 0 个桶存放键为 null 的键值对。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">private V putForNullKey(V value) &#123;    for (Entry&lt;K,V&gt; e = table[0]; e != null; e = e.next) &#123;        if (e.key == null) &#123;            V oldValue = e.value;            e.value = value;            e.recordAccess(this);            return oldValue;        &#125;    &#125;    modCount++;    addEntry(0, null, value, 0);    return null;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用链表的头插法，也就是新的键值对插在链表的头部，而不是链表的尾部。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">void addEntry(int hash, K key, V value, int bucketIndex) &#123;    if ((size &gt;= threshold) &amp;&amp; (null != table[bucketIndex])) &#123;        resize(2 * table.length);        hash = (null != key) ? hash(key) : 0;        bucketIndex = indexFor(hash, table.length);    &#125;    createEntry(hash, key, value, bucketIndex);&#125;void createEntry(int hash, K key, V value, int bucketIndex) &#123;    Entry&lt;K,V&gt; e = table[bucketIndex];    // 头插法，链表头部指向新的键值对    table[bucketIndex] = new Entry&lt;&gt;(hash, key, value, e);    size++;&#125;Entry(int h, K k, V v, Entry&lt;K,V&gt; n) &#123;    value = v;    next = n;    key = k;    hash = h;&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-确定桶下标"><a href="#4-确定桶下标" class="headerlink" title="4. 确定桶下标"></a>4. 确定桶下标</h3><p>很多操作都需要先确定一个键值对所在的桶下标。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">int hash = hash(key);int i = indexFor(hash, table.length);</span><br></pre></td></tr></table></figure>
+
+<p><strong>4.1 计算 hash 值</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">final int hash(Object k) &#123;    int h = hashSeed;    if (0 != h &amp;&amp; k instanceof String) &#123;        return sun.misc.Hashing.stringHash32((String) k);    &#125;    h ^= k.hashCode();    // This function ensures that hashCodes that differ only by    // constant multiples at each bit position have a bounded    // number of collisions (approximately 8 at default load factor).    h ^= (h &gt;&gt;&gt; 20) ^ (h &gt;&gt;&gt; 12);    return h ^ (h &gt;&gt;&gt; 7) ^ (h &gt;&gt;&gt; 4);&#125;public final int hashCode() &#123;    return Objects.hashCode(key) ^ Objects.hashCode(value);&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>4.2 取模</strong></p>
+<p>令 x = 1&lt;&lt;4，即 x 为 2 的 4 次方，它具有以下性质：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">x   : 00010000x-1 : 00001111</span><br></pre></td></tr></table></figure>
+
+<p>令一个数 y 与 x-1 做与运算，可以去除 y 位级表示的第 4 位以上数：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">y       : 10110010x-1     : 00001111y&amp;(x-1) : 00000010</span><br></pre></td></tr></table></figure>
+
+<p>这个性质和 y 对 x 取模效果是一样的：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">y   : 10110010x   : 00010000y%x : 00000010</span><br></pre></td></tr></table></figure>
+
+<p>我们知道，位运算的代价比求模运算小的多，因此在进行这种计算时用位运算的话能带来更高的性能。</p>
+<p>确定桶下标的最后一步是将 key 的 hash 值对桶个数取模：hash%capacity，如果能保证 capacity 为 2 的 n 次方，那么就可以将这个操作转换为位运算。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">static int indexFor(int h, int length) &#123;    return h &amp; (length-1);&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-扩容-基本原理"><a href="#5-扩容-基本原理" class="headerlink" title="5. 扩容-基本原理"></a>5. 扩容-基本原理</h3><p>设 HashMap 的 table 长度为 M，需要存储的键值对数量为 N，如果哈希函数满足均匀性的要求，那么每条链表的长度大约为 N/M，因此查找的复杂度为 O(N/M)。</p>
+<p>为了让查找的成本降低，应该使 N/M 尽可能小，因此需要保证 M 尽可能大，也就是说 table 要尽可能大。HashMap 采用动态扩容来根据当前的 N 值来调整 M 值，使得空间效率和时间效率都能得到保证。</p>
+<p>和扩容相关的参数主要有：capacity、size、threshold 和 load_factor。</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>capacity</td>
+<td>table 的容量大小，默认为 16。需要注意的是 capacity 必须保证为 2 的 n 次方。</td>
+</tr>
+<tr>
+<td>size</td>
+<td>键值对数量。</td>
+</tr>
+<tr>
+<td>threshold</td>
+<td>size 的临界值，当 size 大于等于 threshold 就必须进行扩容操作。</td>
+</tr>
+<tr>
+<td>loadFactor</td>
+<td>装载因子，table 能够使用的比例，threshold = (int)(capacity* loadFactor)。</td>
+</tr>
+</tbody></table>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">static final int DEFAULT_INITIAL_CAPACITY = 16;static final int MAXIMUM_CAPACITY = 1 &lt;&lt; 30;static final float DEFAULT_LOAD_FACTOR = 0.75f;transient Entry[] table;transient int size;int threshold;final float loadFactor;transient int modCount;</span><br></pre></td></tr></table></figure>
+
+<p>从下面的添加元素代码中可以看出，当需要扩容时，令 capacity 为原来的两倍。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">void addEntry(int hash, K key, V value, int bucketIndex) &#123;    Entry&lt;K,V&gt; e = table[bucketIndex];    table[bucketIndex] = new Entry&lt;&gt;(hash, key, value, e);    if (size++ &gt;= threshold)        resize(2 * table.length);&#125;</span><br></pre></td></tr></table></figure>
+
+<p>扩容使用 resize() 实现，需要注意的是，扩容操作同样需要把 oldTable 的所有键值对重新插入 newTable 中，因此这一步是很费时的。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">void resize(int newCapacity) &#123;    Entry[] oldTable = table;    int oldCapacity = oldTable.length;    if (oldCapacity == MAXIMUM_CAPACITY) &#123;        threshold = Integer.MAX_VALUE;        return;    &#125;    Entry[] newTable = new Entry[newCapacity];    transfer(newTable);    table = newTable;    threshold = (int)(newCapacity * loadFactor);&#125;void transfer(Entry[] newTable) &#123;    Entry[] src = table;    int newCapacity = newTable.length;    for (int j = 0; j &lt; src.length; j++) &#123;        Entry&lt;K,V&gt; e = src[j];        if (e != null) &#123;            src[j] = null;            do &#123;                Entry&lt;K,V&gt; next = e.next;                int i = indexFor(e.hash, newCapacity);                e.next = newTable[i];                newTable[i] = e;                e = next;            &#125; while (e != null);        &#125;    &#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-扩容-重新计算桶下标"><a href="#6-扩容-重新计算桶下标" class="headerlink" title="6. 扩容-重新计算桶下标"></a>6. 扩容-重新计算桶下标</h3><p>在进行扩容时，需要把键值对重新计算桶下标，从而放到对应的桶上。在前面提到，HashMap 使用 hash%capacity 来确定桶下标。HashMap capacity 为 2 的 n 次方这一特点能够极大降低重新计算桶下标操作的复杂度。</p>
+<p>假设原数组长度 capacity 为 16，扩容之后 new capacity 为 32：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">capacity     : 00010000new capacity : 00100000</span><br></pre></td></tr></table></figure>
+
+<p>对于一个 Key，它的哈希值 hash 在第 5 位：</p>
+<ul>
+<li>为 0，那么 hash%00010000 = hash%00100000，桶位置和原来一致；</li>
+<li>为 1，hash%00010000 = hash%00100000 + 16，桶位置是原位置 + 16。</li>
+</ul>
+<h3 id="7-计算数组容量"><a href="#7-计算数组容量" class="headerlink" title="7. 计算数组容量"></a>7. 计算数组容量</h3><p>HashMap 构造函数允许用户传入的容量不是 2 的 n 次方，因为它可以自动地将传入的容量转换为 2 的 n 次方。</p>
+<p>先考虑如何求一个数的掩码，对于 10010000，它的掩码为 11111111，可以使用以下方法得到：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mask |= mask &gt;&gt; 1    11011000mask |= mask &gt;&gt; 2    11111110mask |= mask &gt;&gt; 4    11111111</span><br></pre></td></tr></table></figure>
+
+<p>mask+1 是大于原始数字的最小的 2 的 n 次方。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">num     10010000mask+1 100000000</span><br></pre></td></tr></table></figure>
+
+<p>以下是 HashMap 中计算数组容量的代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">static final int tableSizeFor(int cap) &#123;    int n = cap - 1;    n |= n &gt;&gt;&gt; 1;    n |= n &gt;&gt;&gt; 2;    n |= n &gt;&gt;&gt; 4;    n |= n &gt;&gt;&gt; 8;    n |= n &gt;&gt;&gt; 16;    return (n &lt; 0) ? 1 : (n &gt;= MAXIMUM_CAPACITY) ? MAXIMUM_CAPACITY : n + 1;&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="8-链表转红黑树"><a href="#8-链表转红黑树" class="headerlink" title="8. 链表转红黑树"></a>8. 链表转红黑树</h3><p>从 JDK 1.8 开始，一个桶存储的链表长度大于等于 8 时会将链表转换为红黑树。</p>
+<h3 id="9-与-Hashtable-的比较"><a href="#9-与-Hashtable-的比较" class="headerlink" title="9. 与 Hashtable 的比较"></a>9. 与 Hashtable 的比较</h3><ul>
+<li>Hashtable 使用 synchronized 来进行同步。</li>
+<li>HashMap 可以插入键为 null 的 Entry。</li>
+<li>HashMap 的迭代器是 fail-fast 迭代器。</li>
+<li>HashMap 不能保证随着时间的推移 Map 中的元素次序是不变的。</li>
+</ul>
+<h2 id="ConcurrentHashMap"><a href="#ConcurrentHashMap" class="headerlink" title="ConcurrentHashMap"></a>ConcurrentHashMap</h2><h3 id="1-存储结构-1"><a href="#1-存储结构-1" class="headerlink" title="1. 存储结构"></a>1. 存储结构</h3><p><a href="https://camo.githubusercontent.com/f701cb7c0c3f8cc5b5da3db85d01c57d3095fa77/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f696d6167652d32303139313230393030313033383032342e706e67"><img src="../images/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f696d6167652d32303139313230393030313033383032342e706e67" alt="img"></a></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">static final class HashEntry&lt;K,V&gt; &#123;    final int hash;    final K key;    volatile V value;    volatile HashEntry&lt;K,V&gt; next;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>ConcurrentHashMap 和 HashMap 实现上类似，最主要的差别是 ConcurrentHashMap 采用了分段锁（Segment），每个分段锁维护着几个桶（HashEntry），多个线程可以同时访问不同分段锁上的桶，从而使其并发度更高（并发度就是 Segment 的个数）。</p>
+<p>Segment 继承自 ReentrantLock。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">static final class Segment&lt;K,V&gt; extends ReentrantLock implements Serializable &#123;    private static final long serialVersionUID = 2249069246763182397L;    static final int MAX_SCAN_RETRIES =        Runtime.getRuntime().availableProcessors() &gt; 1 ? 64 : 1;    transient volatile HashEntry&lt;K,V&gt;[] table;    transient int count;    transient int modCount;    transient int threshold;    final float loadFactor;&#125;final Segment&lt;K,V&gt;[] segments;</span><br></pre></td></tr></table></figure>
+
+<p>默认的并发级别为 16，也就是说默认创建 16 个 Segment。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">static final int DEFAULT_CONCURRENCY_LEVEL = 16;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-size-操作"><a href="#2-size-操作" class="headerlink" title="2. size 操作"></a>2. size 操作</h3><p>每个 Segment 维护了一个 count 变量来统计该 Segment 中的键值对个数。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/** * The number of elements. Accessed only either within locks * or among other volatile reads that maintain visibility. */transient int count;</span><br></pre></td></tr></table></figure>
+
+<p>在执行 size 操作时，需要遍历所有 Segment 然后把 count 累计起来。</p>
+<p>ConcurrentHashMap 在执行 size 操作时先尝试不加锁，如果连续两次不加锁操作得到的结果一致，那么可以认为这个结果是正确的。</p>
+<p>尝试次数使用 RETRIES_BEFORE_LOCK 定义，该值为 2，retries 初始值为 -1，因此尝试次数为 3。</p>
+<p>如果尝试的次数超过 3 次，就需要对每个 Segment 加锁。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/** * Number of unsynchronized retries in size and containsValue * methods before resorting to locking. This is used to avoid * unbounded retries if tables undergo continuous modification * which would make it impossible to obtain an accurate result. */static final int RETRIES_BEFORE_LOCK = 2;public int size() &#123;    // Try a few times to get accurate count. On failure due to    // continuous async changes in table, resort to locking.    final Segment&lt;K,V&gt;[] segments = this.segments;    int size;    boolean overflow; // true if size overflows 32 bits    long sum;         // sum of modCounts    long last = 0L;   // previous sum    int retries = -1; // first iteration isn&#x27;t retry    try &#123;        for (;;) &#123;            // 超过尝试次数，则对每个 Segment 加锁            if (retries++ == RETRIES_BEFORE_LOCK) &#123;                for (int j = 0; j &lt; segments.length; ++j)                    ensureSegment(j).lock(); // force creation            &#125;            sum = 0L;            size = 0;            overflow = false;            for (int j = 0; j &lt; segments.length; ++j) &#123;                Segment&lt;K,V&gt; seg = segmentAt(segments, j);                if (seg != null) &#123;                    sum += seg.modCount;                    int c = seg.count;                    if (c &lt; 0 || (size += c) &lt; 0)                        overflow = true;                &#125;            &#125;            // 连续两次得到的结果一致，则认为这个结果是正确的            if (sum == last)                break;            last = sum;        &#125;    &#125; finally &#123;        if (retries &gt; RETRIES_BEFORE_LOCK) &#123;            for (int j = 0; j &lt; segments.length; ++j)                segmentAt(segments, j).unlock();        &#125;    &#125;    return overflow ? Integer.MAX_VALUE : size;&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-JDK-1-8-的改动"><a href="#3-JDK-1-8-的改动" class="headerlink" title="3. JDK 1.8 的改动"></a>3. JDK 1.8 的改动</h3><p>JDK 1.7 使用分段锁机制来实现并发更新操作，核心类为 Segment，它继承自重入锁 ReentrantLock，并发度与 Segment 数量相等。</p>
+<p>JDK 1.8 使用了 CAS 操作来支持更高的并发度，在 CAS 操作失败时使用内置锁 synchronized。</p>
+<p>并且 JDK 1.8 的实现也在链表过长时会转换为红黑树。</p>
+<h2 id="LinkedHashMap"><a href="#LinkedHashMap" class="headerlink" title="LinkedHashMap"></a>LinkedHashMap</h2><h3 id="存储结构"><a href="#存储结构" class="headerlink" title="存储结构"></a>存储结构</h3><p>继承自 HashMap，因此具有和 HashMap 一样的快速查找特性。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public class LinkedHashMap&lt;K,V&gt; extends HashMap&lt;K,V&gt; implements Map&lt;K,V&gt;</span><br></pre></td></tr></table></figure>
+
+<p>内部维护了一个双向链表，用来维护插入顺序或者 LRU 顺序。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/** * The head (eldest) of the doubly linked list. */transient LinkedHashMap.Entry&lt;K,V&gt; head;/** * The tail (youngest) of the doubly linked list. */transient LinkedHashMap.Entry&lt;K,V&gt; tail;</span><br></pre></td></tr></table></figure>
+
+<p>accessOrder 决定了顺序，默认为 false，此时维护的是插入顺序。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">final boolean accessOrder;</span><br></pre></td></tr></table></figure>
+
+<p>LinkedHashMap 最重要的是以下用于维护顺序的函数，它们会在 put、get 等方法中调用。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">void afterNodeAccess(Node&lt;K,V&gt; p) &#123; &#125;void afterNodeInsertion(boolean evict) &#123; &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="afterNodeAccess"><a href="#afterNodeAccess" class="headerlink" title="afterNodeAccess()"></a>afterNodeAccess()</h3><p>当一个节点被访问时，如果 accessOrder 为 true，则会将该节点移到链表尾部。也就是说指定为 LRU 顺序之后，在每次访问一个节点时，会将这个节点移到链表尾部，保证链表尾部是最近访问的节点，那么链表首部就是最近最久未使用的节点。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">void afterNodeAccess(Node&lt;K,V&gt; e) &#123; // move node to last    LinkedHashMap.Entry&lt;K,V&gt; last;    if (accessOrder &amp;&amp; (last = tail) != e) &#123;        LinkedHashMap.Entry&lt;K,V&gt; p =            (LinkedHashMap.Entry&lt;K,V&gt;)e, b = p.before, a = p.after;        p.after = null;        if (b == null)            head = a;        else            b.after = a;        if (a != null)            a.before = b;        else            last = b;        if (last == null)            head = p;        else &#123;            p.before = last;            last.after = p;        &#125;        tail = p;        ++modCount;    &#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="afterNodeInsertion"><a href="#afterNodeInsertion" class="headerlink" title="afterNodeInsertion()"></a>afterNodeInsertion()</h3><p>在 put 等操作之后执行，当 removeEldestEntry() 方法返回 true 时会移除最晚的节点，也就是链表首部节点 first。</p>
+<p>evict 只有在构建 Map 的时候才为 false，在这里为 true。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">void afterNodeInsertion(boolean evict) &#123; // possibly remove eldest    LinkedHashMap.Entry&lt;K,V&gt; first;    if (evict &amp;&amp; (first = head) != null &amp;&amp; removeEldestEntry(first)) &#123;        K key = first.key;        removeNode(hash(key), key, null, false, true);    &#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>removeEldestEntry() 默认为 false，如果需要让它为 true，需要继承 LinkedHashMap 并且覆盖这个方法的实现，这在实现 LRU 的缓存中特别有用，通过移除最近最久未使用的节点，从而保证缓存空间足够，并且缓存的数据都是热点数据。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">protected boolean removeEldestEntry(Map.Entry&lt;K,V&gt; eldest) &#123;    return false;&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="LRU-缓存"><a href="#LRU-缓存" class="headerlink" title="LRU 缓存"></a>LRU 缓存</h3><p>以下是使用 LinkedHashMap 实现的一个 LRU 缓存：</p>
+<ul>
+<li>设定最大缓存空间 MAX_ENTRIES 为 3；</li>
+<li>使用 LinkedHashMap 的构造函数将 accessOrder 设置为 true，开启 LRU 顺序；</li>
+<li>覆盖 removeEldestEntry() 方法实现，在节点多于 MAX_ENTRIES 就会将最近最久未使用的数据移除。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">class LRUCache&lt;K, V&gt; extends LinkedHashMap&lt;K, V&gt; &#123;    private static final int MAX_ENTRIES = 3;    protected boolean removeEldestEntry(Map.Entry eldest) &#123;        return size() &gt; MAX_ENTRIES;    &#125;    LRUCache() &#123;        super(MAX_ENTRIES, 0.75f, true);    &#125;&#125;public static void main(String[] args) &#123;    LRUCache&lt;Integer, String&gt; cache = new LRUCache&lt;&gt;();    cache.put(1, &quot;a&quot;);    cache.put(2, &quot;b&quot;);    cache.put(3, &quot;c&quot;);    cache.get(1);    cache.put(4, &quot;d&quot;);    System.out.println(cache.keySet());&#125;[3, 1, 4]</span><br></pre></td></tr></table></figure>
+
+<h2 id="WeakHashMap"><a href="#WeakHashMap" class="headerlink" title="WeakHashMap"></a>WeakHashMap</h2><h3 id="存储结构-1"><a href="#存储结构-1" class="headerlink" title="存储结构"></a>存储结构</h3><p>WeakHashMap 的 Entry 继承自 WeakReference，被 WeakReference 关联的对象在下一次垃圾回收时会被回收。</p>
+<p>WeakHashMap 主要用来实现缓存，通过使用 WeakHashMap 来引用缓存对象，由 JVM 对这部分缓存进行回收。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">private static class Entry&lt;K,V&gt; extends WeakReference&lt;Object&gt; implements Map.Entry&lt;K,V&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="ConcurrentCache"><a href="#ConcurrentCache" class="headerlink" title="ConcurrentCache"></a>ConcurrentCache</h3><p>Tomcat 中的 ConcurrentCache 使用了 WeakHashMap 来实现缓存功能。</p>
+<p>ConcurrentCache 采取的是分代缓存：</p>
+<ul>
+<li>经常使用的对象放入 eden 中，eden 使用 ConcurrentHashMap 实现，不用担心会被回收（伊甸园）；</li>
+<li>不常用的对象放入 longterm，longterm 使用 WeakHashMap 实现，这些老对象会被垃圾收集器回收。</li>
+<li>当调用 get() 方法时，会先从 eden 区获取，如果没有找到的话再到 longterm 获取，当从 longterm 获取到就把对象放入 eden 中，从而保证经常被访问的节点不容易被回收。</li>
+<li>当调用 put() 方法时，如果 eden 的大小超过了 size，那么就将 eden 中的所有对象都放入 longterm 中，利用虚拟机回收掉一部分不经常使用的对象。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public final class ConcurrentCache&lt;K, V&gt; &#123;    private final int size;    private final Map&lt;K, V&gt; eden;    private final Map&lt;K, V&gt; longterm;    public ConcurrentCache(int size) &#123;        this.size = size;        this.eden = new ConcurrentHashMap&lt;&gt;(size);        this.longterm = new WeakHashMap&lt;&gt;(size);    &#125;    public V get(K k) &#123;        V v = this.eden.get(k);        if (v == null) &#123;            v = this.longterm.get(k);            if (v != null)                this.eden.put(k, v);        &#125;        return v;    &#125;    public void put(K k, V v) &#123;        if (this.eden.size() &gt;= size) &#123;            this.longterm.putAll(this.eden);            this.eden.clear();        &#125;        this.eden.put(k, v);    &#125;&#125;</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Java</category>
+        <category>Java集合</category>
+      </categories>
+      <tags>
+        <tag>Java集合</tag>
       </tags>
   </entry>
   <entry>
@@ -5651,106 +5915,6 @@
       </categories>
       <tags>
         <tag>Redis</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>JVM和Java体系结构(尚硅谷版)</title>
-    <url>/archives/d52a7e56.html</url>
-    <content><![CDATA[<h1 id="JVM和Java体系结构"><a href="#JVM和Java体系结构" class="headerlink" title="JVM和Java体系结构"></a>JVM和Java体系结构</h1><p>练好内功</p>
-<p><img src="../images/image-20210707223229867.png" alt="image-20210707223229867"></p>
-<span id="more"></span>
-
-<h2 id="Java生态圈"><a href="#Java生态圈" class="headerlink" title="Java生态圈"></a>Java生态圈</h2><p>Java是目前应用最为广泛的软件开发平台之一。随着Java以及Java社区的不断壮大Java 也早已不再是简简单单的一门计算机语言了，它更是一个平台、一种文化、一个社区。</p>
-<ul>
-<li>作为一个平台，Java虚拟机扮演着举足轻重的作用<ul>
-<li>Groovy、Scala、JRuby、Kotlin等都是Java平台的一部分</li>
-</ul>
-</li>
-<li>作为灯种文化，Java几乎成为了“开源”的代名词。<ul>
-<li>第三方开源软件和框架。如Tomcat、Struts，MyBatis，Spring等。</li>
-<li>就连JDK和JVM自身也有不少开源的实现，如openJDK、Harmony。</li>
-</ul>
-</li>
-</ul>
-<p>每个语言都需要转换成字节码文件，最后转换的字节码文件都能通过Java虚拟机进行运行和处理</p>
-<p><img src="../images/image-20200704152052489.png" alt="image-20200704152052489"></p>
-<p>随着Java7的正式发布，Java虚拟机的设计者们通过JSR-292规范基本实现在Java虚拟机平台上运行非Java语言编写的程序。</p>
-<p>Java虚拟机根本不关心运行在其内部的程序到底是使用何种编程语言编写的，它只关心“字节码”文件。也就是说Java虚拟机拥有语言无关性，并不会单纯地与Java语言“终身绑定”，只要其他编程语言的编译结果满足并包含Java虚拟机的内部指令集、符号表以及其他的辅助信息，它就是一个有效的字节码文件，就能够被虚拟机所识别并装载运行。</p>
-<h2 id="字节码"><a href="#字节码" class="headerlink" title="字节码"></a>字节码</h2><p>我们平时说的java字节码，指的是用java语言编译成的字节码。准确的说任何能在jvm平台上执行的字节码格式都是一样的。所以应该统称为：jvm字节码。</p>
-<p>不同的编译器，可以编译出相同的字节码文件，字节码文件也可以在不同的JVM上运行。</p>
-<p>Java虚拟机与Java语言并没有必然的联系，它只与特定的二进制文件格式—Class文件格式所关联，Class文件中包含了Java虚拟机指令集（或者称为字节码、Bytecodes）和符号表，还有一些其他辅助信息。</p>
-<h2 id="Java虚拟机"><a href="#Java虚拟机" class="headerlink" title="Java虚拟机"></a>Java虚拟机</h2><p>Java虚拟机是一台执行Java字节码的虚拟计算机，它拥有独立的运行机制，其运行的Java字节码也未必由Java语言编译而成。</p>
-<p>JVM平台的各种语言可以共享Java虚拟机带来的跨平台性、优秀的垃圾回器，以及可靠的即时编译器。</p>
-<p>Java技术的核心就是Java虚拟机（JVM，Java Virtual Machine），因为所有的Java程序都运行在Java虚拟机内部。</p>
-<p>Java虚拟机就是二进制字节码的运行环境，负责装载字节码到其内部，解释/编译为对应平台上的机器指令执行。每一条Java指令，Java虚拟机规范中都有详细定义，如怎么取操作数，怎么处理操作数，处理结果放在哪里。</p>
-<p>特点：</p>
-<ul>
-<li>一次编译，到处运行</li>
-<li>自动内存管理</li>
-<li>自动垃圾回收功能</li>
-</ul>
-<h2 id="JVM整体结构"><a href="#JVM整体结构" class="headerlink" title="JVM整体结构"></a>JVM整体结构</h2><ul>
-<li>HotSpot VM是目前市面上高性能虚拟机的代表作之一。</li>
-<li>它采用解释器与即时编译器并存的架构。</li>
-<li>在今天，Java程序的运行性能早已脱胎换骨，已经达到了可以和C/C++程序一较高下的地步。</li>
-</ul>
-<p><img src="../images/image-20200704183436495.png" alt="image-20200704183436495"></p>
-<p>执行引擎包含三部分：解释器，及时编译器，垃圾回收器</p>
-<h2 id="Java代码执行流程"><a href="#Java代码执行流程" class="headerlink" title="Java代码执行流程"></a>Java代码执行流程</h2><p><img src="../images/image-20200704210429535.png" alt="image-20200704210429535"></p>
-<p>只是能生成被Java虚拟机所能解释的字节码文件，那么理论上就可以自己设计一套代码了</p>
-<h2 id="JVM的架构模型"><a href="#JVM的架构模型" class="headerlink" title="JVM的架构模型"></a>JVM的架构模型</h2><p>Java编译器输入的指令流基本上是一种基于栈的指令集架构，另外一种指令集架构则是基于寄存器的指令集架构。具体来说：这两种架构之间的区别：</p>
-<p>基于栈式架构的特点</p>
-<ul>
-<li>设计和实现更简单，适用于资源受限的系统；</li>
-<li>避开了寄存器的分配难题：使用零地址指令方式分配。</li>
-<li>指令流中的指令大部分是零地址指令，其执行过程依赖于操作栈。指令集更小，编译器容易实现。</li>
-<li>不需要硬件支持，可移植性更好，更好实现跨平台</li>
-</ul>
-<p>基于寄存器架构的特点</p>
-<ul>
-<li>典型的应用是x86的二进制指令集：比如传统的PC以及Android的Davlik虚拟机。</li>
-<li>指令集架构则完全依赖硬件，可移植性差</li>
-<li>性能优秀和执行更高效</li>
-<li>花费更少的指令去完成一项操作。</li>
-<li>在大部分情况下，基于寄存器架构的指令集往往都以一地址指令、二地址指令和三地址指令为主，而基于栈式架构的指令集却是以零地址指令为主方水洋</li>
-</ul>
-<h3 id="测试用例"><a href="#测试用例" class="headerlink" title="测试用例"></a>测试用例</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.tcmyxc;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StackSturTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> i = <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">int</span> j = <span class="number">3</span>;</span><br><span class="line">        <span class="keyword">int</span> k = i + j;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>反编译</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">javap -v StackSturTest.class</span><br></pre></td></tr></table></figure>
-
-<p>输出</p>
-<figure class="highlight tex"><table><tr><td class="code"><pre><span class="line">public static void main(java.lang.String[]);</span><br><span class="line">    descriptor: ([Ljava/lang/String;)V</span><br><span class="line">    flags: ACC<span class="built_in">_</span>PUBLIC, ACC<span class="built_in">_</span>STATIC</span><br><span class="line">    Code:</span><br><span class="line">      stack=2, locals=4, args<span class="built_in">_</span>size=1</span><br><span class="line">         0: iconst<span class="built_in">_</span>2</span><br><span class="line">         1: istore<span class="built_in">_</span>1</span><br><span class="line">         2: iconst<span class="built_in">_</span>3</span><br><span class="line">         3: istore<span class="built_in">_</span>2</span><br><span class="line">         4: iload<span class="built_in">_</span>1</span><br><span class="line">         5: iload<span class="built_in">_</span>2</span><br><span class="line">         6: iadd</span><br><span class="line">         7: istore<span class="built_in">_</span>3</span><br><span class="line">         8: return</span><br><span class="line">      LineNumberTable:</span><br><span class="line">        line 6: 0</span><br><span class="line">        line 7: 2</span><br><span class="line">        line 8: 4</span><br><span class="line">        line 9: 8</span><br><span class="line">      LocalVariableTable:</span><br><span class="line">        Start  Length  Slot  Name   Signature</span><br><span class="line">            0       9     0  args   [Ljava/lang/String;</span><br><span class="line">            2       7     1     i   I</span><br><span class="line">            4       5     2     j   I</span><br><span class="line">            8       1     3     k   I</span><br></pre></td></tr></table></figure>
-
-
-
-<p>由于跨平台性的设计，Java的指令都是根据栈来设计的。不同平台CPU架构不同，所以不能设计为基于寄存器的。优点是跨平台，指令集小，编译器容易实现，缺点是性能下降，实现同样的功能需要更多的指令。</p>
-<h2 id="JVM生命周期"><a href="#JVM生命周期" class="headerlink" title="JVM生命周期"></a>JVM生命周期</h2><h3 id="虚拟机的启动"><a href="#虚拟机的启动" class="headerlink" title="虚拟机的启动"></a>虚拟机的启动</h3><p>Java虚拟机的启动是通过引导类加载器（bootstrap class loader）创建一个初始类（initial class）来完成的，这个类是由虚拟机的具体实现指定的。</p>
-<h3 id="虚拟机的执行"><a href="#虚拟机的执行" class="headerlink" title="虚拟机的执行"></a>虚拟机的执行</h3><ul>
-<li>一个运行中的Java虚拟机有着一个清晰的任务：执行Java程序。</li>
-<li>程序开始执行时他才运行，程序结束时他就停止。</li>
-<li>执行一个所谓的Java程序的时候，真真正正在执行的是一个叫做Java虚拟机的进程。</li>
-</ul>
-<h3 id="虚拟机的退出"><a href="#虚拟机的退出" class="headerlink" title="虚拟机的退出"></a>虚拟机的退出</h3><p>有如下的几种情况：</p>
-<ul>
-<li>程序正常执行结束</li>
-<li>程序在执行过程中遇到了异常或错误而异常终止</li>
-<li>由于操作系统用现错误而导致Java虚拟机进程终止</li>
-<li>某线程调用Runtime类或system类的exit方法，或Runtime类的halt方法，并且Java安全管理器也允许这次exit或halt操作。</li>
-<li>除此之外，JNI（Java Native Interface）规范描述了用JNI Invocation API来加载或卸载 Java虚拟机时，Java虚拟机的退出情况。</li>
-</ul>
-<h2 id="Hotspot"><a href="#Hotspot" class="headerlink" title="Hotspot"></a>Hotspot</h2><p>热点代码探测技术</p>
-<ul>
-<li>通过计数器找到最具编译价值的代码，从而触发即时编译或者栈上替换</li>
-<li>通过编译器和解释器协同工作，在最优的程序响应时间和最佳的执行性能中取得平衡</li>
-</ul>
-]]></content>
-      <categories>
-        <category>Java</category>
-        <category>JVM</category>
-      </categories>
-      <tags>
-        <tag>JVM</tag>
       </tags>
   </entry>
 </search>
