@@ -5917,4 +5917,36 @@
         <tag>Redis</tag>
       </tags>
   </entry>
+  <entry>
+    <title>运行时数据区概述、线程和程序计数器</title>
+    <url>/archives/e39549de.html</url>
+    <content><![CDATA[<h2 id="概述图"><a href="#概述图" class="headerlink" title="概述图"></a>概述图</h2><p><img src="../images/image-20210711144505791.png" alt="image-20210711144505791"></p>
+<span id="more"></span>
+
+<p>具体一点：</p>
+<p><img src="../images/image-20210711144716697.png" alt="image-20210711144716697"></p>
+<p>线程私有的：虚拟机栈、本地方法栈、程序计数器</p>
+<p>线程共享的：堆、堆外内存（永久代或元空间，代码缓存）</p>
+<p><img src="../images/image-20210711145124719.png" alt="image-20210711145124719"></p>
+<p>JVM 调优优化的是堆空间（95%）和方法区（5%）</p>
+<h2 id="线程"><a href="#线程" class="headerlink" title="线程"></a>线程</h2><p>在Hotspot JVM里，每个线程都与操作系统的本地线程直接映射。</p>
+<p>当一个Java线程准备好执行以后，此时一个操作系统的本地线程也同时创建。Java线程执行终止后，本地线程也会回收。</p>
+<h2 id="程序计数器"><a href="#程序计数器" class="headerlink" title="程序计数器"></a>程序计数器</h2><p>JVM 中的 PC 是对物理 PC 寄存器的一种抽象模拟</p>
+<p>PC寄存器用来存储指向下一条指令的地址,也即将要执行的指令代码。由执行引擎读取下一条指令。</p>
+<p><img src="../images/image-20210711150254992.png" alt="image-20210711150254992"></p>
+<p>如果执行的是本地方法，PC 的值就未定了。</p>
+<blockquote>
+<p>唯一一个在 JVM 规范中没有规定 OOM 的区域，同时没有 GC</p>
+</blockquote>
+<h3 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h3><p><img src="../images/image-20210711151339030.png" alt="image-20210711151339030"></p>
+<h3 id="面试题"><a href="#面试题" class="headerlink" title="面试题"></a>面试题</h3><h4 id="为什么要PC-？"><a href="#为什么要PC-？" class="headerlink" title="为什么要PC ？"></a>为什么要PC ？</h4><p>上下文切换之后，CPU 需要知道我下面要执行什么指令，PC存的就是指令的地址</p>
+]]></content>
+      <categories>
+        <category>Java</category>
+        <category>JVM</category>
+      </categories>
+      <tags>
+        <tag>JVM</tag>
+      </tags>
+  </entry>
 </search>
